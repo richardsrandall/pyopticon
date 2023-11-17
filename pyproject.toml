@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pyopticon"
+version = "0.1.7"
+authors = [
+  { name="Richard Randall", email="rrandall@stanford.edu" },
+]
+description = "A laboratory GUI, data acquisition, and automation package."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/richardsrandall/pyopticon"

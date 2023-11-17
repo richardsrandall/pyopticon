@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial: Building Your Own Dashboards &mdash; pyopticon 0.1.6 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorial: Writing Your Own Widgets" href="tutorial_3.html" />
+    <link rel="prev" title="Tutorial: Using an Existing Dashboard" href="tutorial_1.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyopticon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="capabilities.html">Capabilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_1.html">Tutorial: Using an Existing Dashboard</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial: Building Your Own Dashboards</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#building-a-basic-dashboard">Building a Basic Dashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-a-more-complicated-dashboard">Building a More Complicated Dashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-dashboard-features">Additional Dashboard Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#adding-interlocks">Adding interlocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#launching-from-an-icon">Launching from an Icon</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_3.html">Tutorial: Writing Your Own Widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_4.html">Tutorial: Miscellaneous Useful Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyopticon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tutorial: Building Your Own Dashboards</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tutorial_2.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tutorial-building-your-own-dashboards">
+<h1>Tutorial: Building Your Own Dashboards<a class="headerlink" href="#tutorial-building-your-own-dashboards" title="Permalink to this heading"></a></h1>
+<p>This section describes how to build a new dashboard out of existing widgets.
+You’d do this if you happen to be using the devices that PyOpticon comes with widgets for, or if
+you’d previously developed widgets for your devices, but you changed the devices’ physical setup and
+consequently need to make a new dashboard. Or, maybe you’re still learning,
+in which case building dashboards out of the widgets included with this package is a great place to start.</p>
+<section id="building-a-basic-dashboard">
+<h2>Building a Basic Dashboard<a class="headerlink" href="#building-a-basic-dashboard" title="Permalink to this heading"></a></h2>
+<p>This section describes how to build a new dashboard out of existing widgets.
+You’d do this if you happen to be using the devices that PyOpticon comes with widgets for, or if
+you’d previously developed widgets for your devices, but you changed the devices’ physical setup and
+consequently need to make a new dashboard.</p>
+<p>The general structure of the code to initialize and launch a dashboard is as follows:</p>
+<ul class="simple">
+<li><p>Import PyOpticonDashboard and any widget packages you need</p></li>
+<li><p>Initialize the dashboard itself</p></li>
+<li><p>Initialize as many widgets as you want and add them to the dashboard</p></li>
+<li><p>Define software interlocks, if you want them (a bit more advanced)</p></li>
+<li><p>Launch the dashboard</p></li>
+</ul>
+<p>The code to set up a simple dashboard with a title widget and a  widget for an Omega thermocouple looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Do your imports</span>
+<span class="kn">import</span> <span class="nn">pyopticon.majumdar_lab_widgets</span> <span class="k">as</span> <span class="nn">mlw</span>
+<span class="kn">import</span> <span class="nn">pyopticon.built_in_widgets</span> <span class="k">as</span> <span class="nn">biw</span>
+<span class="kn">from</span> <span class="nn">pyopticon.dashboard</span> <span class="kn">import</span> <span class="n">PyOpticonDashboard</span>
+
+<span class="c1"># Create a dashboard object</span>
+<span class="n">dashboard</span> <span class="o">=</span> <span class="n">PyOpticonDashboard</span><span class="p">(</span><span class="n">dashboard_name</span> <span class="o">=</span> <span class="s2">&quot;PyOpticon Demo&quot;</span><span class="p">,</span>
+                            <span class="n">use_serial_emulators</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">polling_interval_ms</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                            <span class="n">window_resizeable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Add a title block</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">biw</span><span class="o">.</span><span class="n">TitleWidget</span><span class="p">(</span><span class="n">dashboard</span><span class="p">,</span><span class="s2">&quot;PyOpticon Demo&quot;</span><span class="p">,</span><span class="mi">20</span><span class="p">),</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Add a thermocouple widget</span>
+<span class="n">tc1</span> <span class="o">=</span> <span class="n">mlw</span><span class="o">.</span><span class="n">OmegaUSBUTCWidget</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="o">=</span><span class="n">dashboard</span><span class="p">,</span>
+                            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;My Thermocouple&#39;</span><span class="p">,</span>
+                            <span class="n">nickname</span><span class="o">=</span><span class="s1">&#39;My TC&#39;</span><span class="p">,</span>
+                            <span class="n">default_serial_port</span><span class="o">=</span><span class="s1">&#39;COM14&#39;</span><span class="p">)</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">tc1</span><span class="p">,</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Start the dashboard</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You can look in the Documentation tab to see what arguments are required to initialize a dashboard
+or any particular type of widget.</p>
+</section>
+<section id="building-a-more-complicated-dashboard">
+<h2>Building a More Complicated Dashboard<a class="headerlink" href="#building-a-more-complicated-dashboard" title="Permalink to this heading"></a></h2>
+<p>Here’s the complete code to launch the build-in Demo Dashboard:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>   <span class="c1"># Create a dashboard object</span>
+<span class="n">dashboard</span> <span class="o">=</span> <span class="n">PyOpticonDashboard</span><span class="p">(</span><span class="n">dashboard_name</span> <span class="o">=</span> <span class="s2">&quot;PyOpticon Demo&quot;</span><span class="p">,</span>
+                            <span class="n">use_serial_emulators</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">polling_interval_ms</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                            <span class="n">window_resizeable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># The next many sections initialize each of the individual widgets.</span>
+
+<span class="c1"># Add a title block</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">biw</span><span class="o">.</span><span class="n">TitleWidget</span><span class="p">(</span><span class="n">dashboard</span><span class="p">,</span><span class="s2">&quot;PyOpticon Demo&quot;</span><span class="p">,</span><span class="mi">20</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Add a thermocouple widget</span>
+<span class="n">tc1</span> <span class="o">=</span> <span class="n">mlw</span><span class="o">.</span><span class="n">OmegaUSBUTCWidget</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="o">=</span><span class="n">dashboard</span><span class="p">,</span>
+                            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Reactor Thermocouple&#39;</span><span class="p">,</span>
+                            <span class="n">nickname</span><span class="o">=</span><span class="s1">&#39;Reactor TC&#39;</span><span class="p">,</span>
+                            <span class="n">default_serial_port</span><span class="o">=</span><span class="s1">&#39;COM14&#39;</span><span class="p">)</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">tc1</span><span class="p">,</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Add an Aalborg MFC</span>
+<span class="n">mfc1</span><span class="o">=</span><span class="n">mlw</span><span class="o">.</span><span class="n">AalborgDPCWidget</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="o">=</span><span class="n">dashboard</span><span class="p">,</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Methane MFC&#39;</span><span class="p">,</span>
+                        <span class="n">nickname</span><span class="o">=</span><span class="s1">&#39;Methane MFC&#39;</span><span class="p">,</span>
+                        <span class="n">default_serial_port</span><span class="o">=</span><span class="s1">&#39;COM9&#39;</span><span class="p">)</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">mfc1</span><span class="p">,</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Add an MKS MFC</span>
+<span class="n">mfc_2</span><span class="o">=</span><span class="n">mlw</span><span class="o">.</span><span class="n">MksMFCWidget</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="o">=</span><span class="n">dashboard</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Argon MFC&#39;</span><span class="p">,</span>
+                    <span class="n">nickname</span><span class="o">=</span><span class="s1">&#39;Argon MFC&#39;</span><span class="p">,</span>
+                    <span class="n">channel</span><span class="o">=</span><span class="s1">&#39;A1&#39;</span><span class="p">,</span>
+                    <span class="n">device_id</span><span class="o">=</span><span class="s1">&#39;001&#39;</span><span class="p">,</span>
+                    <span class="n">default_serial_port</span><span class="o">=</span><span class="s1">&#39;COM3&#39;</span><span class="p">)</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">mfc_2</span><span class="p">,</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Add another MKS MFC</span>
+<span class="n">mfc_3</span><span class="o">=</span><span class="n">mlw</span><span class="o">.</span><span class="n">MksMFCWidget</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="o">=</span><span class="n">dashboard</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Oxygen MFC&#39;</span><span class="p">,</span>
+                    <span class="n">nickname</span><span class="o">=</span><span class="s1">&#39;Oxygen MFC&#39;</span><span class="p">,</span>
+                    <span class="n">device_id</span><span class="o">=</span><span class="s1">&#39;001&#39;</span><span class="p">,</span>
+                    <span class="n">channel</span><span class="o">=</span><span class="s1">&#39;A2&#39;</span><span class="p">,</span>
+                    <span class="n">widget_to_share_serial_with</span><span class="o">=</span><span class="n">mfc_2</span><span class="p">)</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">mfc_3</span><span class="p">,</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Add a Valco 2-way valve</span>
+<span class="n">valve_1</span> <span class="o">=</span> <span class="n">mlw</span><span class="o">.</span><span class="n">Valco2WayValveWidget</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="o">=</span><span class="n">dashboard</span><span class="p">,</span>
+                                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Reactor Bypass Valve&#39;</span><span class="p">,</span>
+                                <span class="n">nickname</span><span class="o">=</span><span class="s1">&#39;Reactor Bypass Valve&#39;</span><span class="p">,</span>
+                                <span class="n">default_serial_port</span><span class="o">=</span><span class="s1">&#39;COM11&#39;</span><span class="p">,</span>
+                                <span class="n">valve_positions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Thru Reactor&#39;</span><span class="p">,</span><span class="s1">&#39;Bypass Reactor&#39;</span><span class="p">])</span>
+<span class="c1">#dashboard.add_widget(valve_1,row=1,column=1)</span>
+<span class="c1"># Omit this one for now just to save space</span>
+
+<span class="c1"># Add an UV LED controller controlled with an IoT relay</span>
+<span class="n">uv_led_1</span> <span class="o">=</span> <span class="n">mlw</span><span class="o">.</span><span class="n">IotRelayWidget</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="o">=</span><span class="n">dashboard</span><span class="p">,</span>
+                            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;UV Light&#39;</span><span class="p">,</span>
+                            <span class="n">nickname</span><span class="o">=</span><span class="s1">&#39;UV Light&#39;</span><span class="p">,</span>
+                            <span class="n">default_serial_port</span><span class="o">=</span><span class="s1">&#39;COM10&#39;</span><span class="p">)</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">uv_led_1</span><span class="p">,</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Add a Picarro Cavity Ringdown Spectrometer</span>
+<span class="n">picarro_1</span> <span class="o">=</span> <span class="n">mlw</span><span class="o">.</span><span class="n">PicarroCRDWidget</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="o">=</span><span class="n">dashboard</span><span class="p">,</span>
+                            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Picarro&#39;</span><span class="p">,</span>
+                            <span class="n">nickname</span><span class="o">=</span><span class="s1">&#39;Picarro&#39;</span><span class="p">,</span>
+                            <span class="n">default_serial_port</span><span class="o">=</span><span class="s1">&#39;COM2&#39;</span><span class="p">)</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">picarro_1</span><span class="p">,</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Add a demo for a widget without a serial connection</span>
+<span class="n">spice_1</span> <span class="o">=</span> <span class="n">biw</span><span class="o">.</span><span class="n">SpicinessWidget</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="o">=</span><span class="n">dashboard</span><span class="p">,</span>
+                            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Spice-O-Meter&#39;</span><span class="p">,</span>
+                            <span class="n">nickname</span><span class="o">=</span><span class="s1">&#39;Spice&#39;</span><span class="p">)</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">spice_1</span><span class="p">,</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Here&#39;s where you&#39;d add interlocks, if you wanted any</span>
+
+<span class="c1"># Start the dashboard</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="additional-dashboard-features">
+<h2>Additional Dashboard Features<a class="headerlink" href="#additional-dashboard-features" title="Permalink to this heading"></a></h2>
+<section id="adding-interlocks">
+<h3>Adding interlocks<a class="headerlink" href="#adding-interlocks" title="Permalink to this heading"></a></h3>
+<p>An ‘interlock’ refers to any function that gets polled once per dashboard update cycle. It could be anything, but
+its intended purpose is to allow the dashboard to check for unsafe or undesireable operating conditions, then either
+mitigate them or notify the user. A safety-related example would be, upon detection of too high a temperature in the reactor, shutting
+down any active automation scripts, stopping the flow of reaction gases, and flowing inert argon instead. A convenience-related
+example would be, upon detection that an important instrument has disconnected during an automation script, pausing the
+automation script and sending yourself an email notification (perhaps using the GmailHelper class described in a later section).</p>
+<p>Here’s an example of the latter. This code would be inserted in the dashboard initialization .py file, after all widgets
+are added to the dashboard but before <code class="docutils literal notranslate"><span class="pre">dashboard.start()</span></code> has been called.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize a Gmail helper... see the section below on this class.</span>
+<span class="kn">from</span> <span class="nn">pyopticon.utilities.gmail_helper</span> <span class="kn">import</span> <span class="n">GmailHelper</span>
+<span class="n">gh</span> <span class="o">=</span> <span class="n">GmailHelper</span><span class="p">(</span><span class="n">gmail_address</span><span class="o">=</span><span class="s2">&quot;fake_address@gmail.com&quot;</span><span class="p">,</span><span class="n">auth_string</span><span class="o">=</span><span class="s2">&quot;app_password&quot;</span><span class="p">,</span>
+    <span class="n">destination_emails</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;person_1@hotmail.com&#39;</span><span class="p">,</span><span class="s1">&#39;12345678910@vtext.com&#39;</span><span class="p">])</span>
+<span class="c1">#Assume 1-234-567-8910 is a cell number on Verizon</span>
+
+<span class="c1"># Define the interlock</span>
+<span class="k">def</span> <span class="nf">check_coms_failures_during_script</span><span class="p">():</span>
+    <span class="c1"># This is only important while running an automation script</span>
+    <span class="k">if</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">_automation_widget</span><span class="o">.</span><span class="n">pause_tasks</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="c1"># Test whether communications to the Picarro Spectrometer have failed</span>
+    <span class="c1"># In this case, the Picarro tracks how many bad readings there have been</span>
+    <span class="c1"># 10+ bad readings probably means the instrument is crashed or disconnected</span>
+    <span class="k">if</span> <span class="n">gui</span><span class="o">.</span><span class="n">panels_by_nickname</span><span class="p">[</span><span class="s1">&#39;Picarro CRD&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">bad_readings</span><span class="o">&gt;</span><span class="mi">9</span><span class="p">:</span>
+        <span class="c1"># Notify console and pause automation</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Picarro CRD Spectrometer appears to have disconnected. Pausing automation and stopping gas flows.&quot;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">_automation_control_panel</span><span class="o">.</span><span class="n">_pause_automated_tasks</span><span class="p">()</span>
+        <span class="c1"># Return system to safe mode</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Oxygen MFC&#39;</span><span class="p">,</span><span class="s1">&#39;Mode Entry&#39;</span><span class="p">,</span><span class="s1">&#39;Closed&#39;</span><span class="p">,</span><span class="n">execute</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Argon MFC&#39;</span><span class="p">,</span><span class="s1">&#39;Mode Entry&#39;</span><span class="p">,</span><span class="s1">&#39;Closed&#39;</span><span class="p">,</span><span class="n">execute</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Methane MFC&#39;</span><span class="p">,</span><span class="s1">&#39;Mode Entry&#39;</span><span class="p">,</span><span class="s1">&#39;Closed&#39;</span><span class="p">,</span><span class="n">execute</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;UV Light&#39;</span><span class="p">,</span><span class="s1">&#39;Status Selection&#39;</span><span class="p">,</span><span class="s1">&#39;Off&#39;</span><span class="p">,</span><span class="n">execute</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Send some notifications</span>
+        <span class="n">gh</span><span class="o">.</span><span class="n">send_email</span><span class="p">(</span><span class="n">subject</span><span class="o">=</span><span class="s2">&quot;PyOpticon Alert&quot;</span><span class="p">,</span>
+            <span class="n">message_body</span><span class="o">=</span><span class="s2">&quot;The Picarro seems to have disconnected. Automation script has been paused. Light and gases are turned off.&quot;</span><span class="p">)</span>
+
+<span class="c1"># Add the interlock to the dashboard</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">add_interlock</span><span class="p">(</span><span class="n">check_coms_failures_during_script</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="launching-from-an-icon">
+<h3>Launching from an Icon<a class="headerlink" href="#launching-from-an-icon" title="Permalink to this heading"></a></h3>
+<p>It’s usually best to write and debug your dashboard from some kind of development environment, but once it works,
+it’s nice to have it launch from clicking a shortcut like a standalone desktop app.
+In the first image in the ‘gallery’ tab, you can see
+the desktop icon that launches that particular PyOpticon dashboard.</p>
+<p>To do this on a PC, take the file in which the dashboard is initialized
+(e.g., ‘my_dashboard.py’) and change its extension to .pyw (e.g., ‘my_dashboard.pyw’). This will suppress opening a
+terminal window when it’s opened. Then, right-click this file and create a shortcut, and right-click the shortcut and
+select ‘properties’ and then click the ‘change icon’ button. Change the shortcut’s icon to whatever you want – Windows
+comes with various built-in icons, and you can also look for .ico files on the internet that fit the theme of what
+your dashboard does. After the shortcut icon is changed, move it to your desktop.</p>
+<p>On a Mac, you can right-click your .py file and say “open with,” choose “other,” and tell it to always open this file with
+‘Python Launcher’. In the Python Launcher preferences, check the ‘Run in Terminal Window’ box. Double-clicking the .py file
+should now launch the dashboard and a terminal window. Now, right-click the .py file and choose ‘Make Alias,’ and drag the
+alias to your desktop. Rename the alias if you wish. Finally, copy the icon image file you want to use onto your clipboard.
+Right-click the alias and choose ‘get info’, then click the picture of its current icon in the top-left corner of the
+‘get info’ window. Hit command-v and the icon should be replaced with the one on your clipboard.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorial_1.html" class="btn btn-neutral float-left" title="Tutorial: Using an Existing Dashboard" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial_3.html" class="btn btn-neutral float-right" title="Tutorial: Writing Your Own Widgets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Richard Randall.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

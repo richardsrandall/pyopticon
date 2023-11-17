@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial: Writing Your Own Widgets &mdash; pyopticon 0.1.6 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorial: Miscellaneous Useful Features" href="tutorial_4.html" />
+    <link rel="prev" title="Tutorial: Building Your Own Dashboards" href="tutorial_2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyopticon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="capabilities.html">Capabilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_1.html">Tutorial: Using an Existing Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_2.html">Tutorial: Building Your Own Dashboards</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial: Writing Your Own Widgets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#extending-the-genericwidget-class">Extending the GenericWidget Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basics">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connecting-to-instruments-with-text-based-serial-protocols">Connecting to Instruments with Text-Based Serial Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connecting-to-instruments-with-other-python-serial-packages">Connecting to Instruments with Other Python Serial Packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connecting-to-instruments-with-manufacturer-provided-python-drivers">Connecting to Instruments with Manufacturer-Provided Python Drivers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-drivers-and-serial-libraries-with-blocking-or-asynchronous-code">Using Drivers and Serial Libraries with Blocking or Asynchronous Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#genericwidget-tricks-and-features">GenericWidget Tricks and Features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-serial-emulators-for-offline-testing">Using Serial Emulators for Offline Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extending-the-minimalwidget-class">Extending the MinimalWidget Class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_4.html">Tutorial: Miscellaneous Useful Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyopticon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tutorial: Writing Your Own Widgets</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tutorial_3.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tutorial-writing-your-own-widgets">
+<h1>Tutorial: Writing Your Own Widgets<a class="headerlink" href="#tutorial-writing-your-own-widgets" title="Permalink to this heading"></a></h1>
+<p>Writing your own widgets is the most complex thing you’re likely to do in PyOpticon. We’ve tried to
+make it relatively straightforward. It’s worth it, since once you’re not bound to the library of existing
+widgets, you’ll be free to build dashboards to control all kinds of existing and newly-acquired devices in
+your own lab or workspace.</p>
+<section id="extending-the-genericwidget-class">
+<h2>Extending the GenericWidget Class<a class="headerlink" href="#extending-the-genericwidget-class" title="Permalink to this heading"></a></h2>
+<section id="basics">
+<h3>Basics<a class="headerlink" href="#basics" title="Permalink to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> class is meant to allow widget development with less tedium and with less knowledge of tkinter,
+Pyserial, and other specialized libraries. This is done by defining a superclass (<code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code>) from which subclasses
+(e.g., <code class="docutils literal notranslate"><span class="pre">Valco2WayValveWidget</span></code>) are defined. If you haven’t worked much with object-oriented programming before, it’s
+probably worth reading a primer elsewhere (like <a class="reference external" href="https://realpython.com/python3-object-oriented-programming/#how-do-you-define-a-class-in-python">this</a>) on classes, objects, and inheritance. In short, the code that all
+widgets share is written in a superclass, and when writing a subclass you need only write the code that is unique to the
+widget that you’re trying to create.</p>
+<p>We recommend using <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> as the superclass for all widgets representing physical devices, and in fact for
+all widgets except for purely cosmetic ones.
+A later section talks about <code class="docutils literal notranslate"><span class="pre">MinimalWidget</span></code>, which lets you build widgets completely from scratch, which
+we only recommend if you’re making a purely cosmetic widget like a <code class="docutils literal notranslate"><span class="pre">TitleWidget</span></code>, or if you need really special
+behavior and you really know what you’re doing.</p>
+<p>We’ll run through an example of building the Valco 2 Way Valve widget from the <code class="docutils literal notranslate"><span class="pre">majumdar_lab_widgets</span></code> package. This is a
+convenient example because it’s only got one output field (the valve’s actual position) and one user input field (the desired
+valve position). An important first step is to know this device’s serial communication protocol. We’ll assume we know the protocol
+for the valve already, but if we didn’t, the next section includes tips on how to find it.</p>
+<p>The properties of <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> subclasses are mostly stored as what PyOpticon refers to as ‘fields’. A field is a
+text variable with a text identifier, a corresponding graphical element, and a label. For example, in the
+<code class="docutils literal notranslate"><span class="pre">Valco2WayValveWidget</span></code> class, there’s a field for ‘Position Selection’ corresponding to a dropdown menu
+and there’s a field for ‘Actual Position’ corresponding to a text readout. Fields are created using the <code class="docutils literal notranslate"><span class="pre">add_field</span></code>
+method, read using the <code class="docutils literal notranslate"><span class="pre">get_field</span></code> method, and set using the <code class="docutils literal notranslate"><span class="pre">set_field</span></code> method, all of which are described in the
+documentation. The point of using PyOpticon fields rather than instance variables is to let you avoid messing with
+tkinter GUI elements and StringVar objects,
+provide a clean way for automation scripts to control widgets, and let you avoid manually defining a <code class="docutils literal notranslate"><span class="pre">log_data</span></code>
+function for most widgets.</p>
+<p>Now that we’ve described fields, here are the functions/methods that you may want to implement for most widgets:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code>: the constructor method; required</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">build_serial_object</span></code>: called before the first serial query; opens whatever serial connection is needed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_handshake_query</span></code>: sends a query to check that the proper device is connected to the serial line</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_handshake_read</span></code>: reads the result of the handshake and returns whether or not it was valid</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_serial_open</span></code>: called right after the handshake read, with an argument denoting handshake success or failure</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_serial_query</span></code>: called when the dashboard prompts the widget to query its serial line for new readings</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_serial_read</span></code>: called when the dashboard prompts the widget to check its serial line for a response</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_serial_close</span></code>: called just after the serial connection closes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_confirm</span></code>: called when the user clicks the confirm button</p></li>
+</ul>
+<p>All widgets should have <code class="docutils literal notranslate"><span class="pre">__init__</span></code>, <code class="docutils literal notranslate"><span class="pre">on_serial_open</span></code>, <code class="docutils literal notranslate"><span class="pre">on_serial_query</span></code>, <code class="docutils literal notranslate"><span class="pre">on_serial_read</span></code>, and <code class="docutils literal notranslate"><span class="pre">on_serial_close</span></code>
+implemented. All widgets that write values to the device, as opposed to just reading values, should have <code class="docutils literal notranslate"><span class="pre">on_confirm</span></code>
+implemented. Devices that use a serial connection other than a pySerial Serial object (i.e., simple ASCII RS232 communication)
+should override the default <code class="docutils literal notranslate"><span class="pre">build_serial_object</span></code> method.</p>
+<p>Finally, the default behavior is to use <code class="docutils literal notranslate"><span class="pre">on_serial_query</span></code> as the
+<code class="docutils literal notranslate"><span class="pre">on_handshake_query</span></code> method and <code class="docutils literal notranslate"><span class="pre">on_serial_read</span></code> as the <code class="docutils literal notranslate"><span class="pre">on_handshake_read</span></code> method, with the handshake considered to
+have failed if <code class="docutils literal notranslate"><span class="pre">on_serial_read</span></code> raises an exception. Basically, by default you can use a normal query/read cycle as a
+handshake, but you have the option of having a ‘special’ handshake that happens the first time only. A special handshake is handy if you want
+to query the instrument for something like a device ID that need not be queried every single cycle.</p>
+<p>Below, we’ve included the whole <code class="docutils literal notranslate"><span class="pre">Valco2WayValveWidget</span></code> implementation; reading that is probably the easiest way to
+understand what all these methods do. But first, here are a couple of important points:</p>
+<ul class="simple">
+<li><p>Generally, you don’t need to worry about 1) initializing the Pyserial object, 2) handling any errors that come from
+failing to initialize the Pyserial object, or 3) checking whether the serial connection is open before you send it a
+command. The functions that call  <code class="docutils literal notranslate"><span class="pre">on_serial_open</span></code>, <code class="docutils literal notranslate"><span class="pre">on_serial_query</span></code>, <code class="docutils literal notranslate"><span class="pre">on_serial_read</span></code>,
+<code class="docutils literal notranslate"><span class="pre">on_serial_close</span></code>, and <code class="docutils literal notranslate"><span class="pre">on_confirm</span></code> take care of these
+things for you, so you can leave them be unless you want to override their behavior.</p></li>
+<li><p>It’s best to initialize most widget properties and graphical elements as PyOpticon fields.
+Any PyOpticon fields can be read using <code class="docutils literal notranslate"><span class="pre">get_field</span></code>, set using <code class="docutils literal notranslate"><span class="pre">set_field</span></code>,
+controlled in automation scripts using <code class="docutils literal notranslate"><span class="pre">schedule_action</span></code>, and will be logged by default. If you just want
+to store internal values that aren’t logged or shown in the GUI, instance variables (e.g. <code class="docutils literal notranslate"><span class="pre">self.some_value=19</span></code>)
+work just fine.</p></li>
+<li><p>The default behavior of <code class="docutils literal notranslate"><span class="pre">log_data</span></code> as defined in <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> is usually fine, but you can override it if you need to
+process the data before logging it or log data that aren’t PyOpticon fields. It just needs to return a <code class="docutils literal notranslate"><span class="pre">dict</span></code> of the
+names and values of the data to be logged at a given time step.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">on_handshake_read</span></code> method is expected to return <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code> if a valid response was read from
+the serial port and to raise an exception or return <code class="docutils literal notranslate"><span class="pre">False</span></code> or a string error message otherwise.
+This is important because when the widget first queries and reads from the serial device,
+the return value of <code class="docutils literal notranslate"><span class="pre">on_handshake_read</span></code> is passed as an argument to <code class="docutils literal notranslate"><span class="pre">on_serial_open</span></code>. If <code class="docutils literal notranslate"><span class="pre">on_serial_open</span></code> receives a
+value of <code class="docutils literal notranslate"><span class="pre">False</span></code> or <code class="docutils literal notranslate"><span class="pre">'Failed</span> <span class="pre">to</span> <span class="pre">Parse</span> <span class="pre">Response'</span></code>, you’ll probably want set the values of the sensor readouts to something like “No Reading”.
+If it returns a string error message, that message will automatically be printed to the console. By default, <code class="docutils literal notranslate"><span class="pre">on_serial_read</span></code> is
+used as <code class="docutils literal notranslate"><span class="pre">on_handshake_read</span></code>, and the handshake will be considered successful unless <code class="docutils literal notranslate"><span class="pre">on_serial_read</span></code> raises an exception or
+returns <code class="docutils literal notranslate"><span class="pre">False</span></code> or a string error message.</p></li>
+<li><p>There are a couple of special features of <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> that are meant to deal with funny edge cases, like a widget with
+no serial connection or a device that takes a long time to respond to serial queries.
+Check out the “GenericWidget Tricks and Features” section below for a tour of some of these, or refer to the
+“Documentation” tab.</p></li>
+<li><p>Some physical devices are finnicky about receiving too many serial queries in a row, and want a delay between
+consecutive commands. This can be addressed with the <code class="docutils literal notranslate"><span class="pre">send_via_queue</span></code> method described below. Also, often
+the first polling cycle right after ‘confirm’ is pressed will generate a ‘read error’ before returning to normal.
+That happens because the confirm button is pressed between two queries, and the device gives a serial response
+to the command, interspersing an unexpected response between the two responses to the queries. <code class="docutils literal notranslate"><span class="pre">send_via_queue</span></code> can
+also fix this by ensuring that all queries get sent before any pending commands from a confirm press are sent.</p></li>
+</ul>
+<p>With all that in mind, here’s the implementation of <code class="docutils literal notranslate"><span class="pre">Valco2WayValve</span></code>, with some of the comments adjusted from the source code
+for clarity and brevity. We just construct a widget, add an input and output field, and define how to send and parse serial
+communications with the valve.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">generic_widget</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">generic_serial_emulator</span>
+
+<span class="k">class</span> <span class="nc">Valco2WayValveWidget</span><span class="p">(</span><span class="n">generic_widget</span><span class="o">.</span><span class="n">GenericWidget</span><span class="p">):</span>
+    <span class="c1"># Docstring has been cut out to save space.</span>
+    <span class="c1"># Note that valve_positions is a list of the names of the valve&#39;s positions.</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent_dashboard</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">nickname</span><span class="p">,</span><span class="n">default_serial_port</span><span class="p">,</span><span class="n">valve_positions</span><span class="p">,</span><span class="n">valve_id</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Constructor for a VICI Valco 2-way valve widget.&quot;&quot;&quot;</span>
+        <span class="c1"># Initialize the superclass (GenericWidget) with most of the widget functionality</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">nickname</span><span class="p">,</span><span class="s1">&#39;#ADD8E6&#39;</span><span class="p">,</span><span class="n">default_serial_port</span><span class="o">=</span><span class="n">default_serial_port</span><span class="p">,</span><span class="n">baudrate</span><span class="o">=</span><span class="mi">9600</span><span class="p">)</span>
+        <span class="c1"># Record the valve id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valve_id</span><span class="o">=</span><span class="n">valve_id</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+        <span class="c1"># Add a dropdown field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valve_positions</span><span class="o">=</span><span class="n">valve_positions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field_type</span><span class="o">=</span><span class="s1">&#39;dropdown&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Position Selection&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Selected Position: &#39;</span><span class="p">,</span>
+                    <span class="n">default_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">valve_positions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">valve_positions</span><span class="p">)</span>
+        <span class="c1"># Add a readout field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field_type</span><span class="o">=</span><span class="s1">&#39;text output&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Actual Position&#39;</span><span class="p">,</span>
+                    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Actual Position: &#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="s1">&#39;No Reading&#39;</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Move the confirm button</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move_confirm_button</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">on_serial_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">success</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If serial opened successfully, do nothing; if not, set readouts to &#39;No Reading&#39;</span>
+
+<span class="sd">        :param success: Whether serial opened successfully, according to the return from the on_serial_read method.</span>
+<span class="sd">        :type success: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Actual Position&#39;</span><span class="p">,</span><span class="s1">&#39;No Reading&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">on_serial_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a query to the valve asking for its current position.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Flush any old responses</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_serial_object</span><span class="p">()</span><span class="o">.</span><span class="n">reset_input_buffer</span><span class="p">()</span>
+        <span class="c1"># Commands are something like b&#39;1CP\r&#39;, where 1 is the valve ID and CP means &#39;current position&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_serial_object</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valve_id</span><span class="o">+</span><span class="sa">b</span><span class="s1">&#39;CP</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">on_serial_read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the responses from the previous serial query and update the display. Return True if the response is valid and False if not.</span>
+
+<span class="sd">        :return: True if all the response was of the expected format, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serial_object</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+        <span class="c1"># The response is something like b&#39;1\A&#39; or b&#39;1\B&#39;, where A and B are the valve&#39;s 2 positions</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+            <span class="n">is_A</span> <span class="o">=</span> <span class="n">status</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;A&#39;</span>
+            <span class="k">if</span> <span class="n">is_A</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Actual Position&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">valve_positions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Actual Position&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">valve_positions</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Actual Position&#39;</span><span class="p">,</span><span class="s1">&#39;Read Error&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">on_serial_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;When serial is closed, set all readouts to &#39;None&#39;.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Actual Position&#39;</span><span class="p">,</span><span class="s1">&#39;No Reading&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">on_confirm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;When &#39;confirm&#39; is pressed, send the appropriate commands to the valve.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># GenericWidget already checks whether serial is connected, and complains if not.</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s1">&#39;Position Selection&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">selected</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valve_positions</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">Confirm</span><span class="se">\&quot;</span><span class="s2"> pressed with no/invalid option selected.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">choice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valve_positions</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span>
+        <span class="c1"># Command is something like b&#39;1GOA\r&#39; or b&#39;1GOB\r&#39; where A and B are the 2 valve positions</span>
+        <span class="k">if</span> <span class="n">choice</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Moving valve </span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2"> to </span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">+</span><span class="n">selected</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2"> (A)&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_object</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valve_id</span><span class="o">+</span><span class="sa">b</span><span class="s1">&#39;GOA</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Moving valve </span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2"> to </span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">+</span><span class="n">selected</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2"> (B)&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial_object</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valve_id</span><span class="o">+</span><span class="sa">b</span><span class="s1">&#39;GOB</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">construct_serial_emulator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the serial emulator to use when we&#39;re testing in offline mode.</span>
+<span class="sd">        A later section of the tutorial explains what this means.</span>
+
+<span class="sd">        :return: A valco 2-way valve serial emulator object.</span>
+<span class="sd">        :rtype: pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveSerialEmulator&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Valco2WayValveSerialEmulator</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Here’s what the widget ends up looking like:</p>
+<img alt="A Valco2WayValve widget" src="_images/valco_widget.png" />
+</section>
+<section id="connecting-to-instruments-with-text-based-serial-protocols">
+<h3>Connecting to Instruments with Text-Based Serial Protocols<a class="headerlink" href="#connecting-to-instruments-with-text-based-serial-protocols" title="Permalink to this heading"></a></h3>
+<p>Many instruments communicate with computers by receiving and sending binary-encoded text messages. By default, PyOpticon
+widgets use this type of communication, enabled by the pySerial Python package.</p>
+<p>In principle, a PyOpticon widget with pySerial can control any instrument that uses a text-based serial protocol.
+In practice, finding that protocol can be tricky. The protocol consists of a baud rate (an integer value,
+like 19200), a syntax for sending commands, and a syntax in which replies are sent.</p>
+<p>It’s easiest if you can find a manual for your device that contains its serial protocol. If that fails, often the
+manufacturer will have documentation on the serial protocol that they can send upon request. It may be referred to
+as an RS232, DB9, or serial protocol.</p>
+<p>If you have a manufacturer-supplied program that can talk to the device, you can also try to listen in on its connection
+and reverse-engineer the serial protocol. Some programs that may help do this are portmon, com0com, and realterm. This works
+best for simple devices that send the same commands over and over. Trying to reverse-engineer the protocol for a complex
+instrument in this way would be quite hard.</p>
+<p>To connect to an instrument, find the appropriate set of cables and converters. USB-to-RS232 converters are available
+on Amazon and tend to work pretty well. We’ve had some issues using USB-to-many-RS232 multiplexers – it seems a bit
+more reliable to use a USB multiplexer coupled to many USB-to-RS232 cables. You can use the serial port scanner to verify
+that a new serial port appeared when the instrument was plugged in. Sometimes, you need to change settings on the instrument
+to enable serial communications; if so, the manual may explain how to do so.</p>
+<p>Before trying to code a PyOpticon widget, we recommend sending the relevant commands manually to make sure the protocol works as
+expected. One easy way to do this is to use the pySerial library in the Python shell, accessed via IDLE. The pySerial
+website has some useful <a class="reference external" href="https://pyserial.readthedocs.io/en/latest/shortintro.html">examples</a>.</p>
+<p>On occasion, an instrument will require serial parameters like parity and stop bits that are different from the pySerial default.
+Simple overide the <code class="docutils literal notranslate"><span class="pre">build_serial_object</span></code> function, replacing it with a function that sets <code class="docutils literal notranslate"><span class="pre">self.serial_object</span></code> to a pySerial
+Serial object that was constructed with whatever special parameters are required, per the online pySerial documentation.</p>
+</section>
+<section id="connecting-to-instruments-with-other-python-serial-packages">
+<h3>Connecting to Instruments with Other Python Serial Packages<a class="headerlink" href="#connecting-to-instruments-with-other-python-serial-packages" title="Permalink to this heading"></a></h3>
+<p>There are various other serial communication standards besides RS232 with ASCII-encoded text. One example is the
+RS485 standard with the Modbus communication protocol, a system commonly used for industrial controls. Another is
+the VISA standard, which helps manufactuers create cross-platform drivers for there instruments. There are
+existing Python libraries to facilitate communications using many of these standards, such as minimalmodbus and pyvisa.</p>
+<p>The workflow to use one of these protocols is similar to that for ‘plain’ RS232 serial. First, write a standalone (non-PyOpticon)
+Python script that can read from and write to your instrument, ensuring that you understand how Python communicates with your
+instrument. Second, overide the <code class="docutils literal notranslate"><span class="pre">build_serial_object</span></code> function in your widget class, replacing it with a function
+that sets <code class="docutils literal notranslate"><span class="pre">self.serial_object</span></code> to whatever object represents your serial connection (e.g. a <code class="docutils literal notranslate"><span class="pre">pymodbus.ModbusSerialClient</span></code> object).
+If <code class="docutils literal notranslate"><span class="pre">build_serial_object</span></code> raises an exception or returns <code class="docutils literal notranslate"><span class="pre">None</span></code>, the connection will be assumed to have failed. Then,
+implement the handshake, query, read, and confirm methods as normal. Note that if you wish to use <code class="docutils literal notranslate"><span class="pre">write_via_queue</span></code>, the
+serial object must have a <code class="docutils literal notranslate"><span class="pre">write</span></code> method. Additionally, see the note below on ‘blocking code’.</p>
+<p>The built-in CellKraft humidifier widget is a good example of a widget that uses Modbus communications instead of ASCII text-based
+serial communications.</p>
+</section>
+<section id="connecting-to-instruments-with-manufacturer-provided-python-drivers">
+<h3>Connecting to Instruments with Manufacturer-Provided Python Drivers<a class="headerlink" href="#connecting-to-instruments-with-manufacturer-provided-python-drivers" title="Permalink to this heading"></a></h3>
+<p>Many instrument manufacturers already provide Python drivers to interface with their instruments.
+To use one of these drivers, just overide the <code class="docutils literal notranslate"><span class="pre">build_serial_object</span></code> function in
+your widget class, replacing it with a function
+that sets <code class="docutils literal notranslate"><span class="pre">self.serial_object</span></code> to whatever object represents the device. If <code class="docutils literal notranslate"><span class="pre">build_serial_object</span></code> raises an exception or
+returns <code class="docutils literal notranslate"><span class="pre">None</span></code>, the connection will be assumed to have failed. Then,
+implement the handshake, query, read, and confirm methods as normal. Note that if you wish to use <code class="docutils literal notranslate"><span class="pre">write_via_queue</span></code>, the
+serial object must have a <code class="docutils literal notranslate"><span class="pre">write</span></code> method, so it probably won’t work with most 3rd-party drivers.
+See the note on blocking code below.</p>
+<p>See the project Github–&gt;user-created-widgets–&gt;thorlabs_opm_widget for an example of a widget that uses a manufacturer-provided
+API to communicate to the instrument. In this case, Thorlabs provided a Python wrapper for a .dll driver that makes it very
+easy to query a light power meter.</p>
+</section>
+<section id="using-drivers-and-serial-libraries-with-blocking-or-asynchronous-code">
+<h3>Using Drivers and Serial Libraries with Blocking or Asynchronous Code<a class="headerlink" href="#using-drivers-and-serial-libraries-with-blocking-or-asynchronous-code" title="Permalink to this heading"></a></h3>
+<p>One caveat is to be careful of drivers or library with blocking code. Blocking code is code that occupies the entire program
+until it executes. With non-blocking text-based pySerial communications, you can instantaneously write to the device,
+do other things elsewhere in the program, then check back later to see if there was a response. PyOpticon uses this to
+query many devices in parallel. However, a pymodbus query will block all other tasks for ~0.1s while it waits for an instrument to respond.
+The same is true of using the Thorlabs driver to query a light meter.</p>
+<p>Suppose a blocking serial call takes ~0.1s to receive a response to its query. If there’s only blocking code for one query in one
+widget, it’s not the end of the world. However, if you have 4 widgets each of which makes 3 blocking modbus queries per
+cycle, the total blocking time would be ~1.2s, which is greater than PyOpticon’s refresh period and would likely cause a crash
+or poor performance. So if you must use a blocking query to an instrument, note that it won’t scale very well. Note that blocking code to initialize
+a serial object is normal and not a big deal; blocking in query-response cycles is the issue.</p>
+<p>This is our advice for working around this problem:</p>
+<ol class="arabic simple">
+<li><p>Use a pyserial Serial object with the usual query-read structure wherever possible, or another package that allows you to query and then check later for responses.</p></li>
+<li><p>If you must use blocking queries, use as few as possible in each widget refresh, use as few of those widgets as possible, and use <code class="docutils literal notranslate"><span class="pre">update_every_n_cycles</span></code> to make the blocking queries happen less frequently.</p></li>
+<li><p>If that fails, find an asynchronous serial library to achieve the type of control you want. See below.</p></li>
+</ol>
+<p>Asyncio is Python’s built-in utility for running tasks asynchronously, which can be useful for letting serial queries take place in
+the background. Asynchronous versions often exist both for serial protocol packages (e.g. pymodbus) and for manufacters’ drivers.
+PyOpticon supports the use of asyncio through the <code class="docutils literal notranslate"><span class="pre">async-tkinter-loop</span></code> package.
+Look at <code class="docutils literal notranslate"><span class="pre">built_in_widgets.async_demo_widget</span></code> for a simple example of how to use
+an asynchronous routine to update the state of a widget. While asyncio is powerful, it’s a bit of an advanced Python topic,
+so PyOpticon was designed to work without it. So, getting asyncio to work perfectly with the <code class="docutils literal notranslate"><span class="pre">generic_widget</span></code> superclass,
+while possible, can be a bit annoying. But if you understand asyncio, you can definitely figure it out.</p>
+</section>
+<section id="genericwidget-tricks-and-features">
+<h3>GenericWidget Tricks and Features<a class="headerlink" href="#genericwidget-tricks-and-features" title="Permalink to this heading"></a></h3>
+<p>In developing widgets for our own lab, there were a few things for which we added special options in the <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code>
+class. They’re buried in the documentation, so we will quickly highlight some here:</p>
+<ul class="simple">
+<li><p>Disabling fields: If you want to grey out an input field, perhaps so you can’t change it while the serial connection
+is active, the <code class="docutils literal notranslate"><span class="pre">disable_field</span></code> and <code class="docutils literal notranslate"><span class="pre">enable_field</span></code> methods will let you do that.</p></li>
+<li><p>If the ‘Confirm’ button is autogenerated in an inconvenient place,
+you can move it using the <code class="docutils literal notranslate"><span class="pre">move_confirm_button</span></code> method.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">override_color</span></code> method lets you change the color of a widget’s frame from the default for that type of widget.</p></li>
+<li><p>The optional <code class="docutils literal notranslate"><span class="pre">update_every_n_cycles</span></code> argument to the <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> constructor creates a widget that updates every
+2nd, 3rd, or nth cycle instead of every cycle. This is useful for instruments that take a while to respond to serial queries,
+or for widgets that have unavoidable blocking code in their read or query methods
+that you want to call infrequently so it doesn’t gum up the dashboard. If the widget updates every n cycles,
+<code class="docutils literal notranslate"><span class="pre">on_serial_query</span></code> is called on the 0th cycle and <code class="docutils literal notranslate"><span class="pre">on_serial_read</span></code> is called halfway through the <code class="docutils literal notranslate"><span class="pre">int(n*4/5)</span></code> th cycle.
+E.g., with a dashboard cycling once per second, a device that updates every 10 seconds would read 8.5 seconds after it queries,
+and a device that updates every 3 seconds would read 2.5 seconds after it queries. The <code class="docutils literal notranslate"><span class="pre">SpicinessWidget</span></code> class is initalized
+with <code class="docutils literal notranslate"><span class="pre">update_every_n_cycles=3</span></code> to demonstrate this option.</p></li>
+<li><p>The optional <code class="docutils literal notranslate"><span class="pre">no_serial</span></code> creates a widget that never attempts to connect through a serial port and is lacking a serial
+port selection dropdown or a serial status readout. You might want this for a widget that reports the contents of some
+other program’s logfile, queries an instrument through a manufacturer-provided Python API, or doesn’t represent a physical
+device at all. The <code class="docutils literal notranslate"><span class="pre">on_serial_query</span></code> and <code class="docutils literal notranslate"><span class="pre">on_serial_read</span></code> methods are still called on the normal schedule, so you can
+put the logic to update the widget in either. The <code class="docutils literal notranslate"><span class="pre">SpicinessWidget</span></code> class exists to demonstrate a no-serial widget, though
+all it does is report a random level of spice.</p></li>
+<li><p>The optional <code class="docutils literal notranslate"><span class="pre">widget_to_share_serial_with</span></code> field allows multiple widgets to share the same serial connection. For example,
+up to 6 MKS mass flow controllers are run by one ‘control box’ on one serial line, but we want each to have its own  widget.
+We initalize the first MFC as normal, and then pass it as the <code class="docutils literal notranslate"><span class="pre">widget_to_share_serial_with</span></code> argument to every subsequent
+one. In every widget but the first, the serial dropdown and readout are removed. When serial communication opens, the first
+widget initializes its serial object as normal, and then every later widget shares the same object. The demo widget shows how
+to initialize two MKS MFC widgets that share a serial port, and the <code class="docutils literal notranslate"><span class="pre">MksMFCWidget</span></code> class shows how to implement this with
+calls to the <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> constructor.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">send_via_queue</span></code> method lets you add a serial write to a queue of pending serial writes. It will be sent a
+specified delay in milliseconds after the previous command in the queue being sent (or,that many milliseconds
+after it was added to the queue, if the queue was empty to start). This lets you ensure that commands get sent in a
+certain order and that there’s always a certain spacing between commands without needing to use tkinter’s <code class="docutils literal notranslate"><span class="pre">after</span></code> method.
+Note that it doesn’t work super well with widgets that share serial with other widgets; the order in which things get
+sent from the queue can get scrambled.</p></li>
+</ul>
+</section>
+</section>
+<section id="using-serial-emulators-for-offline-testing">
+<h2>Using Serial Emulators for Offline Testing<a class="headerlink" href="#using-serial-emulators-for-offline-testing" title="Permalink to this heading"></a></h2>
+<p>Often, it’s nice to be able to develop widgets a dashboard without access to the physical devices. It’s nice to be
+able to assemble a dashboard or code all the graphical elements of a widget at home on a laptop, and only do the final
+debugging in the lab on the lab computer. To this end, we’ve created “Serial Emulators” that imitate a serial connection
+to a real instrument, letting you operate a dashboard full of fake instruments instead.</p>
+<p>To run a dashboard in offline mode, using serial emulators where they’re available, simply pass the option
+<code class="docutils literal notranslate"><span class="pre">use_serial_emulators=True</span></code> to the dashboard’s constructor. This is the default for the demo dashboard.</p>
+<p>When you’re writing a widget class, we highly recommend that you create at least a simple serial emulator. A serial
+emulator implements some of the methods of a Pyserial Serial object, and therefore
+looks like a Pyserial Serial object to a dashboard or widget. The possible methods to implement are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">write</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">readline</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">readlines</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">flush_input_buffer</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">close</span></code></p></li>
+</ul>
+<p>See the documentation for details. Note that serial objects usually take and return ascii-encoded binary strings,
+which are written in Python as <code class="docutils literal notranslate"><span class="pre">b'text'</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;text&quot;.encode('ascii')</span></code>. Not all methods need to be implemented - for
+a simple device that only queries and reads a single value, you can get by with only implementing <code class="docutils literal notranslate"><span class="pre">readline</span></code>.
+You can make an emulator very simple, returning hard-coded or random measurements, or complex, changing the state of
+the imaginary device in response to received commands. They extend the <code class="docutils literal notranslate"><span class="pre">GenericSerialEmulator</span></code> class.</p>
+<p>Here’s the serial emulator object from the <code class="docutils literal notranslate"><span class="pre">iot_relay_widget</span></code> module:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">IoTRelaySerialEmulator</span><span class="p">(</span><span class="n">generic_serial_emulator</span><span class="o">.</span><span class="n">GenericSerialEmulator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Serial emulator to allow offline testing of dashboards containing IoT relay widgets.</span>
+<span class="sd">    Acts as a Pyserial Serial object for the purposes of the program, implementing a few of the same methods.</span>
+<span class="sd">    Confirms to console when an on/off command is sent, and otherwise returns a randomly selected &#39;on&#39; or &#39;off&#39; status.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># This class simulates what a real instrument would respond so I can test code on my laptop</span>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write to this object as if it were a Pyserial Serial object. Ignores queries and reports on/off commands to console.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;Q&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">):</span><span class="c1">#Ignore queries</span>
+            <span class="k">return</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;UV LED got command: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;; ignoring.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a response as if this were a Pyserial Serial object. The only time readline is called is to check the response to a status query.&quot;&quot;&quot;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="s1">&#39;On&#39;</span> <span class="k">if</span> <span class="n">v</span><span class="o">&gt;</span><span class="mi">10</span> <span class="k">else</span> <span class="s1">&#39;Off&#39;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="extending-the-minimalwidget-class">
+<h2>Extending the MinimalWidget Class<a class="headerlink" href="#extending-the-minimalwidget-class" title="Permalink to this heading"></a></h2>
+<p>For all widgets representing physical devices, we suggest extending the <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> class, which saves a lot of work
+compared to building one from scratch. Even for widgets that don’t represent a physical device, e.g. some kind of
+calculator widget to help the operator, it may be easiest to just use a <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> subclass with the
+<code class="docutils literal notranslate"><span class="pre">no_serial=True</span></code> option, which can save some messing with tkinter GUI elements. However, we include the <code class="docutils literal notranslate"><span class="pre">MinimalWidget</span></code>
+class in case you really do want to build a widget from scratch.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">MinimalWidget</span></code> class implements only the few methods that are required for a widget to interface with its parent
+dashboard (listed in the corresponding section in the Documentation tab).
+All of those methods default to doing nothing, though of course you can override them.</p>
+<p>The most likely use of the <code class="docutils literal notranslate"><span class="pre">MinimalWidget</span></code> is writing a widget that is purely cosmetic. Such a widget needs none of the
+serial or logging machinery of a <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> subclass, nor would it want to be stuck with a <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> subclass’
+colored frame and gridded layout. A MinimalWidget class just contains a tkinter frame object on which anything can be drawn,
+e.g. text, images, etc. The only widget we’ve written that extends <code class="docutils literal notranslate"><span class="pre">MinimalWidget</span></code> is the <code class="docutils literal notranslate"><span class="pre">TitleWidget</span></code>, whose entire
+implementation is included below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">tkinter.font</span> <span class="k">as</span> <span class="nn">tkFont</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">minimal_widget</span>
+
+<span class="k">class</span> <span class="nc">TitleWidget</span><span class="p">(</span><span class="n">minimal_widget</span><span class="o">.</span><span class="n">MinimalWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A simple widget containing only text, intended for making a big-text title for a dashboard.</span>
+<span class="sd">    Uses the MinimalWidget superclass, since all of the GenericWidget machinery is unnecessary.\n</span>
+
+<span class="sd">    :param parent_dashboard: The dashboard object to which this device will be added</span>
+<span class="sd">    :type parent_dashboard: pyopticon.dashboard.PyOpticonDashboard</span>
+<span class="sd">    :param title: The text to be displayed within this widget, called &#39;title&#39; because it&#39;s likely to be the title of the entire dashboard.</span>
+<span class="sd">    :type title: str</span>
+<span class="sd">    :param font_size: The size of font to be used in the text, as an integer.</span>
+<span class="sd">    :type font_size: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent_dashboard</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">font_size</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Constructor for a title widget.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="p">)</span>
+        <span class="n">fontStyle</span> <span class="o">=</span> <span class="n">tkFont</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+        <span class="c1"># This entire widget is just one big Label</span>
+        <span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">font</span> <span class="o">=</span> <span class="n">fontStyle</span><span class="p">,</span> <span class="n">text</span> <span class="o">=</span> <span class="n">title</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorial_2.html" class="btn btn-neutral float-left" title="Tutorial: Building Your Own Dashboards" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial_4.html" class="btn btn-neutral float-right" title="Tutorial: Miscellaneous Useful Features" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Richard Randall.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

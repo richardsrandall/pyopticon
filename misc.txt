@@ -1,0 +1,13 @@
+
+Command for Sphinx build:
+(cd /Users/work/Documents/GitHub/pyopticon; sphinx-apidoc -e -o docs src/pyopticon --separate --private; cd docs; make html)
+
+Cheat sheet for pushing an update to PyPI:
+Command to get here: cd /Users/work/Documents/GitHub/pyopticon
+Command to build PyPI files: python3 -m build
+Command to upload PyPI files: python3 -m twine upload dist/*
+Username: __token__
+
+To rename, replace upper and lowercase in all files,
+change all the .rst and autodoc files, delete and rebuild all the HTML's,
+rename main src directory.

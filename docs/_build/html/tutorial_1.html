@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial: Using an Existing Dashboard &mdash; pyopticon 0.1.6 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorial: Building Your Own Dashboards" href="tutorial_2.html" />
+    <link rel="prev" title="Capabilities" href="capabilities.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyopticon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="capabilities.html">Capabilities</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial: Using an Existing Dashboard</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started-with-the-demo-dashboard">Getting Started with the Demo Dashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-s-going-on-inside-a-dashboard">What’s going on inside a dashboard?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#processing-logged-data">Processing Logged Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#writing-automation-scripts">Writing Automation Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_2.html">Tutorial: Building Your Own Dashboards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_3.html">Tutorial: Writing Your Own Widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_4.html">Tutorial: Miscellaneous Useful Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyopticon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tutorial: Using an Existing Dashboard</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tutorial_1.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tutorial-using-an-existing-dashboard">
+<h1>Tutorial: Using an Existing Dashboard<a class="headerlink" href="#tutorial-using-an-existing-dashboard" title="Permalink to this heading"></a></h1>
+<p>This tutorial talks about how PyOpticon dashboards are laid out and how one uses their basic functions.
+Most folks will want to start with the built-in ‘demo dashboard,’ which the next section tells you how to open.
+If someone else has already built a dashboard that connects to real instruments in your facility, you can
+also learn on that. You can mostly operate a dashboard without knowing Python, though a little bit of coding is required to
+write automation scripts.</p>
+<section id="getting-started-with-the-demo-dashboard">
+<h2>Getting Started with the Demo Dashboard<a class="headerlink" href="#getting-started-with-the-demo-dashboard" title="Permalink to this heading"></a></h2>
+<p>If you don’t have an existing dashboard that someone else in your lab built,
+you can open the built-in ‘demo’ dashboard by entering the code below in IDLE or another Python shell. Note that this dashboard
+uses ‘serial emulators’, which are basically imaginary instruments, to let you get a sense of how
+PyOpticon dashboards work without being plugged into lots of physical devices. It works just
+fine on a laptop.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyopticon.demo_dashboard</span> <span class="k">as</span> <span class="nn">dd</span>
+<span class="n">dd</span><span class="o">.</span><span class="n">run_demo_dashboard</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You’ll get a dashboard that looks like this:</p>
+<img alt="A screenshot of the demo dashboard in its just-opened state" src="_images/rv3.png" />
+<p>We’ll just quickly run through some of the dashboard’s features. The four red widgets on the left-hand side
+control most of the top-level functions:</p>
+<p>1. The first widget has a ‘start/stop polling’ button. When polling is started, the dashboard begins querying every
+physical device for its state every so often (usually 1 second), then reports the devices’ responses in their
+respective widgets. While serial polling is active, it’s also possible to send commands to the devices, either
+by manually entering parameters and hitting a widget’s confirm button, or by doing the same thing with an automation script.</p>
+<p>The ‘update serial ports’ button updates every widget’s dropdown menu of available serial ports, which is useful if
+serial ports have changed (e.g. a new device was plugged in) since the dashboard was launched.</p>
+<p>2. The second widget is mostly for showing and hiding different interface elements. On a PC, the console is hidden by default,
+and the ‘show/hide console’ button toggles its visibility. It’s helpful to see the console because that’s where error
+messages, help info, and other updates are printed. On a Mac, one can’t toggle the console with a button, so the
+dashboard has to be run from some kind of Python shell (e.g., IDLE or terminal) or configured to launch from the
+Python Launcher with a terminal window.</p>
+<p>The next button shows or hides the serial port interface on every widget,
+which can de-clutter the screen once the serial connections are established. The next button links to this website.
+The final button prints a list of widgets’ nicknames and fields, as described in the ‘Writing Automation Scripts’
+section of this page.</p>
+<p>3. The third widget is for loading and running automation scripts. See the ‘Writing Automation Scripts’ section
+below for information on how to do this.</p>
+<p>4. The fourth widget is for data logging. To log data, click the button to select a destination address, then
+click ‘start logging’. By default,
+the logfile’s name is the current date and time. Data are always logged to a .csv file whose format is described
+below. If you choose to log data to an existing file, new lines are appended to the file, which works well if
+the file is an existing logfile from the same dashboard, but will be unreadable otherwise (since new headers for
+the columns won’t be added). You can also choose the data logging interval in h:mm:ss format.</p>
+<p>The other widgets represent different devices. Each widget has a name, which is displayed on its top, as well as
+a nickname, which is used to identify it in data logs and automation scripts. Any widget with a serial connection
+has a dropdown menu to select which serial port it should connect through. Once polling starts, the dashboard will
+poll the device’s state on a regular basis, displaying the updated values in the widget. Some widgets also have user
+input fields and a ‘confirm’ button. Changing the fields does nothing until that widget’s ‘confirm’ button is pressed,
+at which point the widget sends commands to the device containing the input fields’ latest values. It’s normal for some
+widgets’ fields to say ‘read error’ the polling cycle after ‘confirm’ is pressed. The Spice-O-Meter
+exists as a simple demonstration of some options for building widgets; unlike the others, it doesn’t actually correspond to a
+physical device.</p>
+<p>You can start playing with these functions in the demo dashboard. A good place to begin would be to start polling serial devices
+and see how readings from imaginary devices appear in the widgets. Check out the console.
+If you click ‘confirm’ on some devices, a message will print to the console. You can also try logging data or
+use the instructions below to try out a basic automation script.</p>
+</section>
+<section id="what-s-going-on-inside-a-dashboard">
+<h2>What’s going on inside a dashboard?<a class="headerlink" href="#what-s-going-on-inside-a-dashboard" title="Permalink to this heading"></a></h2>
+<p>This section is useful for intuition, but not essential to read unless you’re planning on building your own
+dashboard or writing a widget. To use a dashboard, log data, or write automation scripts, you can get by just fine without it.</p>
+<p>A dashboard is essentially a Python object containing a variety of widgets. Both the dashboard and the widgets have
+graphical representations as well as specific roles in the process of updating the dashboard and performing all its
+functions. The dashboard contains the four ‘control widgets’ in the left-hand column, as well as any number of
+‘device widgets’ representing physical devices or other groups of functions.</p>
+<p>Mostly, each widget minds its own business, using its own methods to respond to inputs like clicked buttons. All device widgets also
+respond to specific cues from the dashboard or its control widgets:
+for example, a thermocouple widget might be prompted by the dashboard
+to hide its serial controls, query its serial line for new data, or provide all its current loggable data. You need not worry
+about these interactions too much unless you’re trying to write your own widget.</p>
+<p>At a regular interval, usually once a second, the dashboard does all of the following:</p>
+<ul class="simple">
+<li><p>If serial is connected, tell each widget to query its device for its latest data</p></li>
+<li><p>If serial is connected, a little while after querying, tell each widget to check for a response from its device and update graphical elements accordingly.</p></li>
+<li><p>If data logging is active, ask each widget for all loggable data, aggregate those data, and write them to a file</p></li>
+<li><p>If an automation script is active, check whether it’s time to execute one of more of the queued automation actions</p></li>
+<li><p>Run each function in a list of interlock functions, specified when the dashboard is built, to perform any safety or status checks</p></li>
+</ul>
+<p>This is all done with a simple event-driven framework, with both the graphical interface and the event-driven functionality
+implemented in Python’s built-in tkinter library. PyOpticon runs Tkinter within the asyncio framework (using the async-tkinter-mainloop library),
+which means that certain tasks can be run asynchronously, such as updating interface fields after a serial device responds.
+However, the code doesn’t use multithreading, which means that when writing widgets, we must beware of any ‘blocking code’ that could bog down the system and potentially cause
+it to crash. More details on this are in the ‘Writing Your Own Widgets’ tutorial.</p>
+</section>
+<section id="processing-logged-data">
+<h2>Processing Logged Data<a class="headerlink" href="#processing-logged-data" title="Permalink to this heading"></a></h2>
+<p>You can log data using the instructions in the first section of this page.
+Data are logged to a .csv file that looks something like this:</p>
+<img alt="A screenshot of the csv format" src="_images/csv_format.png" />
+<p>The headers are of the following format: <code class="docutils literal notranslate"><span class="pre">widget_nickname</span> <span class="pre">+</span> <span class="pre">':</span> <span class="pre">'</span> <span class="pre">+</span> <span class="pre">field_nickname</span></code>, but with all instances of
+<code class="docutils literal notranslate"><span class="pre">','</span></code> replaced with <code class="docutils literal notranslate"><span class="pre">'</span> <span class="pre">-'</span></code> to make it compatible with the .csv format.</p>
+<p>You can open the .csv file in Excel and manipulate it there. It’s also easy to load the data into
+Python or Matlab. To manipulate the data in Python, we suggest using the Pandas package, which includes
+lots of convenient built-in tools. Two helpful tools are the one for converting text dates into Datetime objects that play
+nicely with plots, and the one for converting text into floats while specifying how to handle non-numeric values.
+Here’s an example of loading some temperature data and plotting it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import Pandas</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="c1"># Load the file into a dataframe and convert the text dates into Datetime objects</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;/Users/work/Desktop/09-19-23_16-26_logfile.csv&#39;</span><span class="p">,</span><span class="n">parse_dates</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Datetime&#39;</span><span class="p">:[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]})</span>
+<span class="c1"># Turn the temperature data into float&#39;s, turning any values like &#39;No Reading&#39; into NaN</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;Reactor TC: Temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Reactor TC: Temperature&#39;</span><span class="p">],</span><span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span>
+
+<span class="c1"># Make a quick plot, just for demo&#39;s sake. The Datetime objects work well for plot x axes.</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Datetime&#39;</span><span class="p">],</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Reactor TC: Temperature&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The plot’s not shown to save space, but it looks much like the one in the ‘Live Plotter’ section at the bottom of this page.</p>
+</section>
+<section id="writing-automation-scripts">
+<h2>Writing Automation Scripts<a class="headerlink" href="#writing-automation-scripts" title="Permalink to this heading"></a></h2>
+<p>Automation scripts are standalone Python scripts (.py files) that are run by a dashboard.
+The scripts are run using Python’s <code class="docutils literal notranslate"><span class="pre">exec</span></code> function immediately after the ‘Load’ dialog is finished.
+Since <code class="docutils literal notranslate"><span class="pre">exec</span></code> is not at all secure, don’t run any scripts from sources you don’t trust. The script is run in
+a namespace with several convenient automation functions already defined:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">schedule_function(function)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schedule_action(widget_nickname,</span> <span class="pre">field_name,</span> <span class="pre">new_value,</span> <span class="pre">confirm=True)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schedule_delay(duration)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schedule_await_condition(condition,</span> <span class="pre">console_summary='(No</span> <span class="pre">summary</span> <span class="pre">provided)')</span></code></p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">schedule_function</span></code> executes an arbitrary function that you pass. <code class="docutils literal notranslate"><span class="pre">schedule_action</span></code> changes a field in a PyOpticon
+widget (provided it’s a subclass of GenericWidget) and optionally executes the confirm function,
+emulating a human adjusting an input field and clicking the confirm button.
+<code class="docutils literal notranslate"><span class="pre">schedule_delay</span></code> schedules a wait, much like <code class="docutils literal notranslate"><span class="pre">time.sleep</span></code>, except that the wait occurs once the automation script is started,
+not when it’s loaded. <code class="docutils literal notranslate"><span class="pre">schedule_await_condition</span></code> causes the script to wait until a certain condition is satisfied.
+Here is a simple script demonstrating these functions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># This is a demonstration of an automation script</span>
+<span class="n">schedule_function</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting Script!&quot;</span><span class="p">))</span>
+<span class="n">schedule_delay</span><span class="p">(</span><span class="s1">&#39;0:00:05&#39;</span><span class="p">)</span> <span class="c1"># Time is passed in h:mm:ss format</span>
+<span class="n">schedule_function</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Turning on light.&quot;</span><span class="p">))</span>
+<span class="n">schedule_action</span><span class="p">(</span><span class="s1">&#39;UV Light&#39;</span><span class="p">,</span><span class="s1">&#39;Status Selection&#39;</span><span class="p">,</span><span class="s1">&#39;On&#39;</span><span class="p">)</span>
+<span class="c1"># This widget is an ultraviolet light controlled by an IoT Relay Widget</span>
+<span class="n">schedule_delay</span><span class="p">(</span><span class="s1">&#39;0:00:15&#39;</span><span class="p">)</span> <span class="c1"># Wait 15 seconds</span>
+<span class="n">schedule_function</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Turning off light.&quot;</span><span class="p">))</span>
+<span class="n">schedule_action</span><span class="p">(</span><span class="s1">&#39;UV Light&#39;</span><span class="p">,</span><span class="s1">&#39;Status Selection&#39;</span><span class="p">,</span><span class="s1">&#39;Off&#39;</span><span class="p">)</span>
+<span class="c1"># Now, define a condition to check, and wait til it&#39;s fulfilled to print something</span>
+<span class="k">def</span> <span class="nf">check_temp</span><span class="p">(</span><span class="n">dashboard</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">dashboard</span><span class="o">.</span><span class="n">widgets_by_nickname</span><span class="p">[</span><span class="s1">&#39;Reactor TC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s1">&#39;Temperature&#39;</span><span class="p">))</span><span class="o">&gt;</span><span class="mi">33</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+<span class="n">schedule_await_condition</span><span class="p">(</span><span class="n">check_temp</span><span class="p">,</span> <span class="s1">&#39;Reactor Temp &gt; 33C&#39;</span><span class="p">)</span>
+<span class="n">schedule_function</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Temperature has exceeded 33C&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Note that using <code class="docutils literal notranslate"><span class="pre">schedule_action</span></code> requires that you know a widget’s nickname and the name of the field you want to change.
+If you’re not sure, click the “automation help” button in the GUI, and a list of all the widgets’ nicknames and fields
+will be printed to the console. The option <code class="docutils literal notranslate"><span class="pre">confirm=False</span></code> is meant for when you need to change multiple fields before
+confirming and sending a command to the device. Here’s an example of changing both the mode and setpoint on a mass flow controller:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">schedule_action</span><span class="p">(</span><span class="s1">&#39;Methane MFC&#39;</span><span class="p">,</span><span class="s1">&#39;Mode Entry&#39;</span><span class="p">,</span><span class="s1">&#39;Setpoint&#39;</span><span class="p">,</span><span class="n">confirm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1">#Confirm defaults to True</span>
+<span class="n">schedule_action</span><span class="p">(</span><span class="s1">&#39;Methane MFC&#39;</span><span class="p">,</span><span class="s1">&#39;Setpoint Entry&#39;</span><span class="p">,</span><span class="s1">&#39;30&#39;</span><span class="p">,</span><span class="n">confirm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1">#30 is the flow rate setpoint in cc&#39;s per minute</span>
+</pre></div>
+</div>
+<p>When using <code class="docutils literal notranslate"><span class="pre">schedule_function</span></code> to execute an arbitrary function, you might want that function to have access to the dashboard object
+or its widgets. The function passed to <code class="docutils literal notranslate"><span class="pre">schedule_function</span></code> can take 0 or 1 arguments, and if it takes 1 argument, it will be
+passed the dashboard object. Here’s an example of scheduling a function that accesses properties of the dashboard and widgets:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># This just prints a certain field to the console after an hour --</span>
+<span class="c1"># bit of a silly example since that&#39;s what data logging is for</span>
+<span class="n">schedule_delay</span><span class="p">(</span><span class="s1">&#39;1:00:00&#39;</span><span class="p">)</span>
+<span class="n">schedule_function</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">dashboard</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">dashboard</span><span class="o">.</span><span class="n">widgets_by_nickname</span><span class="p">[</span><span class="s1">&#39;Spice&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s1">&#39;Spiciness&#39;</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>Since automation scripts are written in Python, we can also use control structures like functions and for-loops to
+avoid repeating ourselves. This is handy for running the same experiment, or variants thereof, many times:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define a function combining some calculations and action scheduling</span>
+<span class="c1"># MFC stands for Mass Flow Controller</span>
+<span class="k">def</span> <span class="nf">schedule_flow_percent_oxygen</span><span class="p">(</span><span class="n">total_flow</span><span class="p">,</span> <span class="n">what_percent_oxygen</span><span class="p">):</span>
+    <span class="n">oxygen_setpoint</span> <span class="o">=</span> <span class="mf">0.01</span><span class="o">*</span><span class="n">what_percent_oxygen</span><span class="o">*</span><span class="n">total_flow</span>
+    <span class="n">argon_setpoint</span> <span class="o">=</span> <span class="n">total_flow</span><span class="o">-</span><span class="n">oxygen_setpoint</span>
+    <span class="n">schedule_action</span><span class="p">(</span><span class="s1">&#39;Oxygen MFC&#39;</span><span class="p">,</span><span class="s1">&#39;Setpoint Entry&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">oxygen_setpoint</span><span class="p">),</span><span class="n">confirm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">schedule_action</span><span class="p">(</span><span class="s1">&#39;Argon MFC&#39;</span><span class="p">,</span><span class="s1">&#39;Setpoint Entry&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">argon_setpoint</span><span class="p">),</span><span class="n">confirm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Set up the initial state</span>
+<span class="n">total_flow</span> <span class="o">=</span> <span class="mi">30</span> <span class="c1">#cc&#39;s per minute</span>
+<span class="n">schedule_action</span><span class="p">(</span><span class="s1">&#39;Oxygen MFC&#39;</span><span class="p">,</span><span class="s1">&#39;Mode Entry&#39;</span><span class="p">,</span><span class="s1">&#39;Setpoint&#39;</span><span class="p">,</span><span class="n">confirm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">schedule_action</span><span class="p">(</span><span class="s1">&#39;Argon MFC&#39;</span><span class="p">,</span><span class="s1">&#39;Mode Entry&#39;</span><span class="p">,</span><span class="s1">&#39;Setpoint&#39;</span><span class="p">,</span><span class="n">confirm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">schedule_delay</span><span class="p">(</span><span class="s1">&#39;0:00:10&#39;</span><span class="p">)</span>
+
+<span class="c1"># Step through several flow conditions and hold each for 10 minutes</span>
+<span class="k">for</span> <span class="n">oxygen_percentage</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">80</span><span class="p">,</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">schedule_flow_percent_oxygen</span><span class="p">(</span><span class="n">total_flow</span><span class="p">,</span><span class="n">oxygen_percentage</span><span class="p">)</span>
+    <span class="n">schedule_delay</span><span class="p">(</span><span class="s1">&#39;0:10:00&#39;</span><span class="p">)</span>
+
+<span class="c1"># Return to a safe state afterwards</span>
+<span class="n">schedule_action</span><span class="p">(</span><span class="s1">&#39;Oxygen MFC&#39;</span><span class="p">,</span><span class="s1">&#39;Mode Entry&#39;</span><span class="p">,</span><span class="s1">&#39;Closed&#39;</span><span class="p">,</span><span class="n">confirm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">schedule_action</span><span class="p">(</span><span class="s1">&#39;Argon MFC&#39;</span><span class="p">,</span><span class="s1">&#39;Mode Entry&#39;</span><span class="p">,</span><span class="s1">&#39;Closed&#39;</span><span class="p">,</span><span class="n">confirm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Remember that the whole automation script is executed right when it’s loaded, so any conditional logic (e.g.,
+‘at this point in time, if this temperature is above that value, do this’) needs to be within a function that’s
+passed to <code class="docutils literal notranslate"><span class="pre">schedule_function</span></code>, not freestanding code within the script, as here:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># DO NOT do this:</span>
+<span class="n">schedule_delay</span><span class="p">(</span><span class="s1">&#39;1:00:00&#39;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">dashboard</span><span class="o">.</span><span class="n">widgets_by_nickname</span><span class="p">[</span><span class="s1">&#39;Reactor TC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s1">&#39;Temperature&#39;</span><span class="p">))</span><span class="o">&gt;</span><span class="mi">900</span><span class="p">:</span>
+        <span class="n">schedule_function</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time to panic!&quot;</span><span class="p">))</span>
+        <span class="c1"># The if statement is evaluated when the script is loaded, not an hour after the script starts!!</span>
+<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="k">pass</span> <span class="c1">#Thrown if the temperature is &#39;None&#39; or &#39;Read Error&#39;</span>
+
+<span class="c1"># Instead, do this:</span>
+<span class="k">def</span> <span class="nf">check_for_panic</span><span class="p">(</span><span class="n">dashboard</span><span class="p">):</span> <span class="c1">#Define a function containing the logic needed</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">dashboard</span><span class="o">.</span><span class="n">widgets_by_nickname</span><span class="p">[</span><span class="s1">&#39;Reactor TC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s1">&#39;Temperature&#39;</span><span class="p">))</span><span class="o">&gt;</span><span class="mi">900</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time to panic!&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">pass</span> <span class="c1">#Thrown if the temperature is &#39;None&#39; or &#39;Read Error&#39;</span>
+
+<span class="c1">#Schedule a call to that function at the appropriate time</span>
+<span class="n">schedule_delay</span><span class="p">(</span><span class="s1">&#39;1:00:00&#39;</span><span class="p">)</span>
+<span class="n">schedule_function</span><span class="p">(</span><span class="n">check_for_panic</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, we can use <code class="docutils literal notranslate"><span class="pre">schedule_await_condition</span></code> to wait until a certain condition is satisfied to proceed. A ‘skip’ button
+also shows up in the widget while the script is waiting. The ‘condition’ is a function that takes the Dashboard object as
+an argument and returns a boolean (True or False) with whether the condition has been satisfied; see some examples below.
+Remember that the ‘Automation Help’ button will remind you of the names and fields of your various widgets. An await step
+is stored internally as a 1-second delay that is renewed every the time the condition isn’t met, so your ‘time remaining’
+counter may be a couple of seconds off for scripts that use this function. The ≥ symbol in the time remaining means that one
+or more future steps is an awaiting step.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define a condition to check, and wait til it&#39;s fulfilled to print something</span>
+<span class="k">def</span> <span class="nf">check_temp</span><span class="p">(</span><span class="n">dashboard</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">dashboard</span><span class="o">.</span><span class="n">widgets_by_nickname</span><span class="p">[</span><span class="s1">&#39;Reactor TC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s1">&#39;Temperature&#39;</span><span class="p">))</span><span class="o">&gt;</span><span class="mi">33</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+<span class="n">schedule_await_condition</span><span class="p">(</span><span class="n">check_temp</span><span class="p">,</span> <span class="s1">&#39;Reactor Temp &gt; 33C&#39;</span><span class="p">)</span>
+<span class="n">schedule_function</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Temperature has exceeded 33C&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Alternatively, we can do the same thing in a one-liner with a lambda function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define a condition to check, and wait til it&#39;s fulfilled to print something</span>
+<span class="n">schedule_await_condition</span><span class="p">((</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">widgets_by_nickname</span><span class="p">[</span><span class="s1">&#39;Reactor TC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s1">&#39;Temperature&#39;</span><span class="p">))</span><span class="o">&gt;</span><span class="mi">33</span><span class="p">),</span> <span class="s1">&#39;Reactor Temp &gt; 33C&#39;</span><span class="p">)</span>
+<span class="n">schedule_function</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Temperature has exceeded 33C&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="common-issues">
+<h2>Common Issues<a class="headerlink" href="#common-issues" title="Permalink to this heading"></a></h2>
+<p>Q: How do I see errors?</p>
+<p>A: Click the ‘show console’ button on a PC; or, if you’re on a mac, follow the instructions higher on this page.</p>
+<p>Q: Why is my device failing to connect?</p>
+<p>A: The most likely issue is that another program is already communicating with it – programs can’t share serial ports.
+Close the other program, or if you can’t tell which program is the issue, restarting your computer usually fixes it.
+Also check all the wiring and swap out extender/converter cables in case one is faulty.</p>
+<p>Q: I changed the cable setup (or suspect that the serial ports got reassigned) and now I don’t know what my device’s
+serial port is. How do I find it?</p>
+<p>A: Refer to the “miscellaneous useful features” tutorial and follow the procedure to use the PyOpticon com port scanner tool.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="capabilities.html" class="btn btn-neutral float-left" title="Capabilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial_2.html" class="btn btn-neutral float-right" title="Tutorial: Building Your Own Dashboards" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Richard Randall.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

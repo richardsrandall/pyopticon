@@ -1,0 +1,9 @@
+sphinx==6.2.1
+sphinx-rtd-theme==1.3.0rc1
+pyopticon
+pyserial
+numpy
+pandas
+asyncio
+async-tkinter-loop
+pymodbus

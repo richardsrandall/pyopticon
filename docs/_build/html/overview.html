@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview &mdash; pyopticon 0.1.6 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Gallery" href="gallery.html" />
+    <link rel="prev" title="Welcome to PyOpticon’s documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyopticon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caveats">Caveats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#history">History</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#older-versions">Older Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="capabilities.html">Capabilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_1.html">Tutorial: Using an Existing Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_2.html">Tutorial: Building Your Own Dashboards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_3.html">Tutorial: Writing Your Own Widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_4.html">Tutorial: Miscellaneous Useful Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyopticon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
+<p>‘’PyOpticon’’’ is a package that creates graphical user interfaces that control, automate, and log data from physical devices via serial connections.
+It was originally developed for use in a laboratory setting with devices like valves, mass flow controllers, and spectrometers, though it will work
+well with many other devices that can communicate with a serial connection.
+Our goal is to enable graduate students and
+other researchers with basic Python knowledge to quickly equip experimental setups with data acquisition and
+automated control, allowing higher-quality and higher-throughput experimentation.
+See the Gallery tab for some examples.</p>
+<p>The graphical user interfaces are called <em>Dashboards</em> and consist of many
+elements called <em>Widgets</em> that represent a physical device or a group of functions. Existing dashboards can be operated like desktop applications, without any coding knowledge,
+once they are created. Writing automation scripts, configuring new dashboards from existing widgets, and defining new widgets require as little coding as we
+could manage.</p>
+<p>Check out the ‘capabilities’ tab for a little more info on what this package can do.</p>
+</section>
+<section id="caveats">
+<h2>Caveats<a class="headerlink" href="#caveats" title="Permalink to this heading"></a></h2>
+<p>Great caution should be used when controlling, and especially when automating, any set of physical devices,
+especially when using a student-developed software package with a short track record. Anyone who uses PyOpticon
+does so at their own risk, as the software may be unreliable or filled with bugs.</p>
+<p>In particular, always ensure that it’s IMPOSSIBLE for a combination of software-generated commands to generate a condition that is
+dangerous to people or to equipment(!!!). Do so through the design of the physical setup or through hardware interlocks.
+For instance, don’t allow this software to control gas flows that could, if given improper inputs, generate a
+combustible mixture. Don’t trust the software, automation scripts, luck, etc. to prevent such a dangerous condition.</p>
+</section>
+<section id="history">
+<h2>History<a class="headerlink" href="#history" title="Permalink to this heading"></a></h2>
+<p>This package was written by Richard Randall at Stanford University between 2021 and 2023.
+It began as an internal tool for Prof. Arun Majumdar’s lab in Methanical Engineering, and was later packaged for others to use.
+Its Alpha version was posted online in October 2023.</p>
+</section>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
+<p>PyOpticon was developed using Python 3.10, but it probably works with lots of other versions.</p>
+<p>It works best on Windows. Macs work fine for offline development using serial emulators (see Tutorial), but
+we haven’t tested controlling real serial devices on a Mac, nor have we tested anything on Linux.</p>
+<p>PyOpticon also requires the numpy and pyserial packages, both available using pip.</p>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
+<p>This package can be installed using pip, as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">pyopticon</span>
+</pre></div>
+</div>
+<p>However, since we are still in a very early stage of development, situations may arise where a bug arises and it’s helpful to just
+email me (the author) and have me quickly email back a fix to one of the source files, to later be incorporated in a future version.
+To make that possible, rather than installing via pip, you can download the source code (the ‘pyopticon’ file in ‘src’)
+from github and place the ‘pyopticon’ folder in the same directory where you plan to put the dashboard initialization .py file.
+This is what I recommend for very early adopters.</p>
+</section>
+<section id="older-versions">
+<h2>Older Versions<a class="headerlink" href="#older-versions" title="Permalink to this heading"></a></h2>
+<p>We’ll cross that bridge when we come to it, but older versions (once they exist) should be available through PyPI.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to PyOpticon’s documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gallery.html" class="btn btn-neutral float-right" title="Gallery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Richard Randall.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
