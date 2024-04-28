@@ -7,6 +7,32 @@ make it relatively straightforward. It's worth it, since once you're not bound t
 widgets, you'll be free to build dashboards to control all kinds of existing and newly-acquired devices in 
 your own lab or workspace. 
 
+PyOpticon's Architecture
+**********************************
+
+Before we go into how to create widgets, we wanted to give a quick overview of what's actually going on inside 
+a PyOpticon dashboard. The dashboard is an object containing various graphical and functional elements, including 
+dictionaries of the constituent widgets that make it up. Running a dashboard entails launching a number of threads, 
+each executing tasks in 
+parallel. One 'main' thread runs the Dashboard object, operates the graphical user userface, and prompts other threads to do 
+things. This all takes place in a single thread because Tkinter, the graphics package we use, is generally not 
+thread-safe. All of the other threads each communicate with a single device. Since serial communications are very amenable 
+to being split amongst multiple threads, giving each device its own thread works great; we just have to be a little 
+careful about how those threads go about updating their associated graphical fields.
+
+Here is a graphical finite-state-machine representation of what the main thread is doing:
+
+.. image:: img/all_fsm.png
+    :alt: A state machine of the main thread.
+
+This isn't super important to study in detail. While it's one thread, the serial widget, logging widget, automation widget, 
+and interlock polling routine are all mostly doing their own things. Not pictured are a bunch of background processes 
+within the Tkinter package that actually draw and operate the graphical interface (e.g., animating when you click a button, or 
+showing dropdown when a menu is clicked on).
+
+Each widget's actions when prompted to connect, update, or disconnect are executed in the widget's thread. These are discussed 
+further below, and a graphical finite state machine for an individual widget is shown.
+
 Extending the GenericWidget Class
 **********************************
 
@@ -33,6 +59,9 @@ convenient example because it's only got one output field (the valve's actual po
 valve position). An important first step is to know this device's serial communication protocol. We'll assume we know the protocol 
 for the valve already, but if we didn't, the next section includes tips on how to find it.
 
+GenericWidget Input/Output Fields
+''''''''''''''''''''''''''''''''''''''''''''''''
+
 The properties of ``GenericWidget`` subclasses are mostly stored as what PyOpticon refers to as 'fields'. A field is a 
 text variable with a text identifier, a corresponding graphical element, and a label. For example, in the 
 ``Valco2WayValveWidget`` class, there's a field for 'Position Selection' corresponding to a dropdown menu 
@@ -43,37 +72,46 @@ tkinter GUI elements and StringVar objects,
 provide a clean way for automation scripts to control widgets, and let you avoid manually defining a ``log_data`` 
 function for most widgets.
 
-Now that we've described fields, here are the functions/methods that you may want to implement for most widgets:
+GenericWidget Methods to Implement
+''''''''''''''''''''''''''''''''''''''''''''''''
 
-* ``__init__``: the constructor method; required
-* ``build_serial_object``: called before the first serial query; opens whatever serial connection is needed
-* ``on_handshake_query``: sends a query to check that the proper device is connected to the serial line
-* ``on_handshake_read``: reads the result of the handshake and returns whether or not it was valid
-* ``on_serial_open``: called right after the handshake read, with an argument denoting handshake success or failure
-* ``on_serial_query``: called when the dashboard prompts the widget to query its serial line for new readings
-* ``on_serial_read``: called when the dashboard prompts the widget to check its serial line for a response
-* ``on_serial_close``: called just after the serial connection closes
-* ``on_confirm``: called when the user clicks the confirm button
+Here is a graphical respresentation of what a GenericWidget does:
 
-All widgets should have ``__init__``, ``on_serial_open``, ``on_serial_query``, ``on_serial_read``, and ``on_serial_close`` 
-implemented. All widgets that write values to the device, as opposed to just reading values, should have ``on_confirm`` 
-implemented. Devices that use a serial connection other than a pySerial Serial object (i.e., simple ASCII RS232 communication) 
-should override the default ``build_serial_object`` method.
+.. image:: img/widget_fsm.png
+    :alt: A state machine of an individual widget.
 
-Finally, the default behavior is to use ``on_serial_query`` as the 
-``on_handshake_query`` method and ``on_serial_read`` as the ``on_handshake_read`` method, with the handshake considered to 
-have failed if ``on_serial_read`` raises an exception. Basically, by default you can use a normal query/read cycle as a 
-handshake, but you have the option of having a 'special' handshake that happens the first time only. A special handshake is handy if you want 
-to query the instrument for something like a device ID that need not be queried every single cycle.
+The overall state logic and the tasks in the light blue blocks are implemented for you in the GenericWidget superclass. 
+The orange blocks represent methods that you can (and in some cases must) implement whenever you make a new widget, discussed in more detail here:
+
+*   ``__init__``: Required. The constructor method. Defines the widget's fields and visual layout.
+*   ``on_handshake``: Strongly recommended. Called when the dashboard begins polling devices. This method should initialize any non- ``serial.Serial`` 
+    objects needed for communication, check that communication is proceeding as expected, and populate the widget's fields with 
+    any initial values that are desired. If an exception is raised, the handshake is understood to have failed, and the device 
+    will not be polled.
+*   ``on_update``: Required. Called whenever it's time to update the widget. Usually this method will query the physical device for 
+    the latest readings, wait to receive them, parse them, and then update the widget's output fields accordingly.
+*   ``on_close``: Strongly recommended. Called when the dashboard stops polling devices. The dashboard will automatically close any ``serial.Serial`` objects 
+    that it opened, but this method can close down other device-communication objects and return output fields to some placeholder value.
+*   ``on_failed_serial_open``: Optional. If the widget is initialized with ``use_serial==True`` and constructing the ``serial.Serial`` object 
+    fails (e.g. because the COM port doesn't exist), this method is called. It can do things like set fields' values to "No Reading".
+*   ``on_confirm``: Optional. If the widget has input fields, a confirm button will be autogenerated, and this method will be called when it 
+    is clicked. Usually, its job is to parse the input fields' values and translate them into commands to be sent to the device via a serial connection.
 
 Below, we've included the whole ``Valco2WayValveWidget`` implementation; reading that is probably the easiest way to 
 understand what all these methods do. But first, here are a couple of important points:
 
-*   Generally, you don't need to worry about 1) initializing the Pyserial object, 2) handling any errors that come from 
-    failing to initialize the Pyserial object, or 3) checking whether the serial connection is open before you send it a 
-    command. The functions that call  ``on_serial_open``, ``on_serial_query``, ``on_serial_read``, 
-    ``on_serial_close``, and ``on_confirm`` take care of these 
-    things for you, so you can leave them be unless you want to override their behavior.
+*   If a widget is initialized with ``use_serial=True``, the dashboard will open a ``serial.Serial`` object for you 
+    that gets stored in the widget's ``self.serial_object`` property. It will also worry about closing that object for you 
+    when communication ends. For widgets that update themselves in some other way, e.g. using an OEM Python driver, you'll 
+    need to take care of these things yourself.
+
+*   The default behavior is to use ``on_update`` as the 
+    ``on_handshake`` method, with the handshake considered to 
+    have failed if ``on_update`` raises an exception. Basically, by default you can use a normal update cycle as a 
+    handshake, but you have the option of having a 'special' handshake that happens the first time only. You might want to override 
+    ``on_handshake`` if you want to initialize a special object to handle serial communications with the device, 
+    query the device for values that only need to be checked once (e.g. a device ID), or set input fields' default values 
+    to match the device's state at the moment you connect.
 
 *   It's best to initialize most widget properties and graphical elements as PyOpticon fields. 
     Any PyOpticon fields can be read using ``get_field``, set using ``set_field``, 
@@ -85,26 +123,9 @@ understand what all these methods do. But first, here are a couple of important 
     process the data before logging it or log data that aren't PyOpticon fields. It just needs to return a ``dict`` of the 
     names and values of the data to be logged at a given time step.
 
-*   The ``on_handshake_read`` method is expected to return ``True`` or ``None`` if a valid response was read from 
-    the serial port and to raise an exception or return ``False`` or a string error message otherwise. 
-    This is important because when the widget first queries and reads from the serial device,
-    the return value of ``on_handshake_read`` is passed as an argument to ``on_serial_open``. If ``on_serial_open`` receives a 
-    value of ``False`` or ``'Failed to Parse Response'``, you'll probably want set the values of the sensor readouts to something like "No Reading". 
-    If it returns a string error message, that message will automatically be printed to the console. By default, ``on_serial_read`` is 
-    used as ``on_handshake_read``, and the handshake will be considered successful unless ``on_serial_read`` raises an exception or 
-    returns ``False`` or a string error message.
-
-*   There are a couple of special features of ``GenericWidget`` that are meant to deal with funny edge cases, like a widget with 
-    no serial connection or a device that takes a long time to respond to serial queries. 
-    Check out the "GenericWidget Tricks and Features" section below for a tour of some of these, or refer to the 
-    "Documentation" tab.
-
 *   Some physical devices are finnicky about receiving too many serial queries in a row, and want a delay between 
-    consecutive commands. This can be addressed with the ``send_via_queue`` method described below. Also, often 
-    the first polling cycle right after 'confirm' is pressed will generate a 'read error' before returning to normal. 
-    That happens because the confirm button is pressed between two queries, and the device gives a serial response 
-    to the command, interspersing an unexpected response between the two responses to the queries. ``send_via_queue`` can 
-    also fix this by ensuring that all queries get sent before any pending commands from a confirm press are sent.
+    consecutive commands. Just put a ``time.sleep(0.05)`` or similar in between successive queries, messing with the time as needed. 
+    Blocking code like this is OK because each device has its own thread.
 
 With all that in mind, here's the implementation of ``Valco2WayValve``, with some of the comments adjusted from the source code 
 for clarity and brevity. We just construct a widget, add an input and output field, and define how to send and parse serial 
@@ -239,162 +260,77 @@ expected. One easy way to do this is to use the pySerial library in the Python s
 website has some useful examples_.
 
 On occasion, an instrument will require serial parameters like parity and stop bits that are different from the pySerial default. 
-Simple overide the ``build_serial_object`` function, replacing it with a function that sets ``self.serial_object`` to a pySerial 
-Serial object that was constructed with whatever special parameters are required, per the online pySerial documentation.
+As a workaround, in ``on_handshake``, close the ``self.serial_object`` object that the widget auto-creates and replace it 
+with a new ``serial.Serial`` instance with the correct parameters and the same serial port.
 
-Connecting to Instruments with Other Python Serial Packages
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Connecting to Instruments with Other Python Serial Packages and OEM Drivers
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 There are various other serial communication standards besides RS232 with ASCII-encoded text. One example is the 
 RS485 standard with the Modbus communication protocol, a system commonly used for industrial controls. Another is 
 the VISA standard, which helps manufactuers create cross-platform drivers for there instruments. There are 
 existing Python libraries to facilitate communications using many of these standards, such as minimalmodbus and pyvisa. 
+Additionally, many instrument manufacturers provide Python drivers to interface with their instruments. 
 
 The workflow to use one of these protocols is similar to that for 'plain' RS232 serial. First, write a standalone (non-PyOpticon) 
 Python script that can read from and write to your instrument, ensuring that you understand how Python communicates with your 
-instrument. Second, overide the ``build_serial_object`` function in your widget class, replacing it with a function 
-that sets ``self.serial_object`` to whatever object represents your serial connection (e.g. a ``pymodbus.ModbusSerialClient`` object). 
-If ``build_serial_object`` raises an exception or returns ``None``, the connection will be assumed to have failed. Then, 
-implement the handshake, query, read, and confirm methods as normal. Note that if you wish to use ``write_via_queue``, the 
-serial object must have a ``write`` method. Additionally, see the note below on 'blocking code'.
+instrument. Second, in ``on_handshake``, initialize whatever object represents your serial connection (e.g. a ``pymodbus.ModbusSerialClient`` object). 
+Then, implement the other methods as normal, making sure to close the object however is needed in ``on_close``. The built-in 
+Thorlabs Optical Power Meter widget is a good example of a widget that uses an OEM Python driver.
 
-The built-in CellKraft humidifier widget is a good example of a widget that uses Modbus communications instead of ASCII text-based 
-serial communications.
-
-Connecting to Instruments with Manufacturer-Provided Python Drivers
+Important Notes on Multithreading
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Many instrument manufacturers already provide Python drivers to interface with their instruments. 
-To use one of these drivers, just overide the ``build_serial_object`` function in 
-your widget class, replacing it with a function 
-that sets ``self.serial_object`` to whatever object represents the device. If ``build_serial_object`` raises an exception or 
-returns ``None``, the connection will be assumed to have failed. Then, 
-implement the handshake, query, read, and confirm methods as normal. Note that if you wish to use ``write_via_queue``, the 
-serial object must have a ``write`` method, so it probably won't work with most 3rd-party drivers. 
-See the note on blocking code below.
-
-See the project Github-->user-created-widgets-->thorlabs_opm_widget for an example of a widget that uses a manufacturer-provided 
-API to communicate to the instrument. In this case, Thorlabs provided a Python wrapper for a .dll driver that makes it very 
-easy to query a light power meter.
-
-Using Drivers and Serial Libraries with Blocking or Asynchronous Code
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-One caveat is to be careful of drivers or library with blocking code. Blocking code is code that occupies the entire program 
+PyOpticon uses multithreading to allow the use of blocking code in widget methods, which creates a good deal of flexibility in what types of widgets you can make.
+Blocking code is code that stops a program thread from doing anything else 
 until it executes. With non-blocking text-based pySerial communications, you can instantaneously write to the device, 
 do other things elsewhere in the program, then check back later to see if there was a response. PyOpticon uses this to 
 query many devices in parallel. However, a pymodbus query will block all other tasks for ~0.1s while it waits for an instrument to respond. 
-The same is true of using the Thorlabs driver to query a light meter. 
+The same is true of using most OEM drivers to query an instrument. 
+Because each device has its own thread (and usually each widget, unless explicitly told to share a thread), 
+blocking code in handshakes, updates, and confirms will generally not gum up the program. 
+While one thread waits for a certain device to respond, other parts of the program can go about their tasks.
 
-Suppose a blocking serial call takes ~0.1s to receive a response to its query. If there's only blocking code for one query in one 
-widget, it's not the end of the world. However, if you have 4 widgets each of which makes 3 blocking modbus queries per 
-cycle, the total blocking time would be ~1.2s, which is greater than PyOpticon's refresh period and would likely cause a crash 
-or poor performance. So if you must use a blocking query to an instrument, note that it won't scale very well. Note that blocking code to initialize 
-a serial object is normal and not a big deal; blocking in query-response cycles is the issue.
+However, as a result of this architecture, there are two things that you need to be aware of:
 
-This is our advice for working around this problem:
-
-#. Use a pyserial Serial object with the usual query-read structure wherever possible, or another package that allows you to query and then check later for responses.
-#. If you must use blocking queries, use as few as possible in each widget refresh, use as few of those widgets as possible, and use ``update_every_n_cycles`` to make the blocking queries happen less frequently.
-#. If that fails, find an asynchronous serial library to achieve the type of control you want. See below.
-
-Asyncio is Python's built-in utility for running tasks asynchronously, which can be useful for letting serial queries take place in 
-the background. Asynchronous versions often exist both for serial protocol packages (e.g. pymodbus) and for manufacters' drivers. 
-PyOpticon supports the use of asyncio through the ``async-tkinter-loop`` package. 
-Look at ``built_in_widgets.async_demo_widget`` for a simple example of how to use 
-an asynchronous routine to update the state of a widget. While asyncio is powerful, it's a bit of an advanced Python topic, 
-so PyOpticon was designed to work without it. So, getting asyncio to work perfectly with the ``generic_widget`` superclass, 
-while possible, can be a bit annoying. But if you understand asyncio, you can definitely figure it out.
-
-.. _examples: https://pyserial.readthedocs.io/en/latest/shortintro.html
+*   A widget's ``on_handshake``, ``on_update``, and ``on_confirm`` need to interact with the widget, the Dashboard object, 
+    and graphical interface objects in thread-safe ways. 
+    Each of those methods executes in a widget's thread, while the Dashboard and graphical interface live in a different 
+    thread, and blindly manipulating variables in one thread from another thread is a recipe for disaster. ``set_field`` and 
+    ``get_field`` are written to be thread-safe, so you can use them without worrying. To give you more flexibility, we also 
+    provide ``do_threadsafe``, which can be used like so: ``self.do_threadsafe(lambda: self.disable_field("Setpoint"))``.
+*   To shut down widgets promptly, ``on_close`` executes immediately in the main dashboard thread, unlike ``on_update`` etc. that 
+    execute in the widgets' respective threads. One can have a situation where an ``on_update`` method queries a device then waits for a response, 
+    but while it's waiting, ``on_close`` is called serial connection closes, and it then attempts to read from a serial object that is closed. 
+    Therefore, before reading or writing to serial, ``on_update`` and ``on_confirm`` should double-check that the serial 
+    connection is still open by checking the widget's ``self.parent_dashboard.serial_connected`` flag. Calling ``set_field`` while 
+    serial is closed prints a warning to help you remember to do this, though it can be suppressed by giving ``set_field`` the argument ``hush_warning=True``.
 
 GenericWidget Tricks and Features
-''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''
 
 In developing widgets for our own lab, there were a few things for which we added special options in the ``GenericWidget`` 
 class. They're buried in the documentation, so we will quickly highlight some here:
 
+*   Offline-mode testing: Sometimes it's nice to do a lot of the cosmetic setup of a widget on a laptop or at home, 
+    with dummy values replacing values read from a physical device, then come 
+    into lab just to do the final integration with the hardware. A dashboard can be initialized with ``offline_mode=True`` to 
+    indicate this, which sets a dashboard's ``offline_mode`` flag for widgets to check. Then, in an ``on_update`` method, you can 
+    say something like ``status = self.serial_object.readline() if not self.parent_dashboard.offline_mode else b'123C\n'``, and proceed 
+    with parsing as though b'123\\n' were an actual response from a real device.
 *   Disabling fields: If you want to grey out an input field, perhaps so you can't change it while the serial connection 
     is active, the ``disable_field`` and ``enable_field`` methods will let you do that.
-*   If the 'Confirm' button is autogenerated in an inconvenient place, 
+*   Moving confirm button: If the 'Confirm' button is autogenerated in an inconvenient place, 
     you can move it using the ``move_confirm_button`` method.
-*   The ``override_color`` method lets you change the color of a widget's frame from the default for that type of widget.
-*   The optional ``update_every_n_cycles`` argument to the ``GenericWidget`` constructor creates a widget that updates every 
-    2nd, 3rd, or nth cycle instead of every cycle. This is useful for instruments that take a while to respond to serial queries, 
-    or for widgets that have unavoidable blocking code in their read or query methods 
-    that you want to call infrequently so it doesn't gum up the dashboard. If the widget updates every n cycles, 
-    ``on_serial_query`` is called on the 0th cycle and ``on_serial_read`` is called halfway through the ``int(n*4/5)`` th cycle. 
-    E.g., with a dashboard cycling once per second, a device that updates every 10 seconds would read 8.5 seconds after it queries, 
-    and a device that updates every 3 seconds would read 2.5 seconds after it queries. The ``SpicinessWidget`` class is initalized 
+*   Overriding colors: The ``override_color`` method lets you change the color of a widget's frame from the default for that type of widget.
+*   Updating a widget less often: The optional ``update_every_n_cycles`` argument to the ``GenericWidget`` constructor creates a widget that updates every 
+    2nd, 3rd, or nth cycle instead of every cycle. This is useful for instruments that take a while to respond to serial queries. 
+    The ``SpicinessWidget`` class is initalized 
     with ``update_every_n_cycles=3`` to demonstrate this option.
-*   The optional ``no_serial`` creates a widget that never attempts to connect through a serial port and is lacking a serial 
-    port selection dropdown or a serial status readout. You might want this for a widget that reports the contents of some 
-    other program's logfile, queries an instrument through a manufacturer-provided Python API, or doesn't represent a physical 
-    device at all. The ``on_serial_query`` and ``on_serial_read`` methods are still called on the normal schedule, so you can 
-    put the logic to update the widget in either. The ``SpicinessWidget`` class exists to demonstrate a no-serial widget, though 
-    all it does is report a random level of spice.
-*   The optional ``widget_to_share_serial_with`` field allows multiple widgets to share the same serial connection. For example, 
-    up to 6 MKS mass flow controllers are run by one 'control box' on one serial line, but we want each to have its own  widget. 
-    We initalize the first MFC as normal, and then pass it as the ``widget_to_share_serial_with`` argument to every subsequent 
-    one. In every widget but the first, the serial dropdown and readout are removed. When serial communication opens, the first 
-    widget initializes its serial object as normal, and then every later widget shares the same object. The demo widget shows how 
-    to initialize two MKS MFC widgets that share a serial port, and the ``MksMFCWidget`` class shows how to implement this with 
-    calls to the ``GenericWidget`` constructor.
-*   The ``send_via_queue`` method lets you add a serial write to a queue of pending serial writes. It will be sent a 
-    specified delay in milliseconds after the previous command in the queue being sent (or,that many milliseconds 
-    after it was added to the queue, if the queue was empty to start). This lets you ensure that commands get sent in a 
-    certain order and that there's always a certain spacing between commands without needing to use tkinter's ``after`` method. 
-    Note that it doesn't work super well with widgets that share serial with other widgets; the order in which things get 
-    sent from the queue can get scrambled.
-
-Using Serial Emulators for Offline Testing
-**********************************************
-
-Often, it's nice to be able to develop widgets a dashboard without access to the physical devices. It's nice to be 
-able to assemble a dashboard or code all the graphical elements of a widget at home on a laptop, and only do the final 
-debugging in the lab on the lab computer. To this end, we've created "Serial Emulators" that imitate a serial connection 
-to a real instrument, letting you operate a dashboard full of fake instruments instead.
-
-To run a dashboard in offline mode, using serial emulators where they're available, simply pass the option 
-``use_serial_emulators=True`` to the dashboard's constructor. This is the default for the demo dashboard.
-
-When you're writing a widget class, we highly recommend that you create at least a simple serial emulator. A serial 
-emulator implements some of the methods of a Pyserial Serial object, and therefore 
-looks like a Pyserial Serial object to a dashboard or widget. The possible methods to implement are:
-
-* ``__init__``
-* ``write``
-* ``readline``
-* ``readlines``
-* ``flush_input_buffer``
-* ``close``
-
-See the documentation for details. Note that serial objects usually take and return ascii-encoded binary strings, 
-which are written in Python as ``b'text'`` or ``"text".encode('ascii')``. Not all methods need to be implemented - for 
-a simple device that only queries and reads a single value, you can get by with only implementing ``readline``. 
-You can make an emulator very simple, returning hard-coded or random measurements, or complex, changing the state of 
-the imaginary device in response to received commands. They extend the ``GenericSerialEmulator`` class.
-
-Here's the serial emulator object from the ``iot_relay_widget`` module:
-
-.. code-block:: python
-
-    class IoTRelaySerialEmulator(generic_serial_emulator.GenericSerialEmulator):
-        """Serial emulator to allow offline testing of dashboards containing IoT relay widgets.
-        Acts as a Pyserial Serial object for the purposes of the program, implementing a few of the same methods.
-        Confirms to console when an on/off command is sent, and otherwise returns a randomly selected 'on' or 'off' status.
-        """
-        # This class simulates what a real instrument would respond so I can test code on my laptop
-        def write(self,value):
-            """Write to this object as if it were a Pyserial Serial object. Ignores queries and reports on/off commands to console."""
-            if 'Q' in str(value):#Ignore queries
-                return
-            print("UV LED got command: "+str(value)+"; ignoring.")
-
-        def readline(self):
-            """Reads a response as if this were a Pyserial Serial object. The only time readline is called is to check the response to a status query."""
-            v = np.random.randint(0,20)
-            v = 'On' if v>10 else 'Off'
-            v = str(v)+'\r\n'
-            return v.encode('ascii')
+*   Widgets sharing a thread: sometimes it may be necessary for multiple widgets to share one serial connection. This happened for us 
+    when we have several mass flow controllers that are all controlled by one control box with a single serial connection. You can 
+    initialize a GenericWidget with the parameter ``widget_to_share_thread_with`` and it will create a single thread for multiple widgets. 
+    The thread maintains a queue of tasks, so you can be sure that the widgets' ``on_handshake``, ``on_update``, and ``on_close`` methods will always
+    be called in the same order (the order in which the widgets were added to the dashboard).
 
 
 Extending the MinimalWidget Class
@@ -403,12 +339,11 @@ Extending the MinimalWidget Class
 For all widgets representing physical devices, we suggest extending the ``GenericWidget`` class, which saves a lot of work 
 compared to building one from scratch. Even for widgets that don't represent a physical device, e.g. some kind of 
 calculator widget to help the operator, it may be easiest to just use a ``GenericWidget`` subclass with the 
-``no_serial=True`` option, which can save some messing with tkinter GUI elements. However, we include the ``MinimalWidget`` 
+``use_serial=False`` option, which can save some messing with tkinter GUI elements. However, we include the ``MinimalWidget`` 
 class in case you really do want to build a widget from scratch.
 
 The ``MinimalWidget`` class implements only the few methods that are required for a widget to interface with its parent 
-dashboard (listed in the corresponding section in the Documentation tab). 
-All of those methods default to doing nothing, though of course you can override them.
+dashboard (e.g. ``on_update`` and ``on_close``); all of them default to doing nothing, though of course you can override them.
 
 The most likely use of the ``MinimalWidget`` is writing a widget that is purely cosmetic. Such a widget needs none of the 
 serial or logging machinery of a ``GenericWidget`` subclass, nor would it want to be stuck with a ``GenericWidget`` subclass' 

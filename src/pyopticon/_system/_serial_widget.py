@@ -135,7 +135,9 @@ class SerialWidget:
             print("Can't update serial ports while serial is connected.")
             return
         ports = serial.tools.list_ports.comports()
-        if 'COM' in ports[0].name:
+        if len(ports)==0:
+            new_serials = ["[No Serial Ports Found]"]
+        elif 'COM' in ports[0].name:
             com_numbers = []
             for port in ports:
                 com_numbers.append(int(port.name.replace("COM","")))

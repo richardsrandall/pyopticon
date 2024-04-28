@@ -10,7 +10,11 @@ well with many other devices that can communicate with a serial connection.
 Our goal is to enable graduate students and 
 other researchers with basic Python knowledge to quickly equip experimental setups with data acquisition and 
 automated control, allowing higher-quality and higher-throughput experimentation. 
-See the Gallery tab for some examples. 
+See the Gallery tab for some examples. Here's a little cartoon of the kind of system we envision:
+
+.. image:: img/usage_cartoon.png
+    :alt: A cartoon of a computer, connected to severa serial devices, displaying our application.
+
 
 The graphical user interfaces are called *Dashboards* and consist of many 
 elements called *Widgets* that represent a physical device or a group of functions. Existing dashboards can be operated like desktop applications, without any coding knowledge, 
@@ -34,9 +38,9 @@ combustible mixture. Don't trust the software, automation scripts, luck, etc. to
 History
 *******
 
-This package was written by Richard Randall at Stanford University between 2021 and 2023. 
+This package was written by Richard Randall at Stanford University between 2021 and 2024. 
 It began as an internal tool for Prof. Arun Majumdar's lab in Methanical Engineering, and was later packaged for others to use. 
-Its Alpha version was posted online in October 2023.
+Its Alpha version was posted online in April 2024.
 
 Requirements
 ************

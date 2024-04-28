@@ -5,7 +5,7 @@ Tutorial: Miscellaneous Useful Features
 These are some features that didn't fit elsewhere in the tutorial but may be handy.
 
 The GmailHelper Class
-**********************
+**************************
 
 It may be useful to receive notifications from your system, e.g. when an interlock is tripped or when an automation protocol 
 finishes. There are many online sources on how to send emails and texts from Python scripts, but we've packaged a simple 
