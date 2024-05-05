@@ -1,8 +1,8 @@
 import numpy as np
+import time
 
 # Test the superclass genericWidget
 from .. import generic_widget
-from .. import generic_serial_emulator
 from collections import defaultdict
 
 class MksMFCWidget(generic_widget.GenericWidget):
@@ -26,7 +26,7 @@ class MksMFCWidget(generic_widget.GenericWidget):
     flows to the constructor for this class.
     
     :param parent_dashboard: The dashboard object to which this device will be added
-    :type parent_dashboard: pyopticon.dashboard.PyOpticonDashboard
+    :type parent_dashboard: richardview.dashboard.RichardViewDashboard
     :param name: The name that the widget will be labeled with, and under which its data will be logged, e.g. "Methane Mass Flow Controller"
     :type name: str
     :param nickname: A shortened nickname that can be used to identify the widget in automation scripts, e.g. "CH4 MFC"
@@ -34,7 +34,7 @@ class MksMFCWidget(generic_widget.GenericWidget):
     :param channel: A string representing which channel on the control box the MFC is connected to. One of (A1,A2,B1,B2,C1,C2).
     :type channel: str
     :param widget_to_share_serial_with: If this is the 2nd-6th MFC sharing the same control box, pass the widget for the first MFC on that control box as this argument. If not, the arguments device_ID and default_serial_port are required.
-    :type widget_to_share_serial_with: pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget, optional
+    :type widget_to_share_serial_with: richardview.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget, optional
     :param device_ID: The ID of the MKS control box / vacuum system controller, which is a string of a 3-digit number, e.g. '001'. Can be set on the control box.
     :type device_ID: str, optional
     :param default_serial_port: The name of the default selected serial port, e.g. 'COM9'
@@ -58,6 +58,7 @@ class MksMFCWidget(generic_widget.GenericWidget):
         # Unpack kwargs
         default_serial_port = kwargs['default_serial_port'] if ('default_serial_port' in kwargs.keys()) else 'None'
         widget_to_share_serial_with = kwargs['widget_to_share_serial_with'] if ('widget_to_share_serial_with' in kwargs.keys()) else None
+        self.widget_to_share_serial_with = widget_to_share_serial_with
         self.force_scale_factor = str(kwargs['force_scale_factor']) if ('force_scale_factor' in kwargs.keys()) else ""
         device_id = kwargs['device_id'] if ('device_id' in kwargs.keys()) else widget_to_share_serial_with.device_id
         if 'calibration' in kwargs.keys():
@@ -68,7 +69,7 @@ class MksMFCWidget(generic_widget.GenericWidget):
             self.use_calibrator=False
 
         # Initialize the superclass with most of the widget functionality
-        super().__init__(parent_dashboard,name,nickname,'#90ee90',default_serial_port=default_serial_port,baudrate=9600,widget_to_share_serial_with=widget_to_share_serial_with)
+        super().__init__(parent_dashboard,name,nickname,'#90ee90',default_serial_port=default_serial_port,baudrate=9600,widget_to_share_thread_with=widget_to_share_serial_with)
         # Store key info about the device
         channel_options = ["A1","A2","B1","B2","C1","C2"]
         self.which_channel = str(channel_options.index(channel)+1)
@@ -90,63 +91,79 @@ class MksMFCWidget(generic_widget.GenericWidget):
         # Move the confirm buttom
         self.move_confirm_button(row=6,column=3)
 
-    def on_serial_open(self,success):
-        """If serial opened successfully, do nothing; if not, set readouts to 'No Reading'
-
-        :param success: Whether serial opened successfully, according to the return from the on_serial_read method.
-        :type success: bool or str
+    def on_failed_serial_open(self):
+        """If serial opened unsuccessfully, set readouts to 'No Reading'
         """
-        # If handshake failed, set readouts to 'none'
-        if success is not True:
-            for f in ('Device Scale Factor','Device Mode','Device Setpoint','Actual Flow'):
-                self.set_field(f,'No Reading')
-        else:
-            if self.force_scale_factor=="":
-                self.set_field('Scale Factor Entry',self.get_field('Device Scale Factor')) #Set default scale factor to be the device's current scale factor
-            self.set_field('Setpoint Entry',self.get_field('Device Setpoint')) #Set default scale factor to be the device's current scale factor
-            self.set_field('Mode Selection',self.get_field('Device Mode')) #Set default mode to be the device's current mode
+        for f in ('Device Scale Factor','Device Mode','Device Setpoint','Actual Flow'):
+            self.set_field(f,'No Reading',hush_warning=True)
 
-    def on_serial_query(self):
+    def on_handshake(self):
+
+        # Do an update
+        self.on_update()
+
+        # Populate the default field values
+        if self.force_scale_factor=="":
+            self.set_field('Scale Factor Entry',self.get_field('Device Scale Factor')) #Set default scale factor to be the device's current scale factor
+        self.set_field('Setpoint Entry',self.get_field('Device Setpoint')) #Set default scale factor to be the device's current scale factor
+        self.set_field('Mode Selection',self.get_field('Device Mode')) #Set default mode to be the device's current mode
+
+
+
+    def on_update(self):
         """Send four queries to the serial device asking for the gas scale factor, mode, setpoint, and actual flow rate.
-        Mode refers to open, closed, or setpoint.
+        Mode refers to open, closed, or setpoint. Process the results.
         """
+
+        # Reset the input buffer if needed
         s = self.get_serial_object()
         if self.widget_to_share_serial_with is None:
-            s.reset_input_buffer()
+            if not self.parent_dashboard.offline_mode:
+                s.reset_input_buffer()
+
+        time.sleep(0.05)
         # Queries serial for all the desired values
         queries = ("QSF","QMD","QSP","FR") #Gas, mode, setpoint, flow rate)
         for query in queries:
             write_me = "@"+str(self.device_id)+query+str(self.which_channel)+"?;FF\r"
             write_me = write_me.encode('ascii')
-            s.write(write_me)
+            if not self.parent_dashboard.offline_mode:
+                s.write(write_me)
+                time.sleep(0.05)
 
-    def on_serial_read(self):
-        """Parse the responses from the previous 4 serial queries and update the display. Return True if valid and and error string if not.
+        # Wait and bail if needed        
+        time.sleep(0.5)
+        if not self.parent_dashboard.serial_connected:
+            return
+        
 
-        :return: True if all 4 responses were of the expected format, an error string otherwise.
-        :rtype: bool or str
-        """
         # We need to manually read the next 4 replies, since the commands are delimited by ;, not \r or \n
         try:
-            raw_lines=[]
-            for i in range(4):
-                line=""
-                for j in range(20):
-                    onebyte = self.get_serial_object().read(1)
-                    if onebyte==b';':
-                        raw_lines.append(str(line))
-                        line=""
-                        break
-                    else:
-                        line += str(onebyte.decode("ascii"))
-            lines=list(raw_lines)
+            if not self.parent_dashboard.offline_mode:
+                raw_lines=[]
+                for i in range(4):
+                    line=""
+                    for j in range(20):
+                        onebyte = self.get_serial_object().read(1)
+                        if onebyte==b';':
+                            raw_lines.append(str(line))
+                            line=""
+                            break
+                        else:
+                            line += str(onebyte.decode("ascii"))
+                lines = list(raw_lines)
+            else:
+                reading_str = '@001ACK'+str(round(8.01+0.1*np.random.randint(0,5),2))+'e+1;FF'
+                responses = ['@253ACK3.40E-01', 'FF@253ACKCLOSE', 'FF@253ACK1.00E+02', reading_str]
+                lines = list(responses)
         except Exception as e:
             for f in ('Device Scale Factor','Device Mode','Device Setpoint','Actual Flow'):
                 self.set_field(f,'Read Error')
             fail_message=("Failed to read from MKS MFC; likely an MFC that this shares a serial line with failed to connect.")
-            return fail_message
+            #print(fail_message)
         try:
             # Parse the scale factor data
+            lines = [str(l) for l in lines]
             scale_factor = lines.pop(0).replace('FF','')
             scale_factor = scale_factor[scale_factor.index("ACK")+3:]
             scale_factor = max(0,float(scale_factor))
@@ -172,7 +189,7 @@ class MksMFCWidget(generic_widget.GenericWidget):
             setpoint_status = "{:.1f}".format(setpoint_value)
             self.set_field('Device Setpoint',setpoint_status)
             # Parse the flow data
-            flow_status = lines.pop(0).replace('FF','')
+            flow_status = lines.pop(0).replace('FF','').replace(";","")
             flow_status = flow_status[flow_status.index("ACK")+3:]
             flow_status = flow_status.replace(">","")
             flow_value = max(0,float(flow_status))
@@ -184,14 +201,12 @@ class MksMFCWidget(generic_widget.GenericWidget):
         except Exception as e:
             for f in ('Device Scale Factor','Device Mode','Device Setpoint','Actual Flow'):
                 self.set_field(f,'Read Error')
-            fail_message=("Bad response in MKS MFC, in one of: "+str(raw_lines))
-            return fail_message
-        return True
+            fail_message=("Bad response in MKS MFC, in one of: "+str(lines))
             
     def on_serial_close(self):
         """When serial is closed, set all readouts to 'None'."""
         for f in ('Device Scale Factor','Device Mode','Device Setpoint','Actual Flow'):
-            self.set_field(f,'None')
+            self.set_field(f,'None',hush_warning=True)
 
     def on_confirm(self):
         """When 'confirm' is pressed, send the appropriate commands to the MFC.
@@ -204,7 +219,9 @@ class MksMFCWidget(generic_widget.GenericWidget):
             sf = float(sf)
             sf = '{0:.2f}'.format(sf)
             sf_command = ("@"+self.device_id+"QSF"+self.which_channel+"!"+sf+";FF\r").encode('ascii')
-            self.send_via_queue(sf_command,100)
+            time.sleep(0.1)
+            if (self.parent_dashboard.serial_connected) and (not self.parent_dashboard.offline_mode):
+                self.serial_object.write(sf_command)
         except Exception as e:
             print("Enter scale factor as an int or float.")
             return
@@ -218,7 +235,9 @@ class MksMFCWidget(generic_widget.GenericWidget):
         send_values = ["CLOSE","SETPOINT","OPEN"]
         mode_selected = send_values[self.mode_options.index(mode)]
         mode_command = ("@"+self.device_id+"QMD"+self.which_channel+"!"+mode_selected+";FF\r").encode('ascii')
-        self.send_via_queue(mode_command,100)
+        time.sleep(0.1)
+        if (self.parent_dashboard.serial_connected) and (not self.parent_dashboard.offline_mode):
+            self.serial_object.write(mode_command)
         # Update the setpoint if needed:
         if change_sp:
             try:
@@ -230,84 +249,16 @@ class MksMFCWidget(generic_widget.GenericWidget):
                                          self.flows_according_to_meter,self.flows_according_to_mfc)# We command a 'real' setpoint; compute what the MFC should measure to achieve that 
                 setpoint = '{:.2e}'.format(setpoint)
                 setpoint_command = ("@"+self.device_id+"QSP"+self.which_channel+"!"+setpoint+";FF\r").encode('ascii')
-                self.send_via_queue(setpoint_command,100)
+                time.sleep(0.1)
+                if (self.parent_dashboard.serial_connected) and (not self.parent_dashboard.offline_mode):
+                    self.serial_object.write(setpoint_command)
             except Exception as e:
                 print("Enter setpoint number as an int or float.")
                 return
         # Print to console
         print("MFC '"+str(self.name)+"' set to scale factor "+sf+", mode "+m+((", setpoint "+sp+" sccm.") if change_sp else '.'))
         
-    def construct_serial_emulator(self):
-        """Get the serial emulator to use when we're testing in offline mode.
 
-        :return: An MKS MFC serial emulator object.
-        :rtype: pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCSerialEmulator"""
-        return MksMFCSerialEmulator()
 
-class MksMFCSerialEmulator(generic_serial_emulator.GenericSerialEmulator):
-    """Serial emulator to allow offline testing of dashboards containing MKS mass flow controllers.
-    Acts as a Pyserial Serial object for the purposes of the program, implementing a few of the same methods. Has a fake 'input buffer' 
-    where responses to queries from a fake 'MFC' are stored.\n
-    Serial queries are answered with a fixed scale factor (2.10), a fixed mode (Setpoint), a fixed setpoint (130 sccm), and a random actual flow (80-84 sccm).
-    """
-    def __init__(self):
-        """Create a new serial emulator for an Aalborg DPC."""
-        self.buffer = b''
-
-    def reset_input_buffer(self):
-        """Reset the serial buffer, as if this were a Pyserial Serial object."""
-        self.buffer = b''
-
-    def write(self,value):
-        """Write to this object as if it were a Pyserial Serial object. Adds appropriate responses to a fake input buffer.
-
-        :param value: The string to write, encoded as ascii bytes.
-        :type value: bytes"""
-        # Channels are 1 thru 6, A1 thru C2
-        # @003QSPA1?;FF is a query
-        # @003QSPA1!7.60e+2;FF is a command
-        # QMD1 = Mode is @003ACKCLOSE;FF
-        # FR1 = Flow is @003ACK7.6e+2;FF
-        # QSP1 = Setpoint is @003ACK1.0e+2;FF
-        # QSF1 = Scale factor is @003ACK9.99;FF
-        value=value[4:7]
-        if value in [b'FR1',b'FR2',b'FR3',b'FR4',b'FR5',b'FR6']:
-            value = b'FR1'
-        # Give the appropriate response
-        queries = (b'QMD',b'FR1',b'QSP',b'QSF')
-        if value not in queries:
-            self.buffer+=(b'@001ACKA1whatever;FF')#A nonsense reply
-            return
-        reading_str = '@001ACK'+str(8.0+0.1*np.random.randint(0,5))+'e+1;FF'
-        reading_str = reading_str.encode('ascii')
-        responses = (b'@001ACKSETPOINT;FF',reading_str,b'@001ACK1.3e+2;FF',b'@001ACK2.10;FF')
-        self.buffer+=(responses[queries.index(value)])
-
-    def read(self,i):
-        out = self.buffer[0:1]
-        self.buffer=self.buffer[1:]
-        return out
-        
-    def readline(self):
-        """Reads a response from the fake input buffer as if this were a Pyserial Serial object.
-
-        :return: The next line in the fake input buffer.
-        :rtype: str"""
-        out = str(self.buffer)
-        self.buffer = b''
-        return out
-
-    def readlines(self):
-        """Reads all responses from the fake input buffer as if this were a Pyserial Serial object.
-
-        :return: A list of lines in the fake input buffer.
-        :rtype: list"""
-        out = [str(self.buffer)]
-        self.buffer = b''
-        return out
-    
-    def close(self):
-        """Close the object as if this were a Pyserial Serial object."""
-        pass
 
 

@@ -3,6 +3,7 @@ import ctypes
 import serial
 import time
 import traceback
+import queue
 
 class GenericWidget:
     """This is the superclass for all widgets representing physical devices. It contains a lot of the machinery for 
@@ -15,18 +16,18 @@ class GenericWidget:
     :type name: str
     :param nickname: A shortened nickname that can be used to identify the widget in automation scripts, e.g. "CH4 MFC"
     :type nickname: str
-    :param default_serial_port: The name of the default selected serial port, e.g. 'COM9'
-    :type default_serial_port: str
     :param color: The color of the widget's frame, as a RGB hex string, e.g. '#00FF00'
     :type color: str
-    :param no_serial: True if this widget does not need to have a serial connection; False otherwise. Defaults to False.
-    :type no_serial: bool, optional
+    :param use_serial: True if this widget needs to have a serial connection; False otherwise. Defaults to True.
+    :type use_serial: bool, optional
+    :param default_serial_port: The name of the default selected serial port, e.g. 'COM9'
+    :type default_serial_port: str
     :param default_serial_port: The name of the default selected serial port, e.g. 'COM9'. Required unless no_serial is True.
     :type default_serial_port: str, optional
     :param baudrate: The baud rate of the serial connection, as an integer, e.g. 19200. Required unless no_serial is True or build_serial_object is overridden.
     :type baudrate: int, optional
-    :param widget_to_share_serial_with: A widget whose Pyserial Serial object this widget will share, rather than creating its own. Useful if multiple widgets need to share the same serial port. Defaults to None.
-    :type widget_to_share_serial_with: pyopticon.generic_widget.GenericWidget, optional
+    :param widget_to_share_thread_with: A widget whose thread this widget will share, rather than creating its own. If use_serial = True, it's assumed the widget will share the serial.Serial object.
+    :type widget_to_share_thread_with: pyopticon.generic_widget.GenericWidget, optional
     :param update_every_n_cycles: Set the widget to poll its serial connection for updates every n cycles. Useful for instruments that poll slowly for some reason, or whose state changes infrequently. Defaults to 1.
     :type update_every_n_cycleS: int, optional
     """
@@ -34,24 +35,36 @@ class GenericWidget:
     def __init__(self,parent_dashboard,name,nickname,color,**kwargs):
         """Constructor for a GenericWidget"""
 
+        # Required arguments: parent_dashboard, name, nickname, color
+        # Optional: use_serial, default_serial_port, baudrate, widget_to_share_thread_with, update_every_n_cycles
+
         # Unpack basic arguments
         self.name = name
         self.nickname = nickname
         self.serial_object = None
 
+        # Flag for whether initialization and handshake were successful
+        self.handshake_was_successful = False
+
         # Unpack kwargs
-        no_serial = kwargs['no_serial'] if ('no_serial' in kwargs.keys()) else False
+        no_serial = (not kwargs['use_serial']) if ('use_serial' in kwargs.keys()) else False
         self.default_serial = kwargs['default_serial_port'] if not no_serial else None
         self.baudrate = kwargs['baudrate'] if ('baudrate' in kwargs.keys()) else None
         update_every_n_cycles = kwargs['update_every_n_cycles'] if ('update_every_n_cycles' in kwargs.keys()) else 1
-        widget_to_share_serial_with = kwargs['widget_to_share_serial_with'] if ('widget_to_share_serial_with' in kwargs.keys()) else None
-
-        self.serial_shared = (widget_to_share_serial_with!=None) # Share the serial connection with a previously constructed device
-        self.widget_to_share_serial_with=widget_to_share_serial_with
-        self.serial_emulator = None
+        widget_to_share_thread_with = kwargs['widget_to_share_serial_with'] if ('widget_to_share_serial_with' in kwargs.keys()) else None
+        self.thread_shared = (widget_to_share_thread_with!=None) # Share the serial connection with a previously constructed device
+        self.widget_to_share_thread_with=widget_to_share_thread_with
         self.no_serial = no_serial
         self.update_every_n_cycles=update_every_n_cycles
         self._update_cycle_counter=-1
+
+        # Check kwargs
+        if not no_serial and self.widget_to_share_thread_with==None:
+            if self.default_serial == None:
+                raise Exception("Default serial port required unless use_serial==False or thread is shared with other widget.")
+            if self.baudrate == None:
+                raise Exception("Baud rate required unless use_serial == False or thread is shared with other widget.")
+
 
         # Create a frame, set its style
         self.color = color
@@ -63,7 +76,7 @@ class GenericWidget:
         
         if not no_serial:
             # Labels associated with serial communications
-            if not self.serial_shared:
+            if not self.thread_shared:
                 self.serial_menu_label = Label(self.frame,text="Select Serial Port: ")
             else:
                 self.serial_menu_label = Label(self.frame,text="Serial Shared With: ")
@@ -78,10 +91,10 @@ class GenericWidget:
             self.serial_status.set("Not connected.")
         
             # Add and locate all of the functional serial widgets
-            if not self.serial_shared:
+            if not self.thread_shared:
                 self.serial_menu = OptionMenu(self.frame, self.serial_selected, *self.serial_options)
             else:
-                self.serial_menu = Label(self.frame,text=str(self.widget_to_share_serial_with.nickname))
+                self.serial_menu = Label(self.frame,text=str(self.widget_to_share_thread_with.nickname))
             self.serial_menu.grid(row=1,column=1,sticky='nesw')
             self.serial_readout = Label(self.frame,textvariable=self.serial_status)
             self.serial_readout.grid(row=2,column=1,sticky='nesw')
@@ -93,110 +106,35 @@ class GenericWidget:
         self.field_gui_objects = dict()
         self.confirm_button_added = False
 
-# Generic methods that can be defined by the user
+        # Create a queue for the thread, if needed
+        if not self.thread_shared:
+            self.queue = queue.Queue()
+        else:
+            self.queue = widget_to_share_thread_with.queue
+        self.doing_update = False
 
-    def log_data(self):
-        """Generate a dict of data that is sent to the dashboard's data logging script. The dict contains the current values of 
-        all fields that were created using add_field with the option log=True. This method may be overridden in a subclass if you 
-        would like to do some kind of preprocessing on data before it's logged, e.g. stripping out units or typecasting to int or float.
-        
-        :return: A dict of the widget's loggable fields and their current values
-        :rtype: dict"""
-        out = dict()
-        for k in self.values_to_log.keys():
-            out[k]=self.values_to_log[k].get()
-        return out
-    
-    def _call_build_serial_object(self):
-        """This function just calls get_serial_object and assigns its value to self.serial_object"""
-        self.serial_object = None
-        # Make cosmetic changes before any return's get invoked:
-        if not self.no_serial:
-            print("Opening "+self.serial_selected.get()+" for \""+self.name+"\"")
-            self.serial_menu.configure(state='disabled')
-        try:
-            self.serial_object = self.build_serial_object()
-        except Exception as e:
-            print("Nurrr")
-            try:
-                print("Error establishing serial connection to "+self.serial_selected.get()+":")
-                print(e)
-            except:
-                print("Error establishing serial connection to "+self.name+":")
-                print(e)
-            self.serial_object=None
-        if not self.no_serial and self.serial_object is None: #Serial object being none is taken as a proxy for failure
-            self.on_serial_open(False)
-            self.serial_status.set("Connection Failed")
+# Methods implementing serial functionality that will often be overridden by the user
 
-    def build_serial_object(self):
-        """This function constructs whatever object represents a serial connection. By default, it returns None if self.no_serial==True, 
-        the shared serial object if self.serial_shared==True, a serial emulator if self.parent_dashboard.use_serial_emulators==True, 
-        and otherwise a newly-created Pyserial Serial object with default parameters. However, you can 
-        overwrite this function to return a custom serial object (e.g. a PyModbus or MinimalModbus object). The returned object will be stored in self.serial_object.
-        
-        It's important to actually return something if the connection was initialized successfully, 
-        since a number of other methods interpret self.serial_object==None to mean that serial is disconnected or failed to open. If an exception is raised in 
-        this method, it'll be handled the same way as a failed handshake, i.e. by calling self.on_serial_open(success=False) and printing the error to console.
-
-        :return: Some kind of serial object for the widget to store and use
-        :rtype: Serial, None, or other Object
-        """
-        # Open serial connection
-        if (not self.parent_dashboard.use_serial_emulators) and (not self.no_serial) and (not self.serial_shared):
-            return serial.Serial(self.serial_selected.get(),baudrate=self.baudrate,timeout=0)
-        elif self.no_serial:
-            return None
-        elif self.serial_shared:
-            return self.widget_to_share_serial_with.get_serial_object()
-        elif self.parent_dashboard.use_serial_emulators:
-            return self.construct_serial_emulator()
-        # It's ok if this raises an error, as it'll get handled in _build_serial_object
-
-    def on_serial_open(self,success):
-        """This function is called whenever serial communication is opened, after the serial connection has been queried and 
-        its first response has been read. It usually should be overridden in a subclass implementation. The first response is read by on_serial_read, which should return True if the response 
-        was valid and False if not; that boolean is then passed to this on_serial_open function.\n
-
-        The intent is that on_serial_open handles any GUI updates required on a successful or unsuccessful 'handshake' with the physical device. 
-        In practice, this usually means updating the widget's readout fields to "connection failed" if success=False.
-
-        :param success: True if a serial connection was successfully opened and the expected response was received; False if the serial connection failed or an unexpected response was received.
-        :type success: bool
+    def on_failed_serial_open(self):
+        """This function is called when the Dashboard attempts to open a Serial port and it fails for some 
+         reason. It can be used to set the readout fields to 'None' or something, if desired.
         """
         pass
 
-    def on_handshake_query(self): #This function gets called whenever the widget makes the first query to its serial port
-        """This function gets called whenever the widget makes the first query to its serial port. It should send a query whose response on_handshake_read() will parse. 
-        By default, it just sends a normal query, but this can be overridden with a custom handshake."""
-        print("Device '"+self.name+"' has no handshake defined; just using a standard query/read cycle. See on_handshake_read docs.")
-        self.on_serial_query()
-
-    def on_handshake_read(self): #This function gets called a little while after on_handshake_query
-        """This function gets called a little while after on_handshake_query to parse the device's response.
-        By default, it just does a normal read, but this can be overridden to parse a custom handshake's response. 
-        If used as the handshake read (default behavior), this function should return True or nothing if the response is valid and return a string error message or raise an exception 
-        if the response was invalid. Returning nothing is interpreted as a successful handshake.
-        If on_handshake_read is overridden in the subclass implementation, it's OK for this to return None.
+    def on_handshake(self): #This function gets called whenever the widget makes the first query to its serial port
+        """This function gets called whenever the widget is initialized. If the widget uses a Serial connection, you can assume 
+        that the serial connection was already initialized successfully. If not, you'll need to initialize whatever objects are needed 
+        to update the widget in this method (say, an OEM Python driver).
         
-        :return: True if the handshake succeeded, False or an error string if not
-        :rtype: bool, str, or None"""
-        result = self.on_serial_read()
-        if result is None:
-            return True
-        else:
-            return result
+        By default, it just calls on_update(), assuming that the handshake was successful if (and only if) no exception was raised."""
 
-    def on_serial_query(self): #This function gets called whenever the device queries its serial port
-        """This function gets called once every polling interval when the dashboard prompts each device to query its serial connection for updates. 
+        print("Device '"+self.name+"' has no handshake defined; just using a standard update cycle. See on_update docs.")
+        self.on_update()
+        
+    def on_update(self): #This function gets called whenever the device updates itself
+        """This function gets called once every polling interval when the dashboard prompts each device to update itself. 
         It should be overridden in a subclass implementation; if not, it prints a warning."""
-        print("Warning: on_serial_query called with no on_serial_query function defined for '"+str(self.name)+"'.")
-
-    def on_serial_read(self): #This function gets called whenever the device reads from its serial port
-        """This function gets called once every polling interval when the dashboard prompts each device to check its serial connection for a response to its previous query. 
-        It should be overridden in a subclass implementation; if not, it prints a warning."""
-        print("Warning: on_serial_read called with no on_serial_read function defined for '"+str(self.name)+"'.")
-        return False
+        print("Warning: on_update called with no on_update function defined for '"+str(self.name)+"'.")
 
     def on_confirm(self): #This function gets called whenever you hit the confirm button
         """This function gets called whenever a widget's 'confirm' button is pressed, which should result in a command (reflecting the latest entries in user input fields) getting sent through the serial connection. 
@@ -208,7 +146,7 @@ class GenericWidget:
         Usually, this function sets readout fields to something like 'no reading' after serial communications are closed."""
         pass
 
-# Methods to support autogenerating menus and readouts from a dict of Tkinter string objects
+# Methods to support autogenerating menus and readouts from a dict of Tkinter string objects and logging their values
 
     def add_field(self, field_type, name, label, default_value, **kwargs):
         """Adds a field (i.e., a text entry box, a dropdown menu, or a text display) to the widget.\n
@@ -282,6 +220,14 @@ class GenericWidget:
         # Return the stringvar
         return stringvar_to_add
 
+    def do_threadsafe(self,to_do):
+        """Feeds the specified function to tkinter's after() method with a delay of 0, so that it will be executed in a thread-safe way.
+        
+        :param to_do: The function to execute.
+        :type to_do: function"""
+        tkinter_obj = self.parent_dashboard.get_tkinter_object()
+        tkinter_obj.after(0,to_do)
+
     def get_field(self, which_field): 
         """Get the current value of the specified field.
         
@@ -292,15 +238,34 @@ class GenericWidget:
         """
         return self.attributes[which_field].get()
 
-    def set_field(self, which_field, new_value):
+    def set_field(self, which_field, new_value, hush_warning=False):
         """Set the value of the specified field to a specified value.
         
         :param which_field: The name of the field whose value to set.
         :type which_field: str
         :param new_value: The value to which to set the specified field.
         :type new_value: str
+        :param hush_warning: Silence the warning when you set a field while a widget's serial isn't connected.
+        :type hush_warning: True
         """
-        self.attributes[which_field].set(new_value)
+        if (not self.parent_dashboard.serial_connected) and (not hush_warning):
+            print("Warning: set_field called in '"+self.name+"' while serial is not connected (field: "+which_field+"). Consider checking self.parent_dashboard.serial_connected before calling, or call set_field with hush_warning=True .")
+        to_do = lambda: self.attributes[which_field].set(new_value)
+        self.do_threadsafe(to_do)
+
+    def log_data(self):
+        """Generate a dict of data that is sent to the dashboard's data logging script. The dict contains the current values of 
+        all fields that were created using add_field with the option log=True. This method may be overridden in a subclass if you 
+        would like to do some kind of preprocessing on data before it's logged, e.g. stripping out units or typecasting to int or float.
+        
+        :return: A dict of the widget's loggable fields and their current values
+        :rtype: dict"""
+        out = dict()
+        for k in self.values_to_log.keys():
+            out[k]=self.values_to_log[k].get()
+        return out
+
+# Cosmetic methods to enable/disable fields, move the confirm button, or change the widget color
 
     def disable_field(self, which_field):
         """Grey out an input field so that it can't be interacted with.
@@ -308,7 +273,8 @@ class GenericWidget:
         :param which_field: The name of the field that will be greyed out.
         :type which_field: str
         """
-        self.field_gui_objects[which_field][1].configure(state='disabled')
+        to_do = lambda: self.field_gui_objects[which_field][1].configure(state='disabled')
+        self.do_threadsafe(to_do)
 
     def enable_field(self, which_field):
         """Un-grey out an input field that had previously been greyed out, allowing it to be interacted with again.
@@ -316,7 +282,8 @@ class GenericWidget:
         :param which_field: The name of the field to re-enable.
         :type which_field: Str
         """
-        self.field_gui_objects[which_field][1].configure(state='normal')
+        to_do = lambda: self.field_gui_objects[which_field][1].configure(state='normal')
+        self.do_threadsafe(to_do)
 
     def move_confirm_button(self,row,column):
         """Move the confirm button, which is automatically placed when using the add_field method to add an input field.
@@ -336,108 +303,142 @@ class GenericWidget:
         :type new_color: str"""
         self.frame.configure(highlightbackground=new_color,highlightcolor=new_color)
 
+# Methods to make a thread for this widget (!)
+        
+    def _run_thread(self):
+        """Launch a thread to process commands from the widget's queue."""
+
+        if self.thread_shared: #We post events to a shared queue in a different widget's thread
+            pass
+        else: #This widget gets its own thread in which to process events
+            while True:
+                try:
+                    while not self.queue.empty():
+                        (cmd,widget) = self.queue.get()
+
+                        if cmd == None: # Shut down the thread.
+                            return
+                        
+                        elif cmd == 'UPDATE': # Update the widget however desired
+                            self.doing_update = True
+                            widget._update()
+                            self.doing_update = False # Flag to let us warn if the polling interval is too short
+
+                        elif cmd == 'CONFIRM': # Tell the thread to update the system state
+                            widget._on_confirm()
+
+                        elif cmd == 'HANDSHAKE': # Tell the thread to open serial and do the handshake
+                            widget._handshake()
+
+                except Exception as e:
+                    self.parent_dashboard.exc_handler(e,'system',self.name)
+
+                time.sleep(0.05)
+
+    def _shutdown_thread(self):
+        """Shutdown the widget's thread once the GUI is closed."""
+        if not self.thread_shared:
+            self.queue.put((None,self))
+
+
+
 # Underlying methods to make the serial functionality work
+    
+    def _build_serial_object(self):
+        """This function just calls get_serial_object and assigns its value to self.serial_object"""
+        self.serial_object = None
+        # Make cosmetic changes before any return's get invoked:
+        if not self.no_serial:
+            print("Opening "+self.serial_selected.get()+" for \""+self.name+"\"")
+            self.serial_menu.configure(state='disabled')
+        try:
+            if (not self.parent_dashboard.offline_mode) and (not self.no_serial) and (not self.thread_shared):
+                self.serial_object = serial.Serial(self.serial_selected.get(),baudrate=self.baudrate,timeout=0)
+            elif self.no_serial:
+                self.serial_object = None
+            elif self.thread_shared:
+                self.serial_object = self.widget_to_share_thread_with.get_serial_object()
+        except Exception as e:
+            self.parent_dashboard.exc_handler(e,'serial build',self.name)
+            self.serial_object=None
+        if not self.no_serial and self.serial_object is None and not self.parent_dashboard.offline_mode: #Serial object being none is taken as a proxy for failure
+            self.on_failed_serial_open()
+            return False
+        return True
 
     def confirm(self): 
         """Method executed when the Confirm button is pressed. Checks whether serial is connected and unfocuses any input field that's focused, then 
         calls the on_confirm method that is hopefully defined in a subclass."""
         self.parent_dashboard.get_tkinter_object().focus()
-        if self.serial_object == None and not self.no_serial:
+        if self.serial_object == None and not (self.no_serial or self.parent_dashboard.offline_mode):
             print("\"Confirm\" pressed for "+str(self.name)+" with no serial connection.")
             return
-        self.on_confirm()
+        self.queue.put(('CONFIRM',self))
 
-    def open_serial(self):
-        """Method executed when serial is opened. Calls open_serial_query and then queues a call to open_serial_read after the necessary amount of time."""
+    def _on_confirm(self):
         try:
-            self.sending_queue=[]
-            self.queue_delays=[]
-            self._open_serial_query()
-            self._update_cycle_counter=int(self.update_every_n_cycles*4/5)#Force an update the next cycle
-            time_to_wait = int((self.parent_dashboard._serial_control_widget.serial_polling_wait)*(int(self.update_every_n_cycles*4/5)+0.5))
-            self.parent_dashboard.get_tkinter_object().after(time_to_wait,lambda: self._open_serial_read())
+            self.on_confirm()
         except Exception as e:
-            print("Error in user-defined on_handshake_query or on_serial_query function:")
-            print(traceback.format_exc())
-            pass
+            self.parent_dashboard.exc_handler(e,'on_confirm',self.name)
 
-    def _open_serial_query(self):
-        """Calls query_serial for the first time."""
-        self._update_cycle_counter=-1#Ensure that a query gets made the first time this method runs
-        self.on_handshake_query()
-
-    def _open_serial_read(self):
-        """Calls the read_serial method, passing the result (a bool of whether the handshake was successful) to the on_serial_open method that is hopefully defined in a subclass implementation. 
-        Warns if read_serial (and, equivalently, the subclass-defined on_serial_read method) has not returned the handshake result. Sets serial readouts as needed."""
-        if self.serial_object == None and (not self.no_serial):
-            return
-        try:
-            handshake_success = self.on_handshake_read()
-        except Exception as e:
-            handshake_success = str(e)
-        try:
-            if handshake_success is True:
-                print("Handshake successful on '"+str(self.name)+"'")
-            else:
-                if handshake_success is False:
-                    print("Handshake failed on '"+str(self.name)+"'")
-                else:
-                    print("Handshake failed on '"+str(self.name)+"' with message: "+str(handshake_success))
-                if not self.no_serial:
-                    self.serial_status.set("No device found.")
-                    try:
-                        self.serial_object.close()
-                    except:
-                        pass
-                    self.serial_object = None
-            self.on_serial_open(handshake_success)
-            if handshake_success is True and not self.no_serial:
-                self.serial_status.set("Connected.")
-        except Exception as e:
-            print("Error in user-defined on_serial_open function in '"+str(self.name)+"': ")
-            print(traceback.format_exc())
-
-    def query_serial(self):
-        """Executes every time the widget is prompted to query serial. Checks whether to query this cycle, checks whether 
-        serial is connected, and then calls the on_serial_query method that is hopefully defined in a subclass implementation."""
+    def _update(self):
+        """Executes every time the widget is prompted to update. Checks whether to update this cycle, checks whether 
+        serial is connected, and then calls the on_update method that is hopefully defined in a subclass implementation."""
         self._update_cycle_counter+=1 #Some devices may only update every 2nd or 3rd cycle
         self._update_cycle_counter%=self.update_every_n_cycles
         if self._update_cycle_counter!=0:
             return
-        if self.serial_object == None and (not self.no_serial):
+        if not self.handshake_was_successful:
             return
         try:
-            self.on_serial_query()
+            self.on_update()
         except Exception as e:
-            print("Error in user-defined on_query_serial function in '"+str(self.name)+"': ")
-            print(traceback.format_exc())
+            self.parent_dashboard.exc_handler(e,'on_update',self.name)
 
-    def read_serial(self):
-        """Executes every time the widget is prompted to read serial. Checks whether to read this cycle, checks whether 
-        serial is connected, and then calls the on_serial_read method that is hopefully defined in a subclass implementation. Returns whatever 
-        on_serial_read returned, which should be a bool representing whether a valid response was read.\n
-        
-        If the device updates every n cycles, serial reads always happen 0.5+int(n*4/5) cyles after the serial query; i.e., if n=1, the serial read happens
-        0.5 cycles after the query, if n=2, 1.5 after, if n=3, 2.5 after, if n=10, 8.5 after. This is meant to give the instrument a fairly long time to respond where n>1.
-        
-        :return: Whatever on_serial_read() returned; should be True if a valid serial response was read and False otherwise.
-        :rtype: bool
-        """
-        if (self._update_cycle_counter!=int(self.update_every_n_cycles*4/5)):#Some devices may only update every nth cycle. Suppos
-            return
-        if self.serial_object == None and (not self.no_serial):
-            return
+    def _handshake(self):
+        """Builds the serial object, if needed, and prompts the widget to handshake with the device, handling errors as needed."""
+
+        # Build serial object (if needed)
+        if not self.no_serial:
+            self.do_threadsafe(lambda: self.serial_status.set("Connecting..."))
         try:
-            val = self.on_serial_read()
-            return val
-        except Exception as e:
-            print("Error in user-defined on_read_serial function in '"+str(self.name)+"': ")
-            print(traceback.format_exc())
-            return False # A valid response wasn't read, or another error occurred
+            serial_success = self._build_serial_object()
+        except exception as e:
+            serial_success = False
+            self.parent_dashboard.exc_handler(e,'serial build',self.name)
+        if not serial_success:
+            if not self.no_serial:
+                self.do_threadsafe(lambda: self.serial_status.set("Connection Failed"))
+
+        if serial_success:
+            # Do the handshake
+            try:
+                self.on_handshake()
+                print("Handshake successful for '"+str(self.name)+"'.")
+                handshake_success = True
+                if not self.no_serial:
+                    self.do_threadsafe(lambda: self.serial_status.set("Connected"))
+            except Exception as e:
+                handshake_success = False
+                if not self.no_serial:
+                    self.do_threadsafe(lambda: self.serial_status.set("No Device Found"))
+                self.parent_dashboard.exc_handler(e,'on_handshake',self.name)
+        else:
+            handshake_success = False
+
+        # Set the failure flag
+        self.handshake_was_successful = serial_success and handshake_success
+        if not self.handshake_was_successful:
+            self.on_failed_serial_open()
+
+        # Dump the queue to ignore any queries/confirms that were prompted while the handshake happened
+        with self.queue.mutex:
+            self.queue.queue.clear()
+
 
     def close_serial(self):
         """Closes the serial object, if needed, and returns the GUI fields to their default non-connected states. Executes on_serial_close, which is hopefully implemented in a subclass."""
-        if (self.serial_object != None) and not (self.serial_shared):
+        if (self.serial_object != None) and not (self.thread_shared):
             try:
                 self.serial_object.close()
                 self.serial_object = None
@@ -455,57 +456,15 @@ class GenericWidget:
                 self.attributes[k].set(self.default_values[k])
             self.on_serial_close()
         except Exception as e:
-            print("Error in user-defined on_serial_close function in '"+str(self.name)+"': ")
-            print(traceback.format_exc())
+            self.parent_dashboard.exc_handler(e,'on_serial_close',self.name)
 
-    def _update_queue(self):
-        """Internal method that sends the next message in a serial write queue and tees up the next call to itself after the specified delay."""
-        try:
-            self.serial_object.write(self.sending_queue[0])
-        except Exception as e:
-            self.sending_queue=[]
-            self.queue_delays=[]
-            return #Serial object has closed in the meantime
-        self.sending_queue.pop(0)
-        self.queue_delays.pop(0)
-        if len(self.sending_queue)!=0:
-            self.parent_dashboard.get_tkinter_object().after(self.queue_delays[0],lambda: self._update_queue())
-
-    def send_via_queue(self,text,delay):
-        """Add a message to the outgoing serial queue, to be sent a given delay after the next-most-recent message in the queue is sent. 
-        If the queue is empty, the message gets sent after the given delay relative to when it was added to the queue. 
-        If the widget is sharing serial with another widget, the message gets added to the parent widget's serial queue. 
-        Note however that this doesn't work super well with widgets that share serial; queries' orders can get scrambled.
-        
-        :param text: The message to send to serial, as ascii-encoded bytes
-        :type text: bytes
-        :param delay: The delay after which to send the text, in milliseconds
-        :type column: int
-        """
-        if self.serial_shared:
-            self.widget_to_share_serial_with.send_via_queue(text,delay)
-        self.sending_queue.append(text)
-        self.queue_delays.append(delay)
-        if len(self.sending_queue)==1:
-            self.parent_dashboard.get_tkinter_object().after(delay,lambda: self._update_queue())
-
-# Methods related to serial emulators for testing
-
-    def construct_serial_emulator(self):
-        """Construct a serial emulator object to facilitate offline testing. Warns if this method is not overridden and hence no serial emulator for this class has been defined.
-        
-        :return: A serial emulator object for this widget type
-        :rtype: pyopticon.generic_serial_emulator.GenericSerialEmulator
-        """
-        print("Warning: tried to launch a serial emulator when none is defined in "+str(self.name))        
-        return None
 
 # Down here are utility methods that you shouldn't need to update for new classes
 
     def get_serial_object(self):
         """Get the serial object that this widget is using
         
-        :return: This widget's serial object, which is probably a Pyserial Serial object, though it could be None or a serial emulator
+        :return: This widget's serial object, which is probably a Pyserial Serial object.
         :rtype: serial.Serial
         """
         return self.serial_object
@@ -534,7 +493,7 @@ class GenericWidget:
         :param new_serial_options: The new list of available serial ports
         :type new_serial_options: list
         """
-        if self.no_serial or self.serial_shared:
+        if self.no_serial or self.thread_shared:
             return
         self.serial_options = new_serial_options
         prev_value=self.serial_selected.get()

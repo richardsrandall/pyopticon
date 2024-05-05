@@ -1,8 +1,9 @@
 import numpy as np
+import time
+import traceback
 
 # Test the superclass genericWidget
 from .. import generic_widget
-from .. import generic_serial_emulator
 
 class OmegaUSBUTCWidget(generic_widget.GenericWidget):
     """ Widget for an Omega USB-UTC thermocouple reader. 
@@ -27,20 +28,27 @@ class OmegaUSBUTCWidget(generic_widget.GenericWidget):
         self.add_field(field_type='text output', name='Temperature',
                        label='Temperature (C): ', default_value='No Reading', log=True)
 
-    def on_serial_open(self,success):
+    def on_failed_serial_open(self):
         """If serial opened successfully, do nothing; if not, set readouts to 'No Reading'
-
-        :param success: Whether serial opened successfully, according to the return from the on_serial_read method.
-        :type success: bool or str
         """
         # If handshake failed, set readout to 'none'
-        if success is not True:
-            self.set_field('Temperature','No Reading')
+        self.set_field('Temperature','No Reading',hush_warning=True)
+
+    def on_update(self):
+        """Update the device by polling the serial connection.
+        """
+        self.on_serial_query()
+        time.sleep(0.5)
+        if not self.parent_dashboard.serial_connected:
+            return
+        self.on_serial_read()
+
 
     def on_serial_query(self):
         """Send a query to the serial device asking for the temperature.
         """
-        self.get_serial_object().write(b'C\r')
+        if not self.parent_dashboard.offline_mode:
+            self.get_serial_object().write(b'C\r')
 
     def on_serial_read(self):
         """Parse the responses from the previous serial query and update the display. Return True if valid and and error string if not.
@@ -49,48 +57,26 @@ class OmegaUSBUTCWidget(generic_widget.GenericWidget):
         :rtype: bool or str
         """
         try:
-            status = self.get_serial_object().readline()
-            self.get_serial_object().reset_input_buffer()
+            if not self.parent_dashboard.offline_mode:
+                status = self.get_serial_object().readline()
+                self.get_serial_object().reset_input_buffer()
+            else:
+                status = ("b'>"+str(30+np.random.randint(0,5))+"\r\n'")
             status = str(status)
             if len(status)<6 or len(status)>11: #Should receive something like b'>25\r\n'
                 raise Exception('Invalid Response Read')
             num_filter = filter(str.isdigit, status)
             status = "".join(num_filter)
-            self.set_field('Temperature',status)
+            if self.parent_dashboard.serial_connected:
+                self.set_field('Temperature',status)
             if len(status)==0:
                 raise Exception('Invalid Response Read')
             return True # A valid response from the TC was read
         except Exception as e:
+            print("'"+str(status)+"'")
             self.set_field('Temperature','Read Error')
-            fail_message=("Unexpected response received from thermocouple reader: "+str(status))
-            return fail_message # An invalid response was read
 
     def on_serial_close(self):
         """When serial is closed, set all readouts to 'None'."""
-        self.set_field('Temperature','No Reading')
+        self.set_field('Temperature','No Reading',hush_warning=True)
 
-    def construct_serial_emulator(self):
-        """Get the serial emulator to use when we're testing in offline mode.
-
-        :return: An Omega USB-UTC serial emulator object.
-        :rtype: pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCSerialEmulator"""
-        return OmegaUSBUTCSerialEmulator()
-
-# Serial emulator object to facilitate offline testing
-class OmegaUSBUTCSerialEmulator(generic_serial_emulator.GenericSerialEmulator):
-    """Serial emulator to allow offline testing of dashboards containing Omega USB-UTC thermocouple widgets. 
-    Only the readline method needs to be implemented, since the only serial correspondence is querying and reading the temperature. 
-    A random temperature between 30 and 34C is reported.
-    """
-
-    def readline(self):
-        """Reads a response containing a temperature reading as if this were a Pyserial Serial object.
-
-        :return: A fake serial response containing a temperature between 30 and 34C.
-        :rtype: str"""
-        reading_str = "b'>"+str(30+np.random.randint(0,5))+"\r\n'"
-        return reading_str
-
-        
-
-    

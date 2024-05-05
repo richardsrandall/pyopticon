@@ -1,7 +1,6 @@
 import numpy as np
 
 from .. import generic_widget
-from .. import generic_serial_emulator
 import time
 
 class IotRelayWidget(generic_widget.GenericWidget):
@@ -18,7 +17,7 @@ class IotRelayWidget(generic_widget.GenericWidget):
     A working .ino sketch is also available in the majumdar_lab_widgets source code file on this project's Github.
     
     :param parent_dashboard: The dashboard object to which this device will be added
-    :type parent_dashboard: pyopticon.dashboard.PyOpticonDashboard
+    :type parent_dashboard: richardview.dashboard.RichardViewDashboard
     :param name: The name that the widget will be labeled with, and under which its data will be logged, e.g. "Methane Mass Flow Controller"
     :type name: str
     :param nickname: A shortened nickname that can be used to identify the widget in automation scripts, e.g. "CH4 MFC"
@@ -42,32 +41,38 @@ class IotRelayWidget(generic_widget.GenericWidget):
         # Move the confirm button
         self.move_confirm_button(row=3, column=2)
 
-    def on_serial_open(self,success):
-        """If serial opened successfully, do nothing; if not, set readout to 'No Reading'
-
-        :param success: Whether serial opened successfully, according to the return from the on_serial_read method.
-        :type success: bool or str
+    def on_failed_serial_open(self):
+        """If serial failed, set readout to 'No Reading'
         """
-        # If handshake failed, set readout to No Reading
-        if success is not True:
-            self.set_field('Actual Status','No Reading')
+        self.set_field('Actual Status','No Reading',hush_warning=True)
     
-    def on_serial_query(self):
+    def on_handshake(self):
         """Send a query to the device asking whether it is currently on or off.
         """
-        self.send_via_queue(b'Q\n',0)
-        self.send_via_queue(b'Q\n',350)
+        if not self.parent_dashboard.offline_mode:
+            self.serial_object.write(b'Q\n')
+            time.sleep(0.35)
+            self.serial_object.reset_input_buffer()
+        self.on_update()
         # There's a weird issue where anytime you launch the program, the first response from the arduino is "" and needs
         # to be ignored... sending the command twice fixes it.
 
-    def on_serial_read(self):
+    def on_update(self):
         """Parse the response from the previous serial query and update the display. Return True if valid and an error string if not.
 
         :return: True if the response was of the expected format, an error message otherwise.
         :rtype: bool or str
         """
-        status = (self.serial_object.readline()).decode('ascii')
-        self.serial_object.reset_input_buffer()
+        if not self.parent_dashboard.offline_mode:
+            self.serial_object.write(b'Q\n')
+        time.sleep(0.35)
+        if not self.parent_dashboard.serial_connected:
+            return
+        if not self.parent_dashboard.offline_mode:
+            status = (self.serial_object.readline()).decode('ascii')
+            self.serial_object.reset_input_buffer()
+        else:
+            status = str(np.random.randint(2))+'\n'
         status = status.replace("\n","")
         status = status.replace("\r","")
         if status=='1':
@@ -83,42 +88,21 @@ class IotRelayWidget(generic_widget.GenericWidget):
 
     def on_serial_close(self):
         """When serial is closed, set all readouts to 'None'."""
-        self.set_field('Actual Status','No Reading')
+        self.set_field('Actual Status','No Reading',hush_warning=True)
 
     def on_confirm(self):
         """When 'confirm' is pressed, send the appropriate commands to the arduino.
         """
         selected = self.get_field('Status Selection')
         if selected=='On':
-            self.send_via_queue(b'1\n',50)
+            time.sleep(0.1)
+            if not self.parent_dashboard.offline_mode:
+                self.serial_object.write(b'1\n')
             print("Turning on IoT relay: '"+self.nickname+"'")
         elif selected=='Off':
-            self.send_via_queue(b'0\n',50)
+            time.sleep(0.1)
+            if not self.parent_dashboard.offline_mode:
+                self.serial_object.write(b'0\n')
             print("Turning off IoT relay: '"+self.nickname+"'")
 
-    def construct_serial_emulator(self):
-        """Get the serial emulator to use when we're testing in offline mode.
-
-        :return: An IoT relay serial emulator object.
-        :rtype: pyopticon.majumdar_lab_widgets.iot_relay_widget.IoTRelaySerialEmulator"""
-        return IoTRelaySerialEmulator()
-
-class IoTRelaySerialEmulator(generic_serial_emulator.GenericSerialEmulator):
-    """Serial emulator to allow offline testing of dashboards containing IoT relay widgets.
-    Acts as a Pyserial Serial object for the purposes of the program, implementing a few of the same methods.
-    Confirms to console when an on/off command is sent, and otherwise returns a randomly selected 'on' or 'off' status.
-    """
-    # This class simulates what a real instrument would respond so I can test code on my laptop
-    def write(self,value):
-        """Write to this object as if it were a Pyserial Serial object. Ignores queries and reports on/off commands to console."""
-        if 'Q' in str(value):#Ignore queries
-            return
-        print("UV LED got command: "+str(value)+"; ignoring.")
-
-    def readline(self):
-        """Reads a response as if this were a Pyserial Serial object. The only time readline is called is to check the response to a status query."""
-        v = np.random.randint(0,20)
-        v = '1' if v>10 else '0'
-        v = str(v)+'\r\n'
-        return v.encode('ascii')
 

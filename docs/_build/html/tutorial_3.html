@@ -165,7 +165,7 @@ any initial values that are desired. If an exception is raised, the handshake is
 will not be polled.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">on_update</span></code>: Required. Called whenever it’s time to update the widget. Usually this method will query the physical device for
 the latest readings, wait to receive them, parse them, and then update the widget’s output fields accordingly.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">on_close</span></code>: Strongly recommended. Called when the dashboard stops polling devices. The dashboard will automatically close any <code class="docutils literal notranslate"><span class="pre">serial.Serial</span></code> objects
+<li><p><code class="docutils literal notranslate"><span class="pre">on_serial_close</span></code>: Strongly recommended. Called when the dashboard stops polling devices. The dashboard will automatically close any <code class="docutils literal notranslate"><span class="pre">serial.Serial</span></code> objects
 that it opened, but this method can close down other device-communication objects and return output fields to some placeholder value.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">on_failed_serial_open</span></code>: Optional. If the widget is initialized with <code class="docutils literal notranslate"><span class="pre">use_serial==True</span></code> and constructing the <code class="docutils literal notranslate"><span class="pre">serial.Serial</span></code> object
 fails (e.g. because the COM port doesn’t exist), this method is called. It can do things like set fields’ values to “No Reading”.</p></li>
@@ -202,17 +202,14 @@ Blocking code like this is OK because each device has its own thread.</p></li>
 for clarity and brevity. We just construct a widget, add an input and output field, and define how to send and parse serial
 communications with the valve.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">generic_widget</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">generic_serial_emulator</span>
 
 <span class="k">class</span> <span class="nc">Valco2WayValveWidget</span><span class="p">(</span><span class="n">generic_widget</span><span class="o">.</span><span class="n">GenericWidget</span><span class="p">):</span>
-    <span class="c1"># Docstring has been cut out to save space.</span>
-    <span class="c1"># Note that valve_positions is a list of the names of the valve&#39;s positions.</span>
+    <span class="c1"># Docstrings have been omitted to save space</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent_dashboard</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">nickname</span><span class="p">,</span><span class="n">default_serial_port</span><span class="p">,</span><span class="n">valve_positions</span><span class="p">,</span><span class="n">valve_id</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Constructor for a VICI Valco 2-way valve widget.&quot;&quot;&quot;</span>
-        <span class="c1"># Initialize the superclass (GenericWidget) with most of the widget functionality</span>
+        <span class="c1"># Initialize the superclass with most of the widget functionality</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">nickname</span><span class="p">,</span><span class="s1">&#39;#ADD8E6&#39;</span><span class="p">,</span><span class="n">default_serial_port</span><span class="o">=</span><span class="n">default_serial_port</span><span class="p">,</span><span class="n">baudrate</span><span class="o">=</span><span class="mi">9600</span><span class="p">)</span>
         <span class="c1"># Record the valve id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valve_id</span><span class="o">=</span><span class="n">valve_id</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
@@ -226,31 +223,25 @@ communications with the valve.</p>
         <span class="c1"># Move the confirm button</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">move_confirm_button</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">on_serial_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">success</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;If serial opened successfully, do nothing; if not, set readouts to &#39;No Reading&#39;</span>
+    <span class="k">def</span> <span class="nf">on_failed_serial_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">success</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Actual Position&#39;</span><span class="p">,</span><span class="s1">&#39;No Reading&#39;</span><span class="p">,</span><span class="n">hush_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="sd">        :param success: Whether serial opened successfully, according to the return from the on_serial_read method.</span>
-<span class="sd">        :type success: bool</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Actual Position&#39;</span><span class="p">,</span><span class="s1">&#39;No Reading&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">on_serial_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a query to the valve asking for its current position.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Flush any old responses</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">get_serial_object</span><span class="p">()</span><span class="o">.</span><span class="n">reset_input_buffer</span><span class="p">()</span>
-        <span class="c1"># Commands are something like b&#39;1CP\r&#39;, where 1 is the valve ID and CP means &#39;current position&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">get_serial_object</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valve_id</span><span class="o">+</span><span class="sa">b</span><span class="s1">&#39;CP</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">on_serial_read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the responses from the previous serial query and update the display. Return True if the response is valid and False if not.</span>
-
-<span class="sd">        :return: True if all the response was of the expected format, False otherwise.</span>
-<span class="sd">        :rtype: bool</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serial_object</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
-        <span class="c1"># The response is something like b&#39;1\A&#39; or b&#39;1\B&#39;, where A and B are the valve&#39;s 2 positions</span>
+    <span class="k">def</span> <span class="nf">on_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Send the query</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_dashboard</span><span class="o">.</span><span class="n">offline_mode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_serial_object</span><span class="p">()</span><span class="o">.</span><span class="n">reset_input_buffer</span><span class="p">()</span>
+            <span class="n">to_write</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">valve_id</span><span class="o">+</span><span class="sa">b</span><span class="s1">&#39;CP</span><span class="se">\r</span><span class="s1">&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_serial_object</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">to_write</span><span class="p">)</span>
+        <span class="c1"># Wait a bit</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+        <span class="c1"># Read and parse the response</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_dashboard</span><span class="o">.</span><span class="n">offline_mode</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serial_object</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span> <span class="k">if</span> <span class="n">v</span><span class="o">&gt;</span><span class="mi">10</span> <span class="k">else</span> <span class="s1">&#39;B&#39;</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="s1">&#39;dd&quot;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;dd</span><span class="se">\r\n</span><span class="s1">&#39;</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">i</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
             <span class="n">is_A</span> <span class="o">=</span> <span class="n">status</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;A&#39;</span>
@@ -259,38 +250,29 @@ communications with the valve.</p>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Actual Position&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">valve_positions</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">fail_message</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Unexpected response received from 2-way valve: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">status</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Actual Position&#39;</span><span class="p">,</span><span class="s1">&#39;Read Error&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="n">fail_message</span>
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">on_serial_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;When serial is closed, set all readouts to &#39;None&#39;.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Actual Position&#39;</span><span class="p">,</span><span class="s1">&#39;No Reading&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s1">&#39;Actual Position&#39;</span><span class="p">,</span><span class="s1">&#39;No Reading&#39;</span><span class="p">,</span><span class="n">hush_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">on_confirm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;When &#39;confirm&#39; is pressed, send the appropriate commands to the valve.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># GenericWidget already checks whether serial is connected, and complains if not.</span>
         <span class="n">selected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s1">&#39;Position Selection&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">selected</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valve_positions</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">Confirm</span><span class="se">\&quot;</span><span class="s2"> pressed with no/invalid option selected.&quot;</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="n">choice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valve_positions</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span>
-        <span class="c1"># Command is something like b&#39;1GOA\r&#39; or b&#39;1GOB\r&#39; where A and B are the 2 valve positions</span>
         <span class="k">if</span> <span class="n">choice</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Moving valve </span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2"> to </span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">+</span><span class="n">selected</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2"> (A)&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">serial_object</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valve_id</span><span class="o">+</span><span class="sa">b</span><span class="s1">&#39;GOA</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Moving valve </span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2"> to </span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">+</span><span class="n">selected</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2"> (B)&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">serial_object</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valve_id</span><span class="o">+</span><span class="sa">b</span><span class="s1">&#39;GOB</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">construct_serial_emulator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the serial emulator to use when we&#39;re testing in offline mode.</span>
-<span class="sd">        A later section of the tutorial explains what this means.</span>
-
-<span class="sd">        :return: A valco 2-way valve serial emulator object.</span>
-<span class="sd">        :rtype: pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveSerialEmulator&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Valco2WayValveSerialEmulator</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Here’s what the widget ends up looking like:</p>
@@ -332,7 +314,7 @@ Additionally, many instrument manufacturers provide Python drivers to interface 
 <p>The workflow to use one of these protocols is similar to that for ‘plain’ RS232 serial. First, write a standalone (non-PyOpticon)
 Python script that can read from and write to your instrument, ensuring that you understand how Python communicates with your
 instrument. Second, in <code class="docutils literal notranslate"><span class="pre">on_handshake</span></code>, initialize whatever object represents your serial connection (e.g. a <code class="docutils literal notranslate"><span class="pre">pymodbus.ModbusSerialClient</span></code> object).
-Then, implement the other methods as normal, making sure to close the object however is needed in <code class="docutils literal notranslate"><span class="pre">on_close</span></code>. The built-in
+Then, implement the other methods as normal, making sure to close the object however is needed in <code class="docutils literal notranslate"><span class="pre">on_serial_close</span></code>. The built-in
 Thorlabs Optical Power Meter widget is a good example of a widget that uses an OEM Python driver.</p>
 </section>
 <section id="important-notes-on-multithreading">
@@ -354,13 +336,17 @@ Each of those methods executes in a widget’s thread, while the Dashboard and g
 thread, and blindly manipulating variables in one thread from another thread is a recipe for disaster. <code class="docutils literal notranslate"><span class="pre">set_field</span></code> and
 <code class="docutils literal notranslate"><span class="pre">get_field</span></code> are written to be thread-safe, so you can use them without worrying. To give you more flexibility, we also
 provide <code class="docutils literal notranslate"><span class="pre">do_threadsafe</span></code>, which can be used like so: <code class="docutils literal notranslate"><span class="pre">self.do_threadsafe(lambda:</span> <span class="pre">self.disable_field(&quot;Setpoint&quot;))</span></code>.</p></li>
-<li><p>To shut down widgets promptly, <code class="docutils literal notranslate"><span class="pre">on_close</span></code> executes immediately in the main dashboard thread, unlike <code class="docutils literal notranslate"><span class="pre">on_update</span></code> etc. that
+<li><p>To shut down widgets promptly, <code class="docutils literal notranslate"><span class="pre">on_serial_close</span></code> executes immediately in the main dashboard thread, unlike <code class="docutils literal notranslate"><span class="pre">on_update</span></code> etc. that
 execute in the widgets’ respective threads. One can have a situation where an <code class="docutils literal notranslate"><span class="pre">on_update</span></code> method queries a device then waits for a response,
-but while it’s waiting, <code class="docutils literal notranslate"><span class="pre">on_close</span></code> is called serial connection closes, and it then attempts to read from a serial object that is closed.
+but while it’s waiting, <code class="docutils literal notranslate"><span class="pre">on_serial_close</span></code> is called serial connection closes, and it then attempts to read from a serial object that is closed.
 Therefore, before reading or writing to serial, <code class="docutils literal notranslate"><span class="pre">on_update</span></code> and <code class="docutils literal notranslate"><span class="pre">on_confirm</span></code> should double-check that the serial
 connection is still open by checking the widget’s <code class="docutils literal notranslate"><span class="pre">self.parent_dashboard.serial_connected</span></code> flag. Calling <code class="docutils literal notranslate"><span class="pre">set_field</span></code> while
 serial is closed prints a warning to help you remember to do this, though it can be suppressed by giving <code class="docutils literal notranslate"><span class="pre">set_field</span></code> the argument <code class="docutils literal notranslate"><span class="pre">hush_warning=True</span></code>.</p></li>
 </ul>
+<p>Be careful if you choose to take advantage of packages that offer asynchronous access to serial devices, e.g. OEM drivers
+that make use of asyncio. In many cases it’s simplest to force the thread to wait until an asynchronous method finishes before
+moving to the next task, essentially turning it into blocking code. Since each widget gets its own thread, and you likely only need to do
+a handful of calls every update cycle, doing so is unlikely to gum up the entire dashboard.</p>
 </section>
 <section id="genericwidget-tricks-and-features">
 <h3>GenericWidget Tricks and Features<a class="headerlink" href="#genericwidget-tricks-and-features" title="Permalink to this heading"></a></h3>
@@ -385,7 +371,7 @@ with <code class="docutils literal notranslate"><span class="pre">update_every_n
 <li><p>Widgets sharing a thread: sometimes it may be necessary for multiple widgets to share one serial connection. This happened for us
 when we have several mass flow controllers that are all controlled by one control box with a single serial connection. You can
 initialize a GenericWidget with the parameter <code class="docutils literal notranslate"><span class="pre">widget_to_share_thread_with</span></code> and it will create a single thread for multiple widgets.
-The thread maintains a queue of tasks, so you can be sure that the widgets’ <code class="docutils literal notranslate"><span class="pre">on_handshake</span></code>, <code class="docutils literal notranslate"><span class="pre">on_update</span></code>, and <code class="docutils literal notranslate"><span class="pre">on_close</span></code> methods will always
+The thread maintains a queue of tasks, so you can be sure that the widgets’ <code class="docutils literal notranslate"><span class="pre">on_handshake</span></code>, <code class="docutils literal notranslate"><span class="pre">on_update</span></code>, and <code class="docutils literal notranslate"><span class="pre">on_serial_close</span></code> methods will always
 be called in the same order (the order in which the widgets were added to the dashboard).</p></li>
 </ul>
 </section>
@@ -398,7 +384,7 @@ calculator widget to help the operator, it may be easiest to just use a <code cl
 <code class="docutils literal notranslate"><span class="pre">use_serial=False</span></code> option, which can save some messing with tkinter GUI elements. However, we include the <code class="docutils literal notranslate"><span class="pre">MinimalWidget</span></code>
 class in case you really do want to build a widget from scratch.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">MinimalWidget</span></code> class implements only the few methods that are required for a widget to interface with its parent
-dashboard (e.g. <code class="docutils literal notranslate"><span class="pre">on_update</span></code> and <code class="docutils literal notranslate"><span class="pre">on_close</span></code>); all of them default to doing nothing, though of course you can override them.</p>
+dashboard (e.g. <code class="docutils literal notranslate"><span class="pre">on_update</span></code> and <code class="docutils literal notranslate"><span class="pre">on_serial_close</span></code>); all of them default to doing nothing, though of course you can override them.</p>
 <p>The most likely use of the <code class="docutils literal notranslate"><span class="pre">MinimalWidget</span></code> is writing a widget that is purely cosmetic. Such a widget needs none of the
 serial or logging machinery of a <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> subclass, nor would it want to be stuck with a <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> subclass’
 colored frame and gridded layout. A MinimalWidget class just contains a tkinter frame object on which anything can be drawn,

@@ -1,2 +1,2 @@
-from pyopticon import demo_dashboard as dd
-dd.run_demo_dashboard()
+from pyopticon.demo_dashboard import run_demo_dashboard
+run_demo_dashboard()

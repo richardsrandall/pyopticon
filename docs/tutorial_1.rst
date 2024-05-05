@@ -27,6 +27,9 @@ You'll get a dashboard that looks like this:
 .. image:: img/rv3.png
     :alt: A screenshot of the demo dashboard in its just-opened state
 
+It's possible that the Dashboard will get cut off at the bottom of your screen. If so, you'll need to mess with 
+the y pad between widgets and/or scale the widgets down, which the next tutorial page explains.
+
 We'll just quickly run through some of the dashboard's features. The four red widgets on the left-hand side 
 control most of the top-level functions:
 
@@ -49,10 +52,20 @@ which can de-clutter the screen once the serial connections are established. The
 The final button prints a list of widgets' nicknames and fields, as described in the 'Writing Automation Scripts' 
 section of this page.
 
-3. The third widget is for loading and running automation scripts. See the 'Writing Automation Scripts' section 
+3. The third widget is for loading and running automation scripts, which are written in Python using PyOpticon-specific
+methods to schedule certain types of actions. Automation scripts are good for automating many types of experiments, including 
+repeating subprocesses multiple times and awaiting a condition to proceed. Scripts can be paused and resumed, and the 
+widget displays progress through the script as it executes. See the 'Loading PyOpticon Automation Scripts' section 
 below for information on how to do this.
 
-4. The fourth widget is for data logging. To log data, click the button to select a destination address, then 
+4. The fourth widget is for allowing external Python scripts to connect to the dashboard via a socket. Other Python 
+programs can load an object representing the connection to the dashboard, which can be queried for values or sent 
+commands. These kinds of scripts can let you integrate Dashboards into complex operations involving Python control 
+structures. For instance, you could use 'if' statements to change the experimental plan mid-run based on live measurements,
+apply a control law to a certain input based on a certain measurement, or generate a live-plot of a certain measurement.
+See the 'Connecting via Sockets' section below for more information.
+
+5. The fifth widget is for data logging. To log data, click the button to select a destination address, then 
 click 'start logging'. By default, 
 the logfile's name is the current date and time. Data are always logged to a .csv file whose format is described 
 below. If you choose to log data to an existing file, new lines are appended to the file, which works well if 
@@ -140,8 +153,8 @@ Here's an example of loading some temperature data and plotting it:
 
 The plot's not shown to save space, but it looks much like the one in the 'Live Plotter' section at the bottom of this page.
 
-Writing Automation Scripts
-**************************
+Writing and Loading PyOpticon Automation Scripts
+****************************************************
 
 Automation scripts are standalone Python scripts (.py files) that are run by a dashboard. 
 The scripts are run using Python's ``exec`` function immediately after the 'Load' dialog is finished. 
@@ -285,6 +298,105 @@ Alternatively, we can do the same thing in a one-liner with a lambda function:
     # Define a condition to check, and wait til it's fulfilled to print something
     schedule_await_condition((lambda d: float(d.widgets_by_nickname['Reactor TC'].get_field('Temperature'))>33), 'Reactor Temp > 33C')
     schedule_function(lambda: print("Temperature has exceeded 33C"))
+
+
+Connecting via Sockets
+****************************************************
+
+Sockets allow an external Python script to query values from or send commands to an active Dashboard. 
+They allow you to use more complex control structures than a PyOpticon automation script, e.g. 'if' statements. 
+However, you give up the ability to see progress in the script's execution. We'd recommend using automation 
+scripts to automate experiments if possible, and then using sockets if you run up against their limitations. Sockets can 
+also be used to make a standalone live-plotting program for data from the dashboard. 
+
+The socket connection to a dashboard is initialized and used like so:
+
+.. code-block:: python
+
+    from pyopticon.socket_client import PyOpticonSocketClient
+
+    s = PyOpticonSocketClient()
+    print(s.get_field("UV Light","Actual Status"))
+    s.close()
+
+The socket client takes two optional arguments. ``socket_number`` defaults to 12345 but can be set to anything. You can 
+double-check socket(s) a Dashboard has available using the button on the socket widget -- by default, it's just 12345, but 
+whoever wrote the dashboard can configure whatever list of port numbers they want. ``handle_errors`` defaults to 'none'; its 
+options are 'none' which prints nothing when the Dashboard reports an error in executing a socket command, 'print' which 
+prints a message but lets the script keep running, and 'exception' which raises an exception when the socket reports an error.
+
+It's best practice to close the socket when you're done with it, though if you forget and the socket is 'left hanging', 
+nothing terrible should happen. You can also forcibly disconnect the socket using a button on the widget, which will 
+cause the client to eventually report a 'broken pipe' or 'connection reset by peer'.
+
+The socket client object has the following methods:
+
+* ``get_field(widget_nickname, field_name)``: Returns the current value of a field in a certain widget.
+* ``set_field(widget_nickname, field_name, new_value)``: Sets the value of a field, but does not execute Confirm afterwards.
+* ``do_confirm(widget_nickname)``: Executes a certain widget's confirm function as though the confirm button had been pressed.
+* ``do_eval(expression)``: Evaluates an expression as described below and returns the result.
+* ``do_exec(expression)``: Executes a block of code as described below.
+
+All of the above have the optional ``printout`` argument, defaulting to False, that confirms to console when a command was successfully 
+executed.
+
+One should use ``do_eval`` and especially ``do_exec`` with great caution, as they have the potential to cause a lot of 
+trouble, but we include them to ensure that anything you can do from within a Dashboard can also (in principle) be done 
+through a socket. Each of them executes the provided string as Python code in a namespace containing the functions 
+``get_dashboard()``, which returns the Dashboard object, and ``do_threadsafe(function)``, which should be used for any calls 
+that modify Dashboard, widget, or GUI objects (since socket commands are processed in a different thread from the 
+GUI main thread, and most Tkinter objects are not threadsafe). Also, note that due to the use of the ``inspect`` package, 
+you must separately define a function before passing it to ``do_exec``:
+
+.. code-block:: python
+
+    from pyopticon.socket_client import PyOpticonSocketClient
+    s = PyOpticonSocketClient()
+
+    # DO THIS
+    l = lambda: print(":)")
+    s.do_exec(l)
+    
+    # NOT THIS
+    s.do_exec(lambda: print(":("))
+
+    s.close()
+
+Here's an example of a demo automation script, compatible with the demo dashboard, that uses some more of these methods:
+
+.. code-block:: python
+
+    from pyopticon.socket_client import PyOpticonSocketClient
+    import time
+
+    # Define some functions to try with exec
+    def test_fn():
+        d = get_dashboard()
+        v = d.get_field("UV Light","Actual Status")
+        do_threadsafe(lambda: print("Light is "+v+"!!!!!"))
+
+    l = lambda: print("Hello :D")
+
+    # Initialize the socket client
+    s = PyOpticonSocketClient(handle_errors='exception')
+
+    # Do some field gets, sets, and confirms
+    print(s.get_field("UV Light","Actual Status"))
+    print(s.set_field("UV Light","Status Selection","On"))
+    print(s.do_confirm("UV Light"))
+
+    time.sleep(10)
+
+    # Do an eval
+    print(s.do_eval("str(get_dashboard().serial_connected)"))
+
+    # So some exec's
+    print(s.do_exec(test_fn))
+    print(s.do_exec(l))
+
+    # Close the dashboard
+    s.close()
+
 
 Common Issues
 *************

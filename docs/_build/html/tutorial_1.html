@@ -51,7 +51,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#getting-started-with-the-demo-dashboard">Getting Started with the Demo Dashboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-s-going-on-inside-a-dashboard">What’s going on inside a dashboard?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#processing-logged-data">Processing Logged Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#writing-automation-scripts">Writing Automation Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#writing-and-loading-pyopticon-automation-scripts">Writing and Loading PyOpticon Automation Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connecting-via-sockets">Connecting via Sockets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#common-issues">Common Issues</a></li>
 </ul>
 </li>
@@ -106,6 +107,8 @@ fine on a laptop.</p>
 </div>
 <p>You’ll get a dashboard that looks like this:</p>
 <img alt="A screenshot of the demo dashboard in its just-opened state" src="_images/rv3.png" />
+<p>It’s possible that the Dashboard will get cut off at the bottom of your screen. If so, you’ll need to mess with
+the y pad between widgets and/or scale the widgets down, which the next tutorial page explains.</p>
 <p>We’ll just quickly run through some of the dashboard’s features. The four red widgets on the left-hand side
 control most of the top-level functions:</p>
 <p>1. The first widget has a ‘start/stop polling’ button. When polling is started, the dashboard begins querying every
@@ -123,9 +126,18 @@ Python Launcher with a terminal window.</p>
 which can de-clutter the screen once the serial connections are established. The next button links to this website.
 The final button prints a list of widgets’ nicknames and fields, as described in the ‘Writing Automation Scripts’
 section of this page.</p>
-<p>3. The third widget is for loading and running automation scripts. See the ‘Writing Automation Scripts’ section
+<p>3. The third widget is for loading and running automation scripts, which are written in Python using PyOpticon-specific
+methods to schedule certain types of actions. Automation scripts are good for automating many types of experiments, including
+repeating subprocesses multiple times and awaiting a condition to proceed. Scripts can be paused and resumed, and the
+widget displays progress through the script as it executes. See the ‘Loading PyOpticon Automation Scripts’ section
 below for information on how to do this.</p>
-<p>4. The fourth widget is for data logging. To log data, click the button to select a destination address, then
+<p>4. The fourth widget is for allowing external Python scripts to connect to the dashboard via a socket. Other Python
+programs can load an object representing the connection to the dashboard, which can be queried for values or sent
+commands. These kinds of scripts can let you integrate Dashboards into complex operations involving Python control
+structures. For instance, you could use ‘if’ statements to change the experimental plan mid-run based on live measurements,
+apply a control law to a certain input based on a certain measurement, or generate a live-plot of a certain measurement.
+See the ‘Connecting via Sockets’ section below for more information.</p>
+<p>5. The fifth widget is for data logging. To log data, click the button to select a destination address, then
 click ‘start logging’. By default,
 the logfile’s name is the current date and time. Data are always logged to a .csv file whose format is described
 below. If you choose to log data to an existing file, new lines are appended to the file, which works well if
@@ -199,8 +211,8 @@ Here’s an example of loading some temperature data and plotting it:</p>
 </div>
 <p>The plot’s not shown to save space, but it looks much like the one in the ‘Live Plotter’ section at the bottom of this page.</p>
 </section>
-<section id="writing-automation-scripts">
-<h2>Writing Automation Scripts<a class="headerlink" href="#writing-automation-scripts" title="Permalink to this heading"></a></h2>
+<section id="writing-and-loading-pyopticon-automation-scripts">
+<h2>Writing and Loading PyOpticon Automation Scripts<a class="headerlink" href="#writing-and-loading-pyopticon-automation-scripts" title="Permalink to this heading"></a></h2>
 <p>Automation scripts are standalone Python scripts (.py files) that are run by a dashboard.
 The scripts are run using Python’s <code class="docutils literal notranslate"><span class="pre">exec</span></code> function immediately after the ‘Load’ dialog is finished.
 Since <code class="docutils literal notranslate"><span class="pre">exec</span></code> is not at all secure, don’t run any scripts from sources you don’t trust. The script is run in
@@ -328,6 +340,93 @@ or more future steps is an awaiting step.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define a condition to check, and wait til it&#39;s fulfilled to print something</span>
 <span class="n">schedule_await_condition</span><span class="p">((</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">widgets_by_nickname</span><span class="p">[</span><span class="s1">&#39;Reactor TC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s1">&#39;Temperature&#39;</span><span class="p">))</span><span class="o">&gt;</span><span class="mi">33</span><span class="p">),</span> <span class="s1">&#39;Reactor Temp &gt; 33C&#39;</span><span class="p">)</span>
 <span class="n">schedule_function</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Temperature has exceeded 33C&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="connecting-via-sockets">
+<h2>Connecting via Sockets<a class="headerlink" href="#connecting-via-sockets" title="Permalink to this heading"></a></h2>
+<p>Sockets allow an external Python script to query values from or send commands to an active Dashboard.
+They allow you to use more complex control structures than a PyOpticon automation script, e.g. ‘if’ statements.
+However, you give up the ability to see progress in the script’s execution. We’d recommend using automation
+scripts to automate experiments if possible, and then using sockets if you run up against their limitations. Sockets can
+also be used to make a standalone live-plotting program for data from the dashboard.</p>
+<p>The socket connection to a dashboard is initialized and used like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyopticon.socket_client</span> <span class="kn">import</span> <span class="n">PyOpticonSocketClient</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">PyOpticonSocketClient</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s2">&quot;UV Light&quot;</span><span class="p">,</span><span class="s2">&quot;Actual Status&quot;</span><span class="p">))</span>
+<span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The socket client takes two optional arguments. <code class="docutils literal notranslate"><span class="pre">socket_number</span></code> defaults to 12345 but can be set to anything. You can
+double-check socket(s) a Dashboard has available using the button on the socket widget – by default, it’s just 12345, but
+whoever wrote the dashboard can configure whatever list of port numbers they want. <code class="docutils literal notranslate"><span class="pre">handle_errors</span></code> defaults to ‘none’; its
+options are ‘none’ which prints nothing when the Dashboard reports an error in executing a socket command, ‘print’ which
+prints a message but lets the script keep running, and ‘exception’ which raises an exception when the socket reports an error.</p>
+<p>It’s best practice to close the socket when you’re done with it, though if you forget and the socket is ‘left hanging’,
+nothing terrible should happen. You can also forcibly disconnect the socket using a button on the widget, which will
+cause the client to eventually report a ‘broken pipe’ or ‘connection reset by peer’.</p>
+<p>The socket client object has the following methods:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">get_field(widget_nickname,</span> <span class="pre">field_name)</span></code>: Returns the current value of a field in a certain widget.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_field(widget_nickname,</span> <span class="pre">field_name,</span> <span class="pre">new_value)</span></code>: Sets the value of a field, but does not execute Confirm afterwards.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">do_confirm(widget_nickname)</span></code>: Executes a certain widget’s confirm function as though the confirm button had been pressed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">do_eval(expression)</span></code>: Evaluates an expression as described below and returns the result.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">do_exec(expression)</span></code>: Executes a block of code as described below.</p></li>
+</ul>
+<p>All of the above have the optional <code class="docutils literal notranslate"><span class="pre">printout</span></code> argument, defaulting to False, that confirms to console when a command was successfully
+executed.</p>
+<p>One should use <code class="docutils literal notranslate"><span class="pre">do_eval</span></code> and especially <code class="docutils literal notranslate"><span class="pre">do_exec</span></code> with great caution, as they have the potential to cause a lot of
+trouble, but we include them to ensure that anything you can do from within a Dashboard can also (in principle) be done
+through a socket. Each of them executes the provided string as Python code in a namespace containing the functions
+<code class="docutils literal notranslate"><span class="pre">get_dashboard()</span></code>, which returns the Dashboard object, and <code class="docutils literal notranslate"><span class="pre">do_threadsafe(function)</span></code>, which should be used for any calls
+that modify Dashboard, widget, or GUI objects (since socket commands are processed in a different thread from the
+GUI main thread, and most Tkinter objects are not threadsafe). Also, note that due to the use of the <code class="docutils literal notranslate"><span class="pre">inspect</span></code> package,
+you must separately define a function before passing it to <code class="docutils literal notranslate"><span class="pre">do_exec</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyopticon.socket_client</span> <span class="kn">import</span> <span class="n">PyOpticonSocketClient</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">PyOpticonSocketClient</span><span class="p">()</span>
+
+<span class="c1"># DO THIS</span>
+<span class="n">l</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;:)&quot;</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">do_exec</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+
+<span class="c1"># NOT THIS</span>
+<span class="n">s</span><span class="o">.</span><span class="n">do_exec</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;:(&quot;</span><span class="p">))</span>
+
+<span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Here’s an example of a demo automation script, compatible with the demo dashboard, that uses some more of these methods:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyopticon.socket_client</span> <span class="kn">import</span> <span class="n">PyOpticonSocketClient</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="c1"># Define some functions to try with exec</span>
+<span class="k">def</span> <span class="nf">test_fn</span><span class="p">():</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">get_dashboard</span><span class="p">()</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s2">&quot;UV Light&quot;</span><span class="p">,</span><span class="s2">&quot;Actual Status&quot;</span><span class="p">)</span>
+    <span class="n">do_threadsafe</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Light is &quot;</span><span class="o">+</span><span class="n">v</span><span class="o">+</span><span class="s2">&quot;!!!!!&quot;</span><span class="p">))</span>
+
+<span class="n">l</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello :D&quot;</span><span class="p">)</span>
+
+<span class="c1"># Initialize the socket client</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">PyOpticonSocketClient</span><span class="p">(</span><span class="n">handle_errors</span><span class="o">=</span><span class="s1">&#39;exception&#39;</span><span class="p">)</span>
+
+<span class="c1"># Do some field gets, sets, and confirms</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s2">&quot;UV Light&quot;</span><span class="p">,</span><span class="s2">&quot;Actual Status&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="s2">&quot;UV Light&quot;</span><span class="p">,</span><span class="s2">&quot;Status Selection&quot;</span><span class="p">,</span><span class="s2">&quot;On&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">do_confirm</span><span class="p">(</span><span class="s2">&quot;UV Light&quot;</span><span class="p">))</span>
+
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Do an eval</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">do_eval</span><span class="p">(</span><span class="s2">&quot;str(get_dashboard().serial_connected)&quot;</span><span class="p">))</span>
+
+<span class="c1"># So some exec&#39;s</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">do_exec</span><span class="p">(</span><span class="n">test_fn</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">do_exec</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+
+<span class="c1"># Close the dashboard</span>
+<span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>

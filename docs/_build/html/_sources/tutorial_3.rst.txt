@@ -90,7 +90,7 @@ The orange blocks represent methods that you can (and in some cases must) implem
     will not be polled.
 *   ``on_update``: Required. Called whenever it's time to update the widget. Usually this method will query the physical device for 
     the latest readings, wait to receive them, parse them, and then update the widget's output fields accordingly.
-*   ``on_close``: Strongly recommended. Called when the dashboard stops polling devices. The dashboard will automatically close any ``serial.Serial`` objects 
+*   ``on_serial_close``: Strongly recommended. Called when the dashboard stops polling devices. The dashboard will automatically close any ``serial.Serial`` objects 
     that it opened, but this method can close down other device-communication objects and return output fields to some placeholder value.
 *   ``on_failed_serial_open``: Optional. If the widget is initialized with ``use_serial==True`` and constructing the ``serial.Serial`` object 
     fails (e.g. because the COM port doesn't exist), this method is called. It can do things like set fields' values to "No Reading".
@@ -134,17 +134,14 @@ communications with the valve.
 .. code-block:: python
 
     import numpy as np
-
+    import time
     from .. import generic_widget
-    from .. import generic_serial_emulator
 
     class Valco2WayValveWidget(generic_widget.GenericWidget):
-        # Docstring has been cut out to save space.
-        # Note that valve_positions is a list of the names of the valve's positions.
+        # Docstrings have been omitted to save space
 
         def __init__(self,parent_dashboard,name,nickname,default_serial_port,valve_positions,valve_id='1'):
-            """ Constructor for a VICI Valco 2-way valve widget."""
-            # Initialize the superclass (GenericWidget) with most of the widget functionality
+            # Initialize the superclass with most of the widget functionality
             super().__init__(parent_dashboard,name,nickname,'#ADD8E6',default_serial_port=default_serial_port,baudrate=9600)
             # Record the valve id
             self.valve_id=valve_id.encode('ascii')
@@ -158,31 +155,25 @@ communications with the valve.
             # Move the confirm button
             self.move_confirm_button(row=3,column=2)
 
-        def on_serial_open(self,success):
-            """If serial opened successfully, do nothing; if not, set readouts to 'No Reading'
+        def on_failed_serial_open(self,success):
+            self.set_field('Actual Position','No Reading',hush_warning=True)
 
-            :param success: Whether serial opened successfully, according to the return from the on_serial_read method.
-            :type success: bool
-            """
-            if not success:
-                self.set_field('Actual Position','No Reading')
-
-        def on_serial_query(self):
-            """Send a query to the valve asking for its current position.
-            """
-            # Flush any old responses
-            self.get_serial_object().reset_input_buffer()
-            # Commands are something like b'1CP\r', where 1 is the valve ID and CP means 'current position'
-            self.get_serial_object().write(self.valve_id+b'CP\r')
-
-        def on_serial_read(self):
-            """Parse the responses from the previous serial query and update the display. Return True if the response is valid and False if not.
-
-            :return: True if all the response was of the expected format, False otherwise.
-            :rtype: bool
-            """
-            status = str(self.serial_object.readline())
-            # The response is something like b'1\A' or b'1\B', where A and B are the valve's 2 positions
+        def on_update(self):
+            # Send the query
+            if not self.parent_dashboard.offline_mode:
+                self.get_serial_object().reset_input_buffer()
+                to_write=self.valve_id+b'CP\r'
+                self.get_serial_object().write(to_write)
+            # Wait a bit
+            time.sleep(0.2)
+            # Read and parse the response
+            if not self.parent_dashboard.offline_mode:
+                status = str(self.serial_object.readline())
+            else:
+                v = np.random.randint(0,20)
+                v = 'A' if v>10 else 'B'
+                v = 'dd"'+str(v)+'dd\r\n'
+                status = str(v.encode('ascii'))
             try:
                 i = status.index("\"")+1
                 is_A = status[i]=='A'
@@ -191,24 +182,23 @@ communications with the valve.
                 else:
                     self.set_field('Actual Position',self.valve_positions[1])
             except Exception as e:
+                fail_message=("Unexpected response received from 2-way valve: "+str(status))
                 self.set_field('Actual Position','Read Error')
-                return False
+                return fail_message
             return True
 
         def on_serial_close(self):
             """When serial is closed, set all readouts to 'None'."""
-            self.set_field('Actual Position','No Reading')
+            self.set_field('Actual Position','No Reading',hush_warning=True)
 
         def on_confirm(self):
             """When 'confirm' is pressed, send the appropriate commands to the valve.
             """
-            # GenericWidget already checks whether serial is connected, and complains if not.
             selected = self.get_field('Position Selection')
             if not (selected in self.valve_positions):
                 print("\"Confirm\" pressed with no/invalid option selected.")
                 return
             choice = self.valve_positions.index(selected)
-            # Command is something like b'1GOA\r' or b'1GOB\r' where A and B are the 2 valve positions
             if choice==0:
                 print("Moving valve \""+self.name+"\" to \""+selected+"\" (A)")
                 self.serial_object.write(self.valve_id+b'GOA\r')
@@ -216,13 +206,6 @@ communications with the valve.
                 print("Moving valve \""+self.name+"\" to \""+selected+"\" (B)")
                 self.serial_object.write(self.valve_id+b'GOB\r')
 
-        def construct_serial_emulator(self):
-            """Get the serial emulator to use when we're testing in offline mode.
-            A later section of the tutorial explains what this means.
-
-            :return: A valco 2-way valve serial emulator object.
-            :rtype: pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveSerialEmulator"""
-            return Valco2WayValveSerialEmulator()
 
 Here's what the widget ends up looking like:
 
@@ -275,7 +258,7 @@ Additionally, many instrument manufacturers provide Python drivers to interface 
 The workflow to use one of these protocols is similar to that for 'plain' RS232 serial. First, write a standalone (non-PyOpticon) 
 Python script that can read from and write to your instrument, ensuring that you understand how Python communicates with your 
 instrument. Second, in ``on_handshake``, initialize whatever object represents your serial connection (e.g. a ``pymodbus.ModbusSerialClient`` object). 
-Then, implement the other methods as normal, making sure to close the object however is needed in ``on_close``. The built-in 
+Then, implement the other methods as normal, making sure to close the object however is needed in ``on_serial_close``. The built-in 
 Thorlabs Optical Power Meter widget is a good example of a widget that uses an OEM Python driver.
 
 Important Notes on Multithreading
@@ -298,12 +281,17 @@ However, as a result of this architecture, there are two things that you need to
     thread, and blindly manipulating variables in one thread from another thread is a recipe for disaster. ``set_field`` and 
     ``get_field`` are written to be thread-safe, so you can use them without worrying. To give you more flexibility, we also 
     provide ``do_threadsafe``, which can be used like so: ``self.do_threadsafe(lambda: self.disable_field("Setpoint"))``.
-*   To shut down widgets promptly, ``on_close`` executes immediately in the main dashboard thread, unlike ``on_update`` etc. that 
+*   To shut down widgets promptly, ``on_serial_close`` executes immediately in the main dashboard thread, unlike ``on_update`` etc. that 
     execute in the widgets' respective threads. One can have a situation where an ``on_update`` method queries a device then waits for a response, 
-    but while it's waiting, ``on_close`` is called serial connection closes, and it then attempts to read from a serial object that is closed. 
+    but while it's waiting, ``on_serial_close`` is called serial connection closes, and it then attempts to read from a serial object that is closed. 
     Therefore, before reading or writing to serial, ``on_update`` and ``on_confirm`` should double-check that the serial 
     connection is still open by checking the widget's ``self.parent_dashboard.serial_connected`` flag. Calling ``set_field`` while 
     serial is closed prints a warning to help you remember to do this, though it can be suppressed by giving ``set_field`` the argument ``hush_warning=True``.
+
+Be careful if you choose to take advantage of packages that offer asynchronous access to serial devices, e.g. OEM drivers 
+that make use of asyncio. In many cases it's simplest to force the thread to wait until an asynchronous method finishes before 
+moving to the next task, essentially turning it into blocking code. Since each widget gets its own thread, and you likely only need to do 
+a handful of calls every update cycle, doing so is unlikely to gum up the entire dashboard. 
 
 GenericWidget Tricks and Features
 ''''''''''''''''''''''''''''''''''''''''''''''''
@@ -329,7 +317,7 @@ class. They're buried in the documentation, so we will quickly highlight some he
 *   Widgets sharing a thread: sometimes it may be necessary for multiple widgets to share one serial connection. This happened for us 
     when we have several mass flow controllers that are all controlled by one control box with a single serial connection. You can 
     initialize a GenericWidget with the parameter ``widget_to_share_thread_with`` and it will create a single thread for multiple widgets. 
-    The thread maintains a queue of tasks, so you can be sure that the widgets' ``on_handshake``, ``on_update``, and ``on_close`` methods will always
+    The thread maintains a queue of tasks, so you can be sure that the widgets' ``on_handshake``, ``on_update``, and ``on_serial_close`` methods will always
     be called in the same order (the order in which the widgets were added to the dashboard).
 
 
@@ -343,7 +331,7 @@ calculator widget to help the operator, it may be easiest to just use a ``Generi
 class in case you really do want to build a widget from scratch.
 
 The ``MinimalWidget`` class implements only the few methods that are required for a widget to interface with its parent 
-dashboard (e.g. ``on_update`` and ``on_close``); all of them default to doing nothing, though of course you can override them.
+dashboard (e.g. ``on_update`` and ``on_serial_close``); all of them default to doing nothing, though of course you can override them.
 
 The most likely use of the ``MinimalWidget`` is writing a widget that is purely cosmetic. Such a widget needs none of the 
 serial or logging machinery of a ``GenericWidget`` subclass, nor would it want to be stuck with a ``GenericWidget`` subclass' 

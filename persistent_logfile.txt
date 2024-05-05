@@ -1,0 +1,55 @@
+
+2024-05-05 12:55:09: Dashboard launched.
+2024-05-05 12:55:39: 
+2024-05-05 12:55:39: Automation help:
+2024-05-05 12:55:39: The following are standalone functions that can be called in an automation script, which should be its own .py file:
+2024-05-05 12:55:39: - schedule_delay( delay='h:mm:ss' )
+2024-05-05 12:55:39: - schedule_action( target_widget_nickname, target_field_name, new_field_value, confirm=True )
+2024-05-05 12:55:39: - schedule_function( function )
+2024-05-05 12:55:39: In schedule_action, on confirm=True the widget's confirm button is pressed after updating the field.
+2024-05-05 12:55:39: Examples:
+2024-05-05 12:55:39:  schedule_delay('0:00:10')
+2024-05-05 12:55:39:  schedule_action( 'Argon MFC', 'Setpoint', '100', True)
+2024-05-05 12:55:39: In schedule_function, you may pass a function that takes no arguments, or one that takes the dashboard object as an argument, e.g.:
+2024-05-05 12:55:39:  schedule_function(lambda: print('Test'))
+2024-05-05 12:55:39:  schedule_function(lambda dashboard: print(dashboard.widgets_by_nickname['Temp'].get_field('Temperature')))
+2024-05-05 12:55:39: 
+2024-05-05 12:55:39: The following are the nicknames of all available devices to control and their associated attributes you can write to:
+2024-05-05 12:55:39: Nickname: Reactor TC -- Attributes: Temperature
+2024-05-05 12:55:39: Nickname: Methane MFC -- Attributes: Gas Selection, Mode Selection, Setpoint Entry, Device Gas, Device Mode, Device Setpoint, Actual Flow
+2024-05-05 12:55:39: Nickname: Argon MFC -- Attributes: Scale Factor Entry, Mode Selection, Setpoint Entry, Device Scale Factor, Device Mode, Device Setpoint, Actual Flow
+2024-05-05 12:55:39: Nickname: Oxygen MFC -- Attributes: Scale Factor Entry, Mode Selection, Setpoint Entry, Device Scale Factor, Device Mode, Device Setpoint, Actual Flow
+2024-05-05 12:55:39: Nickname: UV Light -- Attributes: Status Selection, Actual Status
+2024-05-05 12:55:39: Nickname: Picarro -- Attributes: CH4 (ppm), CO2 (ppm), H2O (vol %)
+2024-05-05 12:55:39: Nickname: GC FID -- Attributes: GC Logfile, Sensitivity, CH4 (ppm), CO2 (ppm)
+2024-05-05 12:55:39: End automation help.
+2024-05-05 12:55:39: 
+2024-05-05 12:57:17: Opening all connections.
+2024-05-05 12:57:17: Opening COM2 for "Picarro"
+2024-05-05 12:57:17: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 12:57:17: Opening COM10 for "UV Light"
+2024-05-05 12:57:17: Handshake successful for 'Picarro'.
+2024-05-05 12:57:17: Opening None for "Oxygen MFC"
+2024-05-05 12:57:17: Opening COM9 for "Methane MFC"
+2024-05-05 12:57:17: Opening COM3 for "Argon MFC"
+2024-05-05 12:57:17: Handshake successful for 'GC FID'.
+2024-05-05 12:57:17: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 12:57:17: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 12:57:17: Handshake successful for 'UV Light'.
+2024-05-05 12:57:17: Handshake successful for 'Methane MFC'.
+2024-05-05 12:57:18: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 12:57:18: Handshake successful for 'Oxygen MFC'.
+2024-05-05 12:57:18: Handshake successful for 'Argon MFC'.
+2024-05-05 12:57:26: Connection to socket 12345 from: ('127.0.0.1', 50147)
+2024-05-05 12:57:26: Received command on socket 12345: Get Actual Status in UV Light
+2024-05-05 12:57:26: Received command on socket 12345: Set Status Selection in UV Light to On
+2024-05-05 12:57:26: Received command on socket 12345: Confirm in UV Light
+2024-05-05 12:57:27: Turning on IoT relay: 'UV Light'
+2024-05-05 12:57:36: Received command on socket 12345: eval
+2024-05-05 12:57:36: Received command on socket 12345: exec
+2024-05-05 12:57:36: On!!!!!
+2024-05-05 12:57:36: Received command on socket 12345: exec
+2024-05-05 12:57:36: Hello :D
+2024-05-05 12:57:36: Socket 12345 closed normally.
+2024-05-05 12:57:43: Closing all connections.
+2024-05-05 12:57:44: Dashboard closed normally.

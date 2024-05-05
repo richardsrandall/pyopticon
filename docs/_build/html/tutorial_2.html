@@ -52,6 +52,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#building-a-basic-dashboard">Building a Basic Dashboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#building-a-more-complicated-dashboard">Building a More Complicated Dashboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#additional-dashboard-features">Additional Dashboard Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#options-when-initializing-a-dashboard">Options when Initializing a Dashboard</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#adding-interlocks">Adding interlocks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#launching-from-an-icon">Launching from an Icon</a></li>
 </ul>
@@ -117,9 +118,15 @@ consequently need to make a new dashboard.</p>
 
 <span class="c1"># Create a dashboard object</span>
 <span class="n">dashboard</span> <span class="o">=</span> <span class="n">PyOpticonDashboard</span><span class="p">(</span><span class="n">dashboard_name</span> <span class="o">=</span> <span class="s2">&quot;PyOpticon Demo&quot;</span><span class="p">,</span>
-                            <span class="n">use_serial_emulators</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">offline_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                             <span class="n">polling_interval_ms</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-                            <span class="n">window_resizeable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                            <span class="n">x_pad</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                            <span class="n">y_pad</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                            <span class="n">window_resizeable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">persistent_console_logfile</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                            <span class="n">print_stacktraces</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">include_auto_widget</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">include_socket_widget</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Add a title block</span>
 <span class="n">dashboard</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">biw</span><span class="o">.</span><span class="n">TitleWidget</span><span class="p">(</span><span class="n">dashboard</span><span class="p">,</span><span class="s2">&quot;PyOpticon Demo&quot;</span><span class="p">,</span><span class="mi">20</span><span class="p">),</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -141,11 +148,26 @@ or any particular type of widget.</p>
 <section id="building-a-more-complicated-dashboard">
 <h2>Building a More Complicated Dashboard<a class="headerlink" href="#building-a-more-complicated-dashboard" title="Permalink to this heading"></a></h2>
 <p>Here’s the complete code to launch the build-in Demo Dashboard:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>   <span class="c1"># Create a dashboard object</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyopticon.majumdar_lab_widgets</span> <span class="k">as</span> <span class="nn">mlw</span>
+<span class="kn">import</span> <span class="nn">pyopticon.built_in_widgets</span> <span class="k">as</span> <span class="nn">biw</span>
+<span class="kn">from</span> <span class="nn">pyopticon.dashboard</span> <span class="kn">import</span> <span class="n">PyOpticonDashboard</span>
+
+<span class="c1"># How to construct a dashboard:</span>
+<span class="c1"># - Define all of the widgets you want</span>
+<span class="c1"># - Load them into your window, specifying grid positions</span>
+<span class="c1"># - Remember that Column 1 is reserved for system GUI elements</span>
+
+<span class="c1"># Create a dashboard object</span>
 <span class="n">dashboard</span> <span class="o">=</span> <span class="n">PyOpticonDashboard</span><span class="p">(</span><span class="n">dashboard_name</span> <span class="o">=</span> <span class="s2">&quot;PyOpticon Demo&quot;</span><span class="p">,</span>
-                            <span class="n">use_serial_emulators</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">offline_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                             <span class="n">polling_interval_ms</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-                            <span class="n">window_resizeable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                            <span class="n">x_pad</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                            <span class="n">y_pad</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                            <span class="n">window_resizeable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">persistent_console_logfile</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                            <span class="n">print_stacktraces</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">include_auto_widget</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">include_socket_widget</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># The next many sections initialize each of the individual widgets.</span>
 
@@ -191,7 +213,7 @@ or any particular type of widget.</p>
                                 <span class="n">default_serial_port</span><span class="o">=</span><span class="s1">&#39;COM11&#39;</span><span class="p">,</span>
                                 <span class="n">valve_positions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Thru Reactor&#39;</span><span class="p">,</span><span class="s1">&#39;Bypass Reactor&#39;</span><span class="p">])</span>
 <span class="c1">#dashboard.add_widget(valve_1,row=1,column=1)</span>
-<span class="c1"># Omit this one for now just to save space</span>
+<span class="c1"># Omit for now just to save space</span>
 
 <span class="c1"># Add an UV LED controller controlled with an IoT relay</span>
 <span class="n">uv_led_1</span> <span class="o">=</span> <span class="n">mlw</span><span class="o">.</span><span class="n">IotRelayWidget</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="o">=</span><span class="n">dashboard</span><span class="p">,</span>
@@ -211,7 +233,18 @@ or any particular type of widget.</p>
 <span class="n">spice_1</span> <span class="o">=</span> <span class="n">biw</span><span class="o">.</span><span class="n">SpicinessWidget</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="o">=</span><span class="n">dashboard</span><span class="p">,</span>
                             <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Spice-O-Meter&#39;</span><span class="p">,</span>
                             <span class="n">nickname</span><span class="o">=</span><span class="s1">&#39;Spice&#39;</span><span class="p">)</span>
-<span class="n">dashboard</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">spice_1</span><span class="p">,</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1">#dashboard.add_widget(spice_1,row=3,column=2)</span>
+
+<span class="c1"># GC widget</span>
+<span class="n">gc_1</span> <span class="o">=</span> <span class="n">mlw</span><span class="o">.</span><span class="n">SRIGasChromatographFIDWidget</span><span class="p">(</span><span class="n">parent_dashboard</span><span class="o">=</span><span class="n">dashboard</span><span class="p">,</span>
+                             <span class="n">name</span><span class="o">=</span><span class="s1">&#39;GC FID&#39;</span><span class="p">,</span>
+                             <span class="n">nickname</span><span class="o">=</span><span class="s1">&#39;GC FID&#39;</span><span class="p">,</span>
+                             <span class="n">gas_labels</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;CH4 (ppm)&#39;</span><span class="p">,</span><span class="s1">&#39;CO2 (ppm)&#39;</span><span class="p">),</span>
+                             <span class="n">gas_columns</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span>
+                             <span class="n">calibration_functions</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Low&#39;</span><span class="p">:(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="mf">0.1</span><span class="p">,</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="mf">0.1</span><span class="p">),</span>
+                                                    <span class="s1">&#39;Medium&#39;</span><span class="p">:(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="mf">0.05</span><span class="p">,</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="mf">0.05</span><span class="p">),</span>
+                                                    <span class="s1">&#39;High&#39;</span><span class="p">:(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="mf">0.01</span><span class="p">,</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="mf">0.01</span><span class="p">)})</span>
+<span class="n">dashboard</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">gc_1</span><span class="p">,</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="c1"># Here&#39;s where you&#39;d add interlocks, if you wanted any</span>
 
@@ -222,6 +255,34 @@ or any particular type of widget.</p>
 </section>
 <section id="additional-dashboard-features">
 <h2>Additional Dashboard Features<a class="headerlink" href="#additional-dashboard-features" title="Permalink to this heading"></a></h2>
+<section id="options-when-initializing-a-dashboard">
+<h3>Options when Initializing a Dashboard<a class="headerlink" href="#options-when-initializing-a-dashboard" title="Permalink to this heading"></a></h3>
+<p>While it’s all in the API reference, here are some of the options you can specific when launching a dashboard.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">offline_mode</span></code>: If offline mode is true, no serial connections are initialized, but widgets are launched as
+normal. Widgets can check whether the dashboard is in offline mode, and if so, use simulated responses from an
+imaginary device to popualate their fields. This is useful because it lets you write and test widgets without
+access to the physical devices, e.g. on your laptop, then set <code class="docutils literal notranslate"><span class="pre">offline_mode</span></code> to False when you’re ready to do
+the final integration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x_pad</span></code> and <code class="docutils literal notranslate"><span class="pre">y_pad</span></code>: Measured in pixels; lets you squish widgets closer together to fit more on the screen.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">persistent_console_logfile</span></code>: Defaults to True; if True, saves everything that’s printed to console to a .txt
+logfile in the same directory as the file that initializes the dashboard. The logfile gets appended to whenever
+the dashboard launches. This is useful for diagnose errors that you only realize may have occurred after the
+dashboard and console have been closed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">print_stacktraces</span></code>: Defaults to False. If True, full stack traces of errors are displayed both in the console
+and in the log file. If False, just a single-line summary of the error is printed to the console, while the full
+stack trace is always saved to the logfile and can be looked up based on its time stamp. In either case, the full
+error info is preserved; it’s just a matter of whether you’re actively debugging and want faster access to errors
+via the console.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">include_socket_widget</span></code> and <code class="docutils literal notranslate"><span class="pre">include_auto_widget</span></code>: It’s possible to exclude either the socket widget or the
+automation script widget from the dashboard if you expect not to need them and wish to free up some space.</p></li>
+</ul>
+<p>If you’re having trouble fitting all widgets on the screen, <code class="docutils literal notranslate"><span class="pre">x_pad</span></code> and <code class="docutils literal notranslate"><span class="pre">y_pad</span></code> are the easiest things to change.
+Additionally, you can call <code class="docutils literal notranslate"><span class="pre">dashboard.scale_all_text</span></code> after initializing the dashboard but before launching it to
+scale the widgets down, letting you fit more of them on a screen. PyOpticon doesn’t offer scrolling within the
+Dashboard window, but if you make a dashboard that’s far wider than your screen, you can just drag the window side to
+side to get essentially the same functionality.</p>
+</section>
 <section id="adding-interlocks">
 <h3>Adding interlocks<a class="headerlink" href="#adding-interlocks" title="Permalink to this heading"></a></h3>
 <p>An ‘interlock’ refers to any function that gets polled once per dashboard update cycle. It could be anything, but

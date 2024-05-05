@@ -1,7 +1,6 @@
 import numpy as np
 
 from .. import generic_widget
-from .. import generic_serial_emulator
 
 class PicarroCRDWidget(generic_widget.GenericWidget):
     """ Widget for a Picarro GG201-i isotopic analyzer that measures 0-30 ppm CH4, 200-2000+ ppm CO2, and 0-100% relative humidity.\n
@@ -16,7 +15,7 @@ class PicarroCRDWidget(generic_widget.GenericWidget):
     This is done using the Picarro's own monitor and interface, as described in its manual -- contact the manufacturer if your manual doesn't tell you how to do this.
 
     :param parent_dashboard: The dashboard object to which this device will be added
-    :type parent_dashboard: pyopticon.dashboard.PyOpticonDashboard
+    :type parent_dashboard: richardview.dashboard.RichardViewDashboard
     :param name: The name that the widget will be labeled with, and under which its data will be logged, e.g. "Methane Mass Flow Controller"
     :type name: str
     :param nickname: A shortened nickname that can be used to identify the widget in automation scripts, e.g. "CH4 MFC"
@@ -39,34 +38,29 @@ class PicarroCRDWidget(generic_widget.GenericWidget):
                        label='Water (vol %): ', default_value='No Reading', log=True)
         self.num_fails=0
 
-    def on_serial_open(self,success):
-        """If serial opened successfully, do nothing; if not, set readouts to 'No Reading'
-
-        :param success: Whether serial opened successfully, according to the return from the on_serial_read method.
-        :type success: bool or str
+    def on_failed_serial_open(self):
+        """If serial opened unsuccessfully, set readouts to 'No Reading'
         """
-        if success is not True:
-            for field in ('CH4 (ppm)','CO2 (ppm)','H2O (vol %)'):
-                self.set_field(field,'No Reading')
+        for field in ('CH4 (ppm)','CO2 (ppm)','H2O (vol %)'):
+            self.set_field(field,'No Reading',hush_warning=True)
 
-    def on_serial_query(self):
-        """We would normally send a serial query, but we are just listening for the Picarro's updates that are automatically sent once per second, so no query is required.
-        """
-        pass
-
-    def on_serial_read(self):
-        """Parse the latest message from the Picarro and update the display. Return True if valid and an error string if not.\n
+    def on_update(self):
+        """Parse the latest message from the Picarro and update the display.\n
         Note that sometimes we get unlucky with the timing and a valid Picarro message gets chopped off halfway through and fails to parse. So occasionally we get a 'read error' 
         when the instrument is behaving just fine. This is easy to fix in data post-processing, but we might also consider fixing it by switching to a query-response setup.
-
-        :return: True if the response was of the expected format, an error string otherwise.
-        :rtype: bool or str
         """
+        if not self.parent_dashboard.serial_connected:
+            return
         try:
-            self.get_serial_object().readline()
-            resp = str(self.get_serial_object().readline())
-            self.get_serial_object().reset_input_buffer()
+            if not self.parent_dashboard.offline_mode:
+                self.get_serial_object().readline()
+                resp = str(self.get_serial_object().readline())
+                self.get_serial_object().reset_input_buffer()
+            else:
+                s = ' < '+str(np.random.randint(2,100))+' '+str(np.random.randint(10,1000)*0.01)+' '+str(np.random.randint(400,600))+' > \r'
+                resp = str(s.encode('ascii'))
             values = resp.split()
+            #print(values)
             if len(values)!=7:
                 raise Exception('Bad response format.')
             ch4 = str(round(float(values[2]),4))
@@ -83,36 +77,12 @@ class PicarroCRDWidget(generic_widget.GenericWidget):
                 for field in ('CH4 (ppm)','CO2 (ppm)','H2O (vol %)'):
                     self.set_field(field,'Read Error')
             fail_message=("Unexpected response received from Picarro CRD: "+str(resp))
-            return fail_message # An invalid response was read
 
     def on_serial_close(self):
         """When serial is closed, set all readouts to 'None'."""
         for field in ('CH4 (ppm)','CO2 (ppm)','H2O (vol %)'):
-            self.set_field(field,'No Reading')
+            self.set_field(field,'No Reading',hush_warning=True)
 
-    def construct_serial_emulator(self):
-        """Get the serial emulator to use when we're testing in offline mode.
-
-        :return: A Picarro CRD serial emulator object.
-        :rtype: pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDSerialEmulator"""
-        return PicarroCRDSerialEmulator()
-
-# Serial emulator object to facilitate offline testing
-class PicarroCRDSerialEmulator(generic_serial_emulator.GenericSerialEmulator):
-    """Serial emulator to allow offline testing of dashboards containing Picarro CRD sensors.
-    Acts as a Pyserial Serial object for the purposes of the program, implementing a few of the same methods. 
-    Since nothing is ever sent to the Picarro, only the readline method needs to be implemented. \n
-    Serial queries are answered random concentrations of CH4 (2-100 ppm), water (0.1-10%), and CO2 (400-600 ppm).
-    """
-
-    def readline(self):
-        """Reads a response from the fake input buffer as if this were a Pyserial Serial object.
-
-        :return: The next line in the fake input buffer.
-        :rtype: str"""
-        # Responses have the form b'10/08/17 23:25:22.086;571.019;1.860;1.623\r' or something
-        s = ' < '+str(np.random.randint(2,100))+' '+str(np.random.randint(10,1000)*0.01)+' '+str(np.random.randint(400,600))+' > \r'
-        return s.encode('ascii')
 
         
 

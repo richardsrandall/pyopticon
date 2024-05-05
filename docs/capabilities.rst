@@ -32,11 +32,10 @@ Currently, PyOpticon comes with widgets for the following devices:
 * MKS Mass Flo Controllers, controlled by an MKS 946 Vacuum System Controller
 * Picarro G2210-i Cavity Ringdown Spectrometer for CH4, CO2, H2O, and C2H6 (logging only)
 * Digital Loggers IoT Relay 2, which can give on/off control of many types of AC devices
-* Omega USB-UTC Thermocouple Adapter
-* VICI Valco Automatic 2-Way Selector Valve
-* VICI Valco Automatic 8-Way Selector Valve
-* SRI 8610C Gas Chromatographs
-* CellKraft P-Series Flow-Through Humidifiers
+* Omega USB-UTC Thermocouple Adapters
+* VICI Valco Automatic 2-Way Selector Valves
+* SRI 8610C Gas Chromatographs (logging only)
+* Thorlabs PM100D Optical Power Meters
 
 We hope that PyOpticon users will write and share widgets to control their own devices, eventually creating an ecosystem 
 of available widgets that others can use. 

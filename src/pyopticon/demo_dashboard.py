@@ -1,5 +1,3 @@
-
-
 import pyopticon.majumdar_lab_widgets as mlw
 import pyopticon.built_in_widgets as biw
 from pyopticon.dashboard import PyOpticonDashboard
@@ -17,9 +15,15 @@ def run_demo_dashboard():
 
     # Create a dashboard object
     dashboard = PyOpticonDashboard(dashboard_name = "PyOpticon Demo",
-                                use_serial_emulators=True,
+                                offline_mode=1,
                                 polling_interval_ms=1000,
-                                window_resizeable=False)
+                                x_pad=30,
+                                y_pad=10,
+                                window_resizeable=False,
+                                persistent_console_logfile = True,
+                                print_stacktraces=True,
+                                include_auto_widget=True,
+                                include_socket_widget=True)
 
     # The next many sections initialize each of the individual widgets.
 
@@ -102,6 +106,3 @@ def run_demo_dashboard():
 
     # Start the dashboard
     dashboard.start()
-
-
-

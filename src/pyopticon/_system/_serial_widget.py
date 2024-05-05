@@ -53,62 +53,36 @@ class SerialWidget:
             self.update_ports_button.configure(state='normal')
             for obj in self.parent.all_widgets:
                 obj.close_serial()
-            print("All connections closed.")
+            print("Closing all connections.")
         else:
             # Open the serial connections
             self.connect_serial_text.set("Stop polling devices")
             self.parent.serial_connected = True
             self.update_ports_button.configure(state='disabled')#So you can't update serials while serial is polling
-            for obj in self.parent.all_widgets:
-                try:
-                    obj._call_build_serial_object() # Opens the serial object for each widget
-                except Exception:
-                    print(traceback.format_exc())#Print a full error report
-            for obj in self.parent.all_widgets:
-                try:
-                    obj.open_serial()
-                    # In each object, open_serial first queries, then waits as long as is necessary, then reads, 
-                    # then calls on_serial_open. This is done by means of separate tkinter after() calls in each widget.
-                except Exception as e:
-                    print(traceback.format_exc())#Print a full error report
-            # Some widgets may require more than one cycle to complete their handshake, so we figure out which widget 
-            # requires the longest handshake time, and make the handshake period last that long.
-            max_interval = 1
-            for obj in self.parent.all_widgets:
-                if hasattr(obj,'update_every_n_cycles'):
-                    if obj.update_every_n_cycles>max_interval:
-                        max_interval=obj.update_every_n_cycles
-            # After the handshake period is done, we start polling serial ports as normal.
-            self.root.after(self.serial_polling_wait*max_interval,lambda: self._poll_serial_ports())
-            self.root.after(self.serial_polling_wait*max_interval-50,lambda: print("All connections opened."))
-
-    def _poll_serial_ports(self):
-        """So long as serial communications are active, poll all widgets by calling this widget's own methods that prompt all widgets to query and read. Also, execute all interlock functions in the interlock list."""
-        self._query_serial_ports()
-        self.root.after(int(self.serial_polling_wait*0.5), self._read_serial_ports)
-        if self.parent.serial_connected:
-            self.root.after(self.serial_polling_wait,self._poll_serial_ports)
-            self._poll_interlocks()
             
-    def _query_serial_ports(self):
-        """Prompt every widget to send a query through its serial port, asking its physical device for a status update. Check for unrecoverable serial errors that occasionally result from defective RS232 converters and splitters."""
+            # Prompt widgets to connect to their devices
+            for obj in self.parent.all_widgets:
+                if hasattr(obj,'queue'):
+                    obj.queue.put(('HANDSHAKE',obj)) #Prompt each widget to update
+            print("Opening all connections.")
+
+            # Start polling the devices as normal. A device is expected to ignore queries while it's handshaking.
+            self.root.after(self.serial_polling_wait,lambda: self._update_widgets())
+            #self.root.after(self.serial_polling_wait*max_interval-50,lambda: print("All connections opened."))
+
+    def _update_widgets(self):
+        """So long as serial communications are active, poll all widgets. Also check interlocks"""
         if not self.parent.serial_connected:
             return
         for obj in self.parent.all_widgets:
-            try:
-                obj.query_serial()
-                obj.failure_flag = False
-            except Exception as e:
-                if hasattr(obj,'failure_flag'):
-                    if not obj.failure_flag:
-                        print("Serial error in "+obj.name+". No further readings possible.")
-                obj.failure_flag = True
-                try:
-                    obj.close_serial()#Change GUI to reflect that it disconnected
-                    obj.serial_status.set("Failed to Query.")
-                except Exception as e:
-                    pass
-                
+            if hasattr(obj,'queue'):
+                obj.queue.put(('UPDATE',obj)) #Prompt each widget to update
+                if hasattr(obj,'doing_update'):
+                    if obj.doing_update:
+                        print("Warning: widget '"+obj.name+"' prompted to update before the previous update cycle finished. Consider polling less often using update_every_n_cycles argument, or else the dashboard may lag.")
+        self.root.after(self.serial_polling_wait,self._update_widgets)
+        self._poll_interlocks()
+
 
     def _read_serial_ports(self):
         """Prompt every widget to read the lastest responses from its serial port and update its display accordingly."""

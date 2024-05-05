@@ -1,9 +1,7 @@
 import numpy as np
 import tkinter
 
-# This is a silly demo of how to use the 'no_serial=True' option for devices that don't have a serial connection
-# Test the superclass genericWidget
-from pyopticon import generic_widget
+from .. import generic_widget
 
 class SRIGasChromatographFIDWidget(generic_widget.GenericWidget):
     """ A widget representing an SRI gas chromatograph's flame ionization detector (FID). We use an SRI 8610c GC.
@@ -11,7 +9,7 @@ class SRIGasChromatographFIDWidget(generic_widget.GenericWidget):
     This widget doesn't communicate with the GC via serial. The GC should be controlled using SRI's PeakSimple application. 
     PeakSimple can be programmed to log GC FID data to a '.res' file, with a row appended to the file every time a new GC 
     scan is completed. This widget watches that file and displays the results. The benefit is that the GC data then ends up 
-    in the same PyOpticon file as all the MFC and other data, simplifying postprocessing.
+    in the same RichardView file as all the MFC and other data, simplifying postprocessing.
 
     One can make this widget extract several gases' data from the logfile. The gases' names are passed as one argument. 
     A .res files contains a bunch of columns of data, so you pass this constructor the indices of the columns that correspond to 
@@ -26,7 +24,7 @@ class SRIGasChromatographFIDWidget(generic_widget.GenericWidget):
     calibration points, e.g. 'ch4_cal_function_lo = lambda x: np.interp(x,[0,514,1024,1430],[0,20,40,60])'.
     
     :param parent_dashboard: The dashboard object to which this device will be added
-    :type parent_dashboard: pyopticon.dashboard.PyOpticonDashboard
+    :type parent_dashboard: richardview.dashboard.RichardViewDashboard
     :param name: The name that the widget will be labeled with, and under which its data will be logged, e.g. "Methane Mass Flow Controller"
     :type name: str
     :param nickname: A shortened nickname that can be used to identify the widget in automation scripts, e.g. "CH4 MFC"
@@ -44,7 +42,7 @@ class SRIGasChromatographFIDWidget(generic_widget.GenericWidget):
     def __init__(self,parent_dashboard,name,nickname,gas_labels,gas_columns,calibration_functions,default_logfile_path=None):
         """ Constructor for a GC FID widget."""
         # Initialize the superclass with most of the widget functionality
-        super().__init__(parent_dashboard,name,nickname,'#BF0A30',no_serial=True,update_every_n_cycles=3)
+        super().__init__(parent_dashboard,name,nickname,'#BF0A30',use_serial=False,update_every_n_cycles=3)
         # Store the fields
         self.gas_labels=gas_labels
         self.gas_columns=gas_columns
@@ -74,33 +72,32 @@ class SRIGasChromatographFIDWidget(generic_widget.GenericWidget):
 
 
     def on_serial_open(self,success):
-        """If the device initialized successfully, do nothing; if not, set its readout to 'No Reading'
+        """If the device initialized ubsuccessfully, set its readout to 'No Reading'
+        """
+        for l in self.gas_labels:
+            self.set_field(l,'No Reading',hush_warning=True)
 
-        :param success: Whether serial opened successfully, according to the return from the on_serial_read method.
-        :type success: bool or str"""
-        if success is not True:
-            for l in self.gas_labels:
-                self.set_field(l,'No Reading')
-        else:
-            pass
-
-    def on_serial_query(self):
-        """"Nothing is sent anywhere on a serial query for this device."""
+    def disable_button(self):
         self.button["state"] = "disabled"#Don't want to open file dialog while serial is polling
+
+    def on_handshake(self):
+        """"Disable the file chooser button and run an update."""
+        self.do_threadsafe(self.disable_button)
         self.disable_field("Sensitivity")
-        # Putting it here rather than on_serial_open makes it happen right when the 'connect serial' button is pressed
+        self.on_update()
 
-    def on_serial_read(self):
+    def on_update(self):
         """Polls the GC logfile and updates the readout with the latest values.
-
-        :return: True if the device updated itself successfully, an error string otherwise.
-        :rtype: bool or str"""
+        """
         try:
             # Open the file and grab the last line
             file = open(self.path,'r')
             lines = file.readlines()
             file.close()
             line=(lines[len(lines)-1])
+
+            if not self.parent_dashboard.serial_connected:
+                return
 
             # Extract the entries that we want
             chunks = line.split()
@@ -126,8 +123,8 @@ class SRIGasChromatographFIDWidget(generic_widget.GenericWidget):
         self.button["state"] = "normal"
         self.enable_field("Sensitivity")
         for l in self.gas_labels:
-            self.set_field(l,'No Reading')
-        self.set_field('GC Logfile',self.to_display)
+            self.set_field(l,'No Reading',hush_warning=True)
+        self.set_field('GC Logfile',self.to_display,hush_warning=True)
 
     def _update_file_to_watch(self):
         """Prompt the user to select a new file to watch."""
@@ -136,7 +133,7 @@ class SRIGasChromatographFIDWidget(generic_widget.GenericWidget):
             self.path=path
             chunks = str.split(path,'/')
             self.to_display = chunks[len(chunks)-1]
-            self.set_field('GC Logfile',self.to_display)
+            self.set_field('GC Logfile',self.to_display,hush_warning=True)
         except Exception as e:
             pass #Probably user x'd out file dialog
         

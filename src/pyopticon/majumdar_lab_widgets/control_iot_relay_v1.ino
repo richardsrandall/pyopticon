@@ -1,6 +1,6 @@
 
 // This is a sketch that you can load onto an Arduino to make digital pin 5 
-// controllable by a PyOpticon IoT relay widget. Pin 5 can then control a
+// controllable by a RichardView IoT relay widget. Pin 5 can then control a
 // Digital Loggers IoT relay.
 
 void setup() {

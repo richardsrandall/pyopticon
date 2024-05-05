@@ -34,9 +34,15 @@ The code to set up a simple dashboard with a title widget and a  widget for an O
 
     # Create a dashboard object
     dashboard = PyOpticonDashboard(dashboard_name = "PyOpticon Demo",
-                                use_serial_emulators=True,
+                                offline_mode=1,
                                 polling_interval_ms=1000,
-                                window_resizeable=False)
+                                x_pad=30,
+                                y_pad=10,
+                                window_resizeable=False,
+                                persistent_console_logfile = True,
+                                print_stacktraces=True,
+                                include_auto_widget=True,
+                                include_socket_widget=True)
 
     # Add a title block
     dashboard.add_widget(biw.TitleWidget(dashboard,"PyOpticon Demo",20),row=0,column=1)
@@ -61,11 +67,26 @@ Here's the complete code to launch the build-in Demo Dashboard:
 
 .. code-block:: python
 
-       # Create a dashboard object
+    import pyopticon.majumdar_lab_widgets as mlw
+    import pyopticon.built_in_widgets as biw
+    from pyopticon.dashboard import PyOpticonDashboard
+
+    # How to construct a dashboard:
+    # - Define all of the widgets you want
+    # - Load them into your window, specifying grid positions
+    # - Remember that Column 1 is reserved for system GUI elements
+
+    # Create a dashboard object
     dashboard = PyOpticonDashboard(dashboard_name = "PyOpticon Demo",
-                                use_serial_emulators=True,
+                                offline_mode=1,
                                 polling_interval_ms=1000,
-                                window_resizeable=False)
+                                x_pad=30,
+                                y_pad=10,
+                                window_resizeable=False,
+                                persistent_console_logfile = True,
+                                print_stacktraces=True,
+                                include_auto_widget=True,
+                                include_socket_widget=True)
 
     # The next many sections initialize each of the individual widgets.
 
@@ -111,7 +132,7 @@ Here's the complete code to launch the build-in Demo Dashboard:
                                     default_serial_port='COM11',
                                     valve_positions=['Thru Reactor','Bypass Reactor'])
     #dashboard.add_widget(valve_1,row=1,column=1)
-    # Omit this one for now just to save space
+    # Omit for now just to save space
 
     # Add an UV LED controller controlled with an IoT relay
     uv_led_1 = mlw.IotRelayWidget(parent_dashboard=dashboard,
@@ -131,7 +152,18 @@ Here's the complete code to launch the build-in Demo Dashboard:
     spice_1 = biw.SpicinessWidget(parent_dashboard=dashboard,
                                 name='Spice-O-Meter',
                                 nickname='Spice')
-    dashboard.add_widget(spice_1,row=3,column=2)
+    #dashboard.add_widget(spice_1,row=3,column=2)
+
+    # GC widget
+    gc_1 = mlw.SRIGasChromatographFIDWidget(parent_dashboard=dashboard,
+                                 name='GC FID',
+                                 nickname='GC FID',
+                                 gas_labels=('CH4 (ppm)','CO2 (ppm)'),
+                                 gas_columns=(10,15),
+                                 calibration_functions={'Low':(lambda x: x*0.1,lambda x: x*0.1),
+                                                        'Medium':(lambda x: x*0.05,lambda x: x*0.05),
+                                                        'High':(lambda x: x*0.01,lambda x: x*0.01)})
+    dashboard.add_widget(gc_1,row=3,column=2)
 
     # Here's where you'd add interlocks, if you wanted any
 
@@ -139,8 +171,38 @@ Here's the complete code to launch the build-in Demo Dashboard:
     dashboard.start()
 
 
+
 Additional Dashboard Features
 *********************************
+
+Options when Initializing a Dashboard
+'''''''''''''''''''''''''''''''''''''''''''''''''''
+
+While it's all in the API reference, here are some of the options you can specific when launching a dashboard.
+
+*   ``offline_mode``: If offline mode is true, no serial connections are initialized, but widgets are launched as 
+    normal. Widgets can check whether the dashboard is in offline mode, and if so, use simulated responses from an 
+    imaginary device to popualate their fields. This is useful because it lets you write and test widgets without 
+    access to the physical devices, e.g. on your laptop, then set ``offline_mode`` to False when you're ready to do 
+    the final integration.
+*   ``x_pad`` and ``y_pad``: Measured in pixels; lets you squish widgets closer together to fit more on the screen.
+*   ``persistent_console_logfile``: Defaults to True; if True, saves everything that's printed to console to a .txt 
+    logfile in the same directory as the file that initializes the dashboard. The logfile gets appended to whenever 
+    the dashboard launches. This is useful for diagnose errors that you only realize may have occurred after the 
+    dashboard and console have been closed.
+*   ``print_stacktraces``: Defaults to False. If True, full stack traces of errors are displayed both in the console 
+    and in the log file. If False, just a single-line summary of the error is printed to the console, while the full 
+    stack trace is always saved to the logfile and can be looked up based on its time stamp. In either case, the full 
+    error info is preserved; it's just a matter of whether you're actively debugging and want faster access to errors 
+    via the console.
+*   ``include_socket_widget`` and ``include_auto_widget``: It's possible to exclude either the socket widget or the 
+    automation script widget from the dashboard if you expect not to need them and wish to free up some space.
+
+If you're having trouble fitting all widgets on the screen, ``x_pad`` and ``y_pad`` are the easiest things to change. 
+Additionally, you can call ``dashboard.scale_all_text`` after initializing the dashboard but before launching it to 
+scale the widgets down, letting you fit more of them on a screen. PyOpticon doesn't offer scrolling within the 
+Dashboard window, but if you make a dashboard that's far wider than your screen, you can just drag the window side to 
+side to get essentially the same functionality.
 
 Adding interlocks
 ''''''''''''''''''

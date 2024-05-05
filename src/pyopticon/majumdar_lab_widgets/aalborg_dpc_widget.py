@@ -1,7 +1,6 @@
 import numpy as np
 from collections import defaultdict
 from .. import generic_widget
-from .. import generic_serial_emulator
 
 import time
 import traceback
@@ -18,7 +17,7 @@ class AalborgDPCWidget(generic_widget.GenericWidget):
     flows to the constructor for this class.
 
     :param parent_dashboard: The dashboard object to which this device will be added
-    :type parent_dashboard: pyopticon.dashboard.PyOpticonDashboard
+    :type parent_dashboard: richardview.dashboard.RichardViewDashboard
     :param name: The name that the widget will be labeled with, and under which its data will be logged, e.g. "Methane Mass Flow Controller"
     :type name: str
     :param nickname: A shortened nickname that can be used to identify the widget in automation scripts, e.g. "CH4 MFC"
@@ -44,8 +43,8 @@ class AalborgDPCWidget(generic_widget.GenericWidget):
             gas_options=kwargs['gas_options']
             gas_numbers=kwargs['gas_numbers']
         else:
-            gas_options=["Ar","H2","CH4"]
-            gas_numbers=(1,13,15)
+            gas_options=["Ar","H2","CH4","N2","O2"]
+            gas_numbers=(1,13,15,3,4)
         if 'calibration' in kwargs.keys():
             self.use_calibrator=True
             self.flows_according_to_meter=kwargs['calibration'][1]
@@ -72,41 +71,46 @@ class AalborgDPCWidget(generic_widget.GenericWidget):
         self.add_field(field_type='text output',name='Device Setpoint',label='Actual: ',default_value='None',log=True,column=2,row=5)
         self.add_field(field_type='text output',name='Actual Flow',label='Actual Flow (sccm): ',default_value='None',log=True)
 
-    def on_serial_open(self,success):
-        """If serial opened successfully, do nothing; if not, set readouts to 'No Reading'
-
-        :param success: Whether serial opened successfully, according to the return from the on_serial_read method.
-        :type success: bool or str
+    def on_failed_serial_open(self):
+        """If serial failed to open, set the readouts to 'no reading'.
         """
         # If handshake failed, set readouts to 'none'
-        if success is not True:
-            for f in ('Device Gas','Device Mode','Device Setpoint','Actual Flow'):
-                self.set_field(f,'No Reading')
-        else:
-            self.set_field('Setpoint Entry',self.get_field('Device Setpoint')) #Set default scale factor to be the device's current scale factor
-            self.set_field('Mode Selection',self.get_field('Device Mode')) #Set default mode to be the device's current mode
-            if self.get_field('Device Gas') in self.gas_options:
-                self.set_field('Gas Selection',self.get_field('Device Gas')) #Set default mode to be the device's current mode
+        for f in ('Device Gas','Device Mode','Device Setpoint','Actual Flow'):
+            self.set_field(f,'No Reading',hush_warning=True)
+                
+    def on_handshake(self):
+        # Do a query and a read
+        self.on_update()
+        # Populate the fields with their default values
+        self.set_field('Setpoint Entry',self.get_field('Device Setpoint')) #Set default scale factor to be the device's current scale factor
+        self.set_field('Mode Selection',self.get_field('Device Mode')) #Set default mode to be the device's current mode
+        if self.get_field('Device Gas') in self.gas_options:
+            self.set_field('Gas Selection',self.get_field('Device Gas')) #Set default mode to be the device's current mode
 
-    def on_serial_query(self):
+    def on_update(self):
         """Send four queries to the serial device asking for the gas selection, mode, setpoint, and actual flow rate.
-        Mode refers to open, closed, or setpoint.
+        Mode refers to open, closed, or setpoint. Read and process the responses.
         """
+        # Do the writes
         s = self.get_serial_object()
-        s.reset_input_buffer()
+        if not self.parent_dashboard.offline_mode:
+            s.reset_input_buffer()
         queries = [b'G\r',b'V,M\r',b'SP\r',b'FM\r'] #Gas, mode, setpoint, flow rate)
-        self.send_via_queue(queries[0],50)
-        self.send_via_queue(queries[1],350)
-        self.send_via_queue(queries[2],350)
-        self.send_via_queue(queries[3],350)
-
-    def on_serial_read(self):
-        """Parse the responses from the previous 4 serial queries and update the display. Return True if valid and an error string if not.
-
-        :return: True if all 4 responses were of the expected format, an error string otherwise.
-        :rtype: bool or str
-        """
-        lines=self.get_serial_object().readlines()
+        for q in queries:
+            if (not self.parent_dashboard.offline_mode) and self.parent_dashboard.serial_connected:
+                s.write(q)
+            time.sleep(0.1)
+        # Do the reads
+        if not self.parent_dashboard.serial_connected:
+            return
+        if not self.parent_dashboard.offline_mode:
+            lines=self.get_serial_object().readlines()
+        else:
+            setpoint = 30
+            setpoint_str = 'SP:'+str(setpoint)+'\r'
+            reading_str = '>'+str(setpoint+np.random.randint(0,5))+'\r'
+            lines = (b'G:1,AR\r',b'VM:A\r',setpoint_str.encode('ascii'),reading_str.encode('ascii'))
+        # Parse the reads
         try:
             # Parse the Gas data
             gas = lines[0]
@@ -148,17 +152,15 @@ class AalborgDPCWidget(generic_widget.GenericWidget):
             flow_str = "{:.1f}".format(flow_value)
             self.set_field('Actual Flow',flow_str)
         except Exception as e:
-            #print(traceback.format_exc())
             for f in ('Device Gas','Device Mode','Device Setpoint','Actual Flow'):
-                self.set_field(f,'Read Error')
-            fail_message=("Bad response in Aalborg MFC, in one of: "+str(lines))
-            return fail_message
+                self.set_field(f,'Read Error',hush_warning=True)
+                print("Bad response in Aalborg MFC, in one of: "+str(lines))
         return True
             
     def on_serial_close(self):
         """When serial is closed, set all readouts to 'None'."""
         for f in ('Device Gas','Device Mode','Device Setpoint','Actual Flow'):
-            self.set_field(f,'None')
+            self.set_field(f,'None',hush_warning=True)
             
     def on_confirm(self):
         """When 'confirm' is pressed, send the appropriate commands to the MFC.
@@ -172,7 +174,6 @@ class AalborgDPCWidget(generic_widget.GenericWidget):
             return
         gas = str(self.gas_numbers[self.gas_options.index(gas)]).encode('ascii')
         gas_cmd=(b'G,'+gas+b'\r')
-        self.send_via_queue(gas_cmd,100)
         # Update the mode:
         mode=self.get_field('Mode Selection')
         m = mode
@@ -183,7 +184,6 @@ class AalborgDPCWidget(generic_widget.GenericWidget):
         mode_chars = ("C","A","O")
         mode = str(mode_chars[self.mode_options.index(mode)]).encode('ascii')
         mode_cmd=(b'V,M,'+mode+b'\r')
-        self.send_via_queue(mode_cmd,100)
         # Update the setpoint
         try:
             setpoint = (self.get_field('Setpoint Entry'))
@@ -198,63 +198,10 @@ class AalborgDPCWidget(generic_widget.GenericWidget):
             return
         setpoint=setpoint.encode('ascii')
         setpoint_cmd=(b'SP,'+setpoint+b'\r')
-        self.send_via_queue(setpoint_cmd,100)
+        for cmd in [gas_cmd, mode_cmd, setpoint_cmd]:
+            if self.parent_dashboard.serial_connected:
+                self.serial_object.write(cmd)
+                time.sleep(0.1)
         # Print to console
         print("MFC '"+str(self.name)+"' set to gas "+g+", mode "+m+((", setpoint "+sp+" sccm.") if change_sp else '.'))
-
-    def construct_serial_emulator(self):
-        """Get the serial emulator to use when we're testing in offline mode.
-
-        :return: An Aalborg DPC serial emulator object.
-        :rtype: pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCSerialEmulator"""
-        return AalborgDPCSerialEmulator()
-
-class AalborgDPCSerialEmulator(generic_serial_emulator.GenericSerialEmulator):
-    """Serial emulator to allow offline testing of dashboards containing Aalborg DPC mass flow controllers.
-    Acts as a Pyserial Serial object for the purposes of the program, implementing a few of the same methods. Has a fake 'input buffer' 
-    where responses to queries from a fake 'MFC' are stored.\n
-    Serial queries are answered with a fixed gas (Ar), a fixed mode (Setpoint), a fixed setpoint (100 sccm), and a random actual flow (100-104 sccm).
-    """
-    
-    def __init__(self):
-        """Create a new serial emulator for an Aalborg DPC."""
-        self.output_buffer = []
-        self.setpoint=100
-
-    def reset_input_buffer(self):
-        """Reset the serial buffer, as if this were a Pyserial Serial object."""
-        self.output_buffer = []
-
-    def write(self,value):
-        """Write to this object as if it were a Pyserial Serial object. Adds appropriate responses to a fake input buffer.
-
-        :param value: The string to write, encoded as ascii bytes.
-        :type value: bytes"""
-        queries = (b'G\r',b'V,M\r',b'SP\r',b'FM\r')
-        if value not in queries:
-            self.output_buffer.append(b'IDK\r')#Nonsense answer
-        setpoint_str = 'SP:'+str(self.setpoint)+'\r'
-        reading_str = '>'+str(self.setpoint+np.random.randint(0,5))+'\r'
-        responses = (b'G:1,AR\r',b'VM:A\r',setpoint_str.encode('ascii'),reading_str.encode('ascii'))
-        self.output_buffer.append((responses[queries.index(value)]))
-
-    def readline(self):
-        """Reads a response from the fake input buffer as if this were a Pyserial Serial object.
-
-        :return: The next line in the fake input buffer.
-        :rtype: str"""
-        return self.output_buffer.pop(0)
-
-    def readlines(self):
-        """Reads all responses from the fake input buffer as if this were a Pyserial Serial object.
-
-        :return: A list of lines in the fake input buffer.
-        :rtype: list"""
-        out = list(self.output_buffer)
-        self.output_buffer = []
-        return out
-
-    def close(self):
-        """Close the object as if this were a Pyserial Serial object."""
-        pass
 

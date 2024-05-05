@@ -192,9 +192,7 @@ class AutomationWidget:
         except Exception as e:
             result=False
             if not self.await_error_displayed: # Stop the error from getting printed over and over again
-                print("Error in user-provided script await condition: ")
-                traceback.print_exc()
-                print("Treating it as 'False'; script will not advance.")
+                self.parent_dashboard.exc_handler(e,'automation await',self.name)
             self.await_error_displayed = True
         if result or self.skip_await_flag:
             self.awaiting = False
@@ -227,6 +225,10 @@ class AutomationWidget:
         """
         if self.pause_tasks:
             return
+        if (not self.awaiting) and self.skip_await_flag:
+            self.skip_await_flag = False
+            self.absolute_time_list = list(x-self.seconds_to_next_task for x in self.absolute_time_list)
+            print("Automation script advanced with 'Skip' button.")
         if time.time() > self.absolute_time_list[self.automation_index]:# It's time to execute a task
             execute_me = self.lambda_list[self.automation_index]
             try:
@@ -235,8 +237,7 @@ class AutomationWidget:
                 else:
                     execute_me(self.parent)
             except Exception as e:
-                print("Error in user-provided function called as part of automation script:")
-                print(traceback.format_exc())
+                self.parent_dashboard.exc_handler(e,'automation',self.name)
             self.automation_index += 1
             self.lines_loaded.set(str(self.automation_index)+"/"+str(len(self.delay_list))+" steps done.")
             if self.automation_index >= len(self.delay_list): # Script is finished; reset everything
@@ -263,10 +264,10 @@ class AutomationWidget:
             self.time_to_go = int(round(float(self.end_time)-time.time()))
         if not self.awaiting: # If we're not in an awaiting state
             self.step_countdown_readout.set(str(timedelta(seconds=self.seconds_to_next_task)))
-            self.skip_button.grid_remove()
+            #self.skip_button.grid_remove()
         else:
             self.step_countdown_readout.set("(awaiting condition)")
-            self.skip_button.grid(row=4,column=3,sticky='nesw')
+            #self.skip_button.grid(row=4,column=3,sticky='nesw')
         if self.automation_index<=self.latest_await_index: #If there are still 'awaits' queued
             self.time_to_go_readout.set("≥"+str(timedelta(seconds=(self.time_to_go-1)))) 
         else:
@@ -379,6 +380,7 @@ class AutomationWidget:
         self.script_stop_button.configure(state='normal')
         self.start_button_text.set("Start")
         self.automation_running_label.set("(running)")
+        self.skip_button.grid(row=4,column=3,sticky='nesw')
         self.frame.configure(highlightbackground='green')
 
     def _buttons_paused_mode(self):

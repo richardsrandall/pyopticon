@@ -1,13 +1,16 @@
 # Import these for all dashboard objects
 #from tkinter import *
 from tkinter import Tk, font
+import sys
+import threading
 from ._system._show_hide_widget import ShowHideWidget
 from ._system._serial_widget import SerialWidget
 from ._system._automation_widget import AutomationWidget
 from ._system._data_logging_widget import DataLoggingWidget
+from ._system._socket_widget import SocketWidget
+import datetime
+import traceback
 
-# Asyncio
-from async_tkinter_loop import async_mainloop
 
 class PyOpticonDashboard:
     """ A Dashboard is our term for a GUI window containing various 'widgets'. A standalone program should initialize, configure, and run each dashboard. 
@@ -22,28 +25,46 @@ class PyOpticonDashboard:
 
     :param dashboard_name: The name of the dashboard, which appears in any data logging files that the dashboard creates.
     :type dashboard_name: str
-    :param use_serial_emulators: Defaults to False. If False, attempts to connect to physical devices via wired serial connections; if True, attempts to launch a serial emulator for each widget instead.
-    :type use_serial_emulators: bool, optional
+    :param offline_mode: Defaults to False. If True, doesn't attempt to build any serial.Serial objects, and widgets may also check to behave differently.
+    :type offline_mode: bool, optional
     :param polling_interval_ms: The interval for polling all connected devices, in milliseconds. Defaults to 1000. You may want to use a larger interval if certain devices are slow to poll, or polling them involves blocking code (not recommended).
     :type polling_interval_ms: int, optional
     :param window_resizeable: Whether or not you can manually resize the dashboard by dragging and dropping the corner. Defaults to false. If True, the window is resizeable, but the widgets don't scale or center themselves.
     :type window_resizeable: bool, optional
+    :param persistent_console_logfile: Whether or not to log console events to a persistent file (same throughout multiple dashboard relaunches) in the same directory as the dashboard initialization script.
+    :type persistent_console_logfile: bool, optional
 
     """
 
-    def __init__(self, dashboard_name, use_serial_emulators=False, polling_interval_ms=1000,window_resizeable=False):
+    def __init__(self, dashboard_name, **kwargs):
         """Constructor for a Dashboard object."""
+
+        # Unpack kwargs
+        offline_mode = False if not 'offline_mode' in kwargs.keys() else kwargs['offline_mode']
+        polling_interval_ms = 1000 if not 'polling_inverval_ms' in kwargs.keys() else kwargs['polling_interval_ms']
+        window_resizeable = False if not 'window_resizeable' in kwargs.keys() else kwargs['window_resizeable']
+        persistent_console_logfile = 1000 if not 'persistent_console_logfile' in kwargs.keys() else kwargs['persistent_console_logfile']
+        x_pad = 50 if not 'x_pad' in kwargs.keys() else kwargs['x_pad']
+        y_pad = 25 if not 'y_pad' in kwargs.keys() else kwargs['y_pad']
+        self.print_stacktraces = True if not 'print_stacktraces' in kwargs.keys() else kwargs['print_stacktraces']
+        socket_ports = [12345] if not 'socket_ports' in kwargs.keys() else kwargs['socket_ports']
+        self.include_auto_widget = True if not 'include_auto_widget' in kwargs.keys() else kwargs['include_auto_widget']
+        self.include_socket_widget = True if not 'include_socket_widget' in kwargs.keys() else kwargs['include_socket_widget']
+        if not self.include_socket_widget:
+            socket_ports = [] # Prevents any socket threads from getting launched
+        
         self.name = dashboard_name
         root = Tk()
         self.root = root
-        window_title="PyOpticon 0.1.7 Alpha"
+        window_title="PyOpticon 0.2.0"
         self.title = window_title
         root.title(window_title)
-        self.use_serial_emulators = use_serial_emulators
+        self.offline_mode = offline_mode
         self.window_resizeable=window_resizeable
+        self.persistent_console_logfile=persistent_console_logfile
 
-        self.x_pad = 50
-        self.y_pad = 25
+        self.x_pad = x_pad
+        self.y_pad = y_pad
 
         # Setup widget storage
         self.all_widgets = []
@@ -62,13 +83,24 @@ class PyOpticonDashboard:
         self._show_hide_control_widget = ShowHideWidget(self)
         self._show_hide_control_widget.get_frame().grid(row=1,column=0,padx=self.x_pad,pady=self.y_pad)
 
-        # Control widget for running scripts
+        i=2 #To facilitate option to get rid of sockets / automation widgets
+
+        # Control widget for running scripts. If not included, the object is created but never displayer.
         self._automation_control_widget = AutomationWidget(self)
-        self._automation_control_widget.get_frame().grid(row=2,column=0,padx=self.x_pad,pady=self.y_pad)
+        if self.include_auto_widget:
+            self._automation_control_widget.get_frame().grid(row=i,column=0,padx=self.x_pad,pady=self.y_pad)
+            i+=1
+
+        # Create a widget for socket control. If not included, the object is created but never displayed.
+        self._socket_widget = SocketWidget(self,socket_ports)
+        if self.include_socket_widget:
+            self._socket_widget.get_frame().grid(row=i,column=0,padx=self.x_pad,pady=self.y_pad)
+            i+=1
 
         # Control widget for data logging
         self._logging_control_widget = DataLoggingWidget(self)
-        self._logging_control_widget.get_frame().grid(row=3,column=0,padx=self.x_pad,pady=self.y_pad)
+        self._logging_control_widget.get_frame().grid(row=i,column=0,padx=self.x_pad,pady=self.y_pad)
+        i+=1
     
     def add_widget(self, widget, row, column):
         """Add a widget to the dashboard at the specified row and column, each indexed from 0. 
@@ -109,8 +141,55 @@ class PyOpticonDashboard:
         self.all_interlocks.append(fn)
     
     def start(self):
-        """Launch the dashboard by starting the Tkinter main loop as an asynchronous process using the async_tkinter_loop package. 
-        This function blocks until the dashboard is closed."""
+        """Launch the dashboard, including all necessary threads."""
+
+        # Open a persistent logfile
+        if self.persistent_console_logfile:
+            console_logfile = open("persistent_logfile.txt", "a")
+            console_logfile.write("\n")
+        else:
+            console_logfile = None
+        self.console_logfile = console_logfile
+
+        # Override stdout to something threadsafe (ish)
+        class threadsafe_print(object):
+            def __init__(self):
+                self.stdout = sys.stdout
+            def write(self, s):
+                if s!="\n":
+                    self.stdout.write(str(datetime.datetime.now().strftime("%H:%M:%S"))+": "+str(s)+"\n")
+                    if console_logfile is not None:
+                        try:
+                            console_logfile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))+": "+str(s)+"\n")
+                        except Exception as e:
+                            pass #File got closed while we weren't looking.
+            def flush(self):
+                pass
+                        
+            def write_console_only(self, s):
+                self.stdout.write(str(datetime.datetime.now().strftime("%H:%M:%S"))+": "+str(s)+"\n")
+                
+            def write_logfile_only(self,s):
+                try:
+                    console_logfile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))+": "+str(s)+"\n")
+                except Exception as e:
+                    pass #File got closed while we weren't looking.
+
+        # Override the Tkinter error reporter to the dashboard's error handler
+        def report_callback_exception(exc, val, tb):
+            self.exc_handler(val,'system')
+        self.root.report_callback_exception = report_callback_exception
+                
+        self.print_obj = threadsafe_print()
+        sys.stdout = self.print_obj
+        print("Dashboard launched.")
+
+        # Launch some other threads!
+        for widget in self.all_widgets:
+            if hasattr(widget,'_run_thread'):
+                threading.Thread(target=widget._run_thread).start()
+
+        # Preparations to launch the Tkinter mainloop
         if not self.window_resizeable:
             self.get_tkinter_object().after(100, lambda: self.get_tkinter_object().resizable(False,False))
         self._serial_control_widget._update_serial_ports()
@@ -119,7 +198,66 @@ class PyOpticonDashboard:
                 self._serial_control_widget._toggle_serial_connected()
             self.get_tkinter_object().destroy()    
         self.get_tkinter_object().protocol("WM_DELETE_WINDOW", on_close)
-        async_mainloop(self.get_tkinter_object())
+        
+        # Start polling the sockets, creating as many threads as are needed
+        for p in self._socket_widget.port_numbers:
+            threading.Thread(target=self._socket_widget._run_one_thread,args=(p,)).start()
+
+        # Launch the mainloop
+        self.get_tkinter_object().mainloop()
+
+        # Shutdown the threads
+        for widget in self.all_widgets:
+            if hasattr(widget,'_shutdown_thread'):
+                widget._shutdown_thread()
+        self._socket_widget._shutdown_threads()
+        print("Dashboard closed normally.")
+        if self.persistent_console_logfile:
+            console_logfile.close()
+
+    def exc_handler(self,exc,source='system',widget=None):#Function used in various places to print helpful info about exceptions 
+
+        if source=='system':
+            source_str='internal PyOpticon code'
+        elif source=='on_serial_open_failure':
+            source_str="user-defined 'on_failed_serial_open' method"
+        elif source=='on_handshake':
+            source_str="user-defined 'on_handshake' method treated as failed handshake"
+        elif source=='on_update':
+            source_str="user-defined 'on_update' method"
+        elif source=='on_serial_close':
+            source_str="user-defined 'on_serial_close' method"
+        elif source=='on_confirm':
+            source_str="user-defined 'on_confirm' method"
+        elif source=='automation':
+            source_str="user-supplied automation script execution"
+        elif source=='automation await':
+            source_str="user-supplied automation await condition (script will not advance)"
+        elif source=='socket':
+            source_str="user-supplied socket command execution"
+        elif source=='serial build':
+            source_str="system initialization of serial.Serial object"
+        else:
+            source_str=source
+        if widget is not None:
+            source_str = source_str+" in '"+widget+"'"
+        
+        msg = 'Exception in '+source_str+': '+str(exc)
+        info = "\n"+traceback.format_exc()
+        if self.print_stacktraces:
+            print(msg+info)
+        else:
+            self.print_obj.write_console_only(msg)
+            self.print_obj.write_logfile_only(msg+info)
+            
+            
+        
+
+    def check_offline_mode(self):
+        return self.offline_mode
+
+    def check_serial_connected(self):
+        return self.serial_connected
 
     def get_field(self,target_widget_nickname, target_field):
         """Get the current value of a certain field of a certain widget. The field must have been created with the 

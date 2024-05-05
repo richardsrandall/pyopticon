@@ -1,7 +1,7 @@
 import numpy as np
+import time
 
 from .. import generic_widget
-from .. import generic_serial_emulator
 
 class Valco2WayValveWidget(generic_widget.GenericWidget):
     """ Widget for a VICI Valco 2-position valve, like this: https://www.vici.com/vval/vval_2pos.php . 
@@ -44,21 +44,27 @@ class Valco2WayValveWidget(generic_widget.GenericWidget):
         # Move the confirm button
         self.move_confirm_button(row=3,column=2)
 
-    def on_serial_open(self,success):
+    def on_failed_serial_open(self,success):
         """If serial opened successfully, do nothing; if not, set readouts to 'No Reading'
 
         :param success: Whether serial opened successfully, according to the return from the on_serial_read method.
         :type success: bool or str
         """
-        if success is not True:
-            self.set_field('Actual Position','No Reading')
+        self.set_field('Actual Position','No Reading',hush_warning=True)
+
+    def on_update(self):
+        self.on_serial_query()
+        time.sleep(0.2)
+        if self.parent_dashboard.serial_connected:
+            self.on_serial_read()
 
     def on_serial_query(self):
         """Send a query to the valve asking for its current position.
         """
-        self.get_serial_object().reset_input_buffer()
-        to_write=self.valve_id+b'CP\r'
-        self.get_serial_object().write(to_write)
+        if not self.parent_dashboard.offline_mode:
+            self.get_serial_object().reset_input_buffer()
+            to_write=self.valve_id+b'CP\r'
+            self.get_serial_object().write(to_write)
 
     def on_serial_read(self):
         """Parse the responses from the previous serial query and update the display. Return True if the response is valid and an error string if not.
@@ -66,7 +72,13 @@ class Valco2WayValveWidget(generic_widget.GenericWidget):
         :return: True if all the response was of the expected format, False otherwise.
         :rtype: bool or str
         """
-        status = str(self.serial_object.readline())
+        if not self.parent_dashboard.offline_mode:
+            status = str(self.serial_object.readline())
+        else:
+            v = np.random.randint(0,20)
+            v = 'A' if v>10 else 'B'
+            v = 'dd"'+str(v)+'dd\r\n'
+            status = str(v.encode('ascii'))
         try:
             i = status.index("\"")+1
             is_A = status[i]=='A'
@@ -76,13 +88,14 @@ class Valco2WayValveWidget(generic_widget.GenericWidget):
                 self.set_field('Actual Position',self.valve_positions[1])
         except Exception as e:
             fail_message=("Unexpected response received from 2-way valve: "+str(status))
-            self.set_field('Actual Position','Read Error')
+            if self.parent_dashboard.serial_connected:
+                self.set_field('Actual Position','Read Error')
             return fail_message
         return True
 
     def on_serial_close(self):
         """When serial is closed, set all readouts to 'None'."""
-        self.set_field('Actual Position','No Reading')
+        self.set_field('Actual Position','No Reading',hush_warning=True)
 
     def on_confirm(self):
         """When 'confirm' is pressed, send the appropriate commands to the valve.
@@ -94,32 +107,12 @@ class Valco2WayValveWidget(generic_widget.GenericWidget):
         choice = self.valve_positions.index(selected)
         if choice==0:
             print("Moving valve \""+self.name+"\" to \""+selected+"\" (A)")
-            self.serial_object.write(self.valve_id+b'GOA\r')
+            if not self.parent_dashboard.offline_mode:
+                self.serial_object.write(self.valve_id+b'GOA\r')
         else:
             print("Moving valve \""+self.name+"\" to \""+selected+"\" (B)")
-            self.serial_object.write(self.valve_id+b'GOB\r')
+            if not self.parent_dashboard.offline_mode:
+                self.serial_object.write(self.valve_id+b'GOB\r')
 
-    def construct_serial_emulator(self):
-        """Get the serial emulator to use when we're testing in offline mode.
-
-        :return: A valco 2-way valve serial emulator object.
-        :rtype: pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveSerialEmulator"""
-        return Valco2WayValveSerialEmulator()
-
-class Valco2WayValveSerialEmulator(generic_serial_emulator.GenericSerialEmulator):
-    """Serial emulator to allow offline testing of dashboards containing Valco 2-way valves.
-    Acts as a Pyserial Serial object for the purposes of the program. 
-    This simple version just returns a random valve position; commands to change the position don't actually do anything. \n
-    """
-
-    def readline(self):
-        """Reads a response from the fake input buffer as if this were a Pyserial Serial object. The response contains a random valve position.
-
-        :return: The next line in the fake input buffer.
-        :rtype: str"""
-        v = np.random.randint(0,20)
-        v = 'A' if v>10 else 'B'
-        v = 'dd"'+str(v)+'dd\r\n'
-        return v.encode('ascii')
 
     

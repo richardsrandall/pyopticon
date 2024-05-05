@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 # This is a silly demo of how to use the 'no_serial=True' option for devices that don't have a serial connection
 # Test the superclass genericWidget
@@ -35,18 +36,23 @@ class SpicinessWidget(generic_widget.GenericWidget):
     def __init__(self,parent_dashboard,name,nickname):
         """ Constructor for a spiciness widget."""
         # Initialize the superclass with most of the widget functionality
-        super().__init__(parent_dashboard,name,nickname,'#FF0000',no_serial=True,update_every_n_cycles=3)
+        super().__init__(parent_dashboard,name,nickname,'#FF0000',use_serial=False,update_every_n_cycles=3)
         # Add a readout field
         self.add_field(field_type='text output', name='Spiciness',
                        label='Spiciness: ', default_value='No Reading', log=True)
 
-    def on_serial_open(self,success):
+    def on_failed_serial_open(self,success):
         """If the device initialized successfully, do nothing; if not, set its readout to 'No Reading'
+        """
+        self.set_field('Spiciness','No Reading')
 
-        :param success: Whether serial opened successfully, according to the return from the on_serial_read method.
-        :type success: bool"""
-        if not success:
-            self.set_field('Spiciness','No Reading')
+    def on_update(self):
+        """Update the device by polling the serial connection.
+        """
+        self.on_serial_query()
+        time.sleep(0.2)
+        if self.parent_dashboard.serial_connected:
+            self.on_serial_read()
 
     def on_serial_query(self):
         """"Nothing is done on a serial query for this device."""
@@ -65,15 +71,8 @@ class SpicinessWidget(generic_widget.GenericWidget):
 
     def on_serial_close(self):
         """When serial is closed, set all readouts to 'None'."""
-        self.set_field('Spiciness','No Reading')
+        self.set_field('Spiciness','No Reading',hush_warning=True)
 
-    def construct_serial_emulator(self):
-        """No serial emulator is needed for this device, since its normal operation doesn't assume any hardware is present. Returns None.
-        
-        :return: None
-        :rtype: NoneType
-        """
-        return None
 
 
     
