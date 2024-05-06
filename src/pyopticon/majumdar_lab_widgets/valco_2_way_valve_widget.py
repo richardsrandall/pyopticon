@@ -45,14 +45,13 @@ class Valco2WayValveWidget(generic_widget.GenericWidget):
         self.move_confirm_button(row=3,column=2)
 
     def on_failed_serial_open(self,success):
-        """If serial opened successfully, do nothing; if not, set readouts to 'No Reading'
-
-        :param success: Whether serial opened successfully, according to the return from the on_serial_read method.
-        :type success: bool or str
+        """Set fields to no reading if serial failed to open.
         """
         self.set_field('Actual Position','No Reading',hush_warning=True)
 
     def on_update(self):
+        """Update the widget by querying and reading the serial port.
+        """
         self.on_serial_query()
         time.sleep(0.2)
         if self.parent_dashboard.serial_connected:
@@ -68,9 +67,6 @@ class Valco2WayValveWidget(generic_widget.GenericWidget):
 
     def on_serial_read(self):
         """Parse the responses from the previous serial query and update the display. Return True if the response is valid and an error string if not.
-
-        :return: True if all the response was of the expected format, False otherwise.
-        :rtype: bool or str
         """
         if not self.parent_dashboard.offline_mode:
             status = str(self.serial_object.readline())
@@ -90,8 +86,6 @@ class Valco2WayValveWidget(generic_widget.GenericWidget):
             fail_message=("Unexpected response received from 2-way valve: "+str(status))
             if self.parent_dashboard.serial_connected:
                 self.set_field('Actual Position','Read Error')
-            return fail_message
-        return True
 
     def on_serial_close(self):
         """When serial is closed, set all readouts to 'None'."""

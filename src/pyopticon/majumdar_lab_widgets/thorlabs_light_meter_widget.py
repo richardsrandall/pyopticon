@@ -40,12 +40,13 @@ class ThorlabsLightMeterWidget(generic_widget.GenericWidget):
         self.device_index=device_index
 
     def on_failed_serial_open(self):
-        """If serial opened successfully, do nothing; if not, set readouts to 'No Reading'
+        """If serial open failed, set readouts to 'No Reading'
         """
         # If handshake failed, set readout to 'none'
         self.set_field('Irradiance (mW/cm2)','No Reading',hush_warning=True)
 
     def on_handshake(self):
+        """Connect to the power meter and conduct a handshake."""
 
         if self.parent_dashboard.offline_mode:
             self.on_update()

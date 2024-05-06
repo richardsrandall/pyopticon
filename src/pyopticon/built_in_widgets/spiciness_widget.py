@@ -10,7 +10,7 @@ class SpicinessWidget(generic_widget.GenericWidget):
     The superclass constructor is called with no_serial=True and update_every_n_cycles=3. The widget simply reports how spicy it's feeling with a value 
     randomly selected from a list. \n
     
-    The no_serial option is intended to allow the creation of widgets that 
+    The use_serial=False option is intended to allow the creation of widgets that 
     do something besides poll a serial connection to update their information, but still have access to the data-logging and other machinery of the GenericWidget class. You might use this to: 
 
     - Make a widget that communicates with a physical device through some means other than a Pyserial serial connection, e.g. a Python package provided by the instrument vendor.
@@ -42,7 +42,7 @@ class SpicinessWidget(generic_widget.GenericWidget):
                        label='Spiciness: ', default_value='No Reading', log=True)
 
     def on_failed_serial_open(self,success):
-        """If the device initialized successfully, do nothing; if not, set its readout to 'No Reading'
+        """Set readout to 'no reading' if initialization failed.
         """
         self.set_field('Spiciness','No Reading')
 

@@ -79,6 +79,7 @@ class AalborgDPCWidget(generic_widget.GenericWidget):
             self.set_field(f,'No Reading',hush_warning=True)
                 
     def on_handshake(self):
+        """Conduct a handshake and populate the default values."""
         # Do a query and a read
         self.on_update()
         # Populate the fields with their default values

@@ -9,15 +9,17 @@ import select
 # Socket widget
 class SocketWidget:
     
-    """ This widget is responsible for prompting all of the widgets to open serial connections, query them regularly, 
-    check them for responses, and closing the connections when needed. It also has the button to update the list of serial ports.
+    """ This widget manages socket connections from external Python programs. It displays how many sockets are connected and has a few other useful functions.
 
     :param parent: The dashboard to which this widget will be added.
-    :type parent: pyopticon.dashboard.Dashboard
+    :type parent: pyopticon.dashboard.PyOpticonDashboard
+    :param port_numbers: A list of int ports on which to open socket server threads.
+    :type port_numbers: list
     """
 
     def __init__(self, parent_dashboard, port_numbers):
-        """The constructor for the SerialWidget"""
+        """The constructor for the SocketWidget"""
+        
         # Parent is the labGUI object, root is the tkinter root object
         # Set polling interval
         self.parent = parent_dashboard
@@ -42,6 +44,11 @@ class SocketWidget:
 
     # Couple of methods to make the socket counter threadsafe
     def _change_socket_counter(self,change):
+        """ Changes the socket counter displayed on the screen and updates the display and frame color accordingly.
+        
+        :param change: Value to add to the socket counter (+1 or -1)
+        :type change: int
+        """
         self.sockets_connected+=change
         new_val = "Sockets connected: "+str(self.sockets_connected)
         self.status_text.set(new_val)
@@ -54,9 +61,11 @@ class SocketWidget:
             self.disconnect_button["state"]="normal"
 
     def _increment_socket_counter(self):
+        """Increments the socket connection counter in a thread-safe way."""
         self.parent.root.after(0,lambda: self._change_socket_counter(1))
 
     def _decrement_socket_counter(self):
+        """Decrements the socket connection counter in a thread-safe way."""
         self.parent.root.after(0,lambda: self._change_socket_counter(-1))
 
     def get_frame(self):
@@ -68,28 +77,35 @@ class SocketWidget:
         return self.frame
 
     def _shutdown_threads(self):
+        """Sets a flag that tells the socket processing threads to close themselves at program shutdown."""
         self.time_to_end_thread = True
     
     def _run_one_thread(self,which_port):
+        """ Launch a thread that listens on a port for socket connections, handles the various types of commands that 
+        may be received on that socket, and shuts down the socket and thread on program close. Also handles ports that are 
+        'left hanging' when a client crashes or disconnects without sending a 'Close' method.
+        
+        :param which_port: The port on which this thread will listen.
+        :type which_port: int"""
         # Run the thread that manages the socket connection
         while not self.time_to_end_thread:
-            s = socket.socket()
+            s = socket.socket() #Set up a socket and start listening on it
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             s.settimeout(1)
             try:
                 s.bind(('', which_port))
-            except Exception as e:
+            except Exception as e: # Bail and end the thread if the socket is taken or otherwise invalid
                 print("Socket "+str(which_port)+" could not be opened.")
-                return #Bail from this thread
+                return
             s.listen(5)
             try:
-                c, addr = s.accept()
+                c, addr = s.accept() # Listen for a little while; if no command, return to start of the while loop. Ensures the thread ends promptly when the program shuts down.
             except TimeoutError:
                 continue
-            print("Connection to socket "+str(which_port)+" from: "+str(addr))
+            print("Connection to socket "+str(which_port)+" from: "+str(addr)) # Got a connection!
             self._increment_socket_counter()
             try:
-                while not self.time_to_end_thread and not self._force_disconnect:
+                while not self.time_to_end_thread and not self._force_disconnect: # Stay in this loop so long as the socket is connected
                     try:
                         c.settimeout(1)#Guarantees the dashboard will close even if a connection is left hanging.
                         rcvdData = c.recv(1024).decode()
@@ -97,12 +113,12 @@ class SocketWidget:
                         if self.time_to_end_thread:
                             print("Socket "+str(which_port)+" was left hanging on dashboard close; closing it automatically.")
                         continue
-                    rcvdDict = json.loads(rcvdData)
+                    rcvdDict = json.loads(rcvdData) # Commands are sent in the form of dict's
                     cmd = rcvdDict['cmd']
                     if cmd=="Close":
-                        break
+                        break #Close the socket and wait for a reconnection on the same port
                     try:
-                        if cmd=="Get": #errors dealt with outside the if statement
+                        if cmd=="Get": #Any exceptions raised are dealt with outside the if statement, so this if statement's entries just process commands and do printouts
                             if rcvdDict['printout']:
                                 print("Received command on socket "+str(which_port)+": Get "+rcvdDict['field_name']+' in '+rcvdDict['widget_nickname'])
                             sendData=self.parent.get_field(rcvdDict['widget_nickname'],rcvdDict['field_name'])
@@ -143,19 +159,20 @@ class SocketWidget:
                             exec(code,{'get_dashboard': lambda: self.parent,'do_threadsafe': (lambda l: self.parent.root.after(0,l)) })
                             sendData="Success"
 
-                    except Exception as e:
+                    except Exception as e: #All exceptions send 'Error' and the exception name thru the socket and also log the exception as per the dashboard configuration
                         sendData = "Error: "+str(e)
                         if rcvdData!="":
                             self.parent.exc_handler(e,"socket")
                     c.send(sendData.encode())
-                print("Socket "+str(which_port)+" closed normally.")
+                print("Socket "+str(which_port)+" closed normally.") #If we reach this part of the loop, if means the socket ended with a 'close' command
                 self._decrement_socket_counter()
                 c.close()
-            except Exception as e:
+            except Exception as e: #A socket that's 'left hanging' and then attempts to reconnect triggers a broken pipe exception or similar; we just note it and return to loop start and the connection proceeds as normal
                 print("Old socket "+str(which_port)+" appears to have been left hanging; resetting.")
                 self._decrement_socket_counter()
                 c.close()
     
     def _force_disconnect(self):
+        """Force any connected sockets to disconnect, resulting in broken pipe exceptions on the client side."""
         print("Manually disconnecting any connected sockets. Clients will report broken pipes.")
         self._force_disconnect = True

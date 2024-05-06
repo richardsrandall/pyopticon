@@ -53,3 +53,263 @@
 2024-05-05 12:57:36: Socket 12345 closed normally.
 2024-05-05 12:57:43: Closing all connections.
 2024-05-05 12:57:44: Dashboard closed normally.
+
+2024-05-05 17:03:52: Dashboard launched.
+2024-05-05 17:03:53: Opening all connections.
+2024-05-05 17:03:53: Opening COM3 for "Argon MFC"
+2024-05-05 17:03:53: Handshake successful for 'GC FID'.
+2024-05-05 17:03:53: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 17:03:53: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:03:53: Opening COM10 for "UV Light"
+2024-05-05 17:03:53: Opening None for "Oxygen MFC"
+2024-05-05 17:03:53: Opening COM2 for "Picarro"
+2024-05-05 17:03:53: Opening COM9 for "Methane MFC"
+2024-05-05 17:03:53: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:03:53: Handshake successful for 'Picarro'.
+2024-05-05 17:03:54: Handshake successful for 'UV Light'.
+2024-05-05 17:03:54: Handshake successful for 'Methane MFC'.
+2024-05-05 17:03:54: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 17:03:54: Handshake successful for 'Argon MFC'.
+2024-05-05 17:03:54: Handshake successful for 'Oxygen MFC'.
+2024-05-05 17:03:57: Closing all connections.
+2024-05-05 17:03:58: Dashboard closed normally.
+
+2024-05-05 17:12:40: Dashboard launched.
+2024-05-05 17:12:41: Opening all connections.
+2024-05-05 17:12:41: Opening COM9 for "Methane MFC"
+2024-05-05 17:12:41: Opening COM2 for "Picarro"
+2024-05-05 17:12:41: Opening COM10 for "UV Light"
+2024-05-05 17:12:41: Opening None for "Oxygen MFC"
+2024-05-05 17:12:41: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:12:41: Handshake successful for 'GC FID'.
+2024-05-05 17:12:41: Handshake successful for 'Picarro'.
+2024-05-05 17:12:41: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 17:12:41: Opening COM3 for "Argon MFC"
+2024-05-05 17:12:41: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:12:41: Handshake successful for 'UV Light'.
+2024-05-05 17:12:41: Handshake successful for 'Methane MFC'.
+2024-05-05 17:12:41: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 17:12:41: Handshake successful for 'Oxygen MFC'.
+2024-05-05 17:12:41: Handshake successful for 'Argon MFC'.
+2024-05-05 17:12:43: Closing all connections.
+2024-05-05 17:12:47: Dashboard closed normally.
+
+2024-05-05 17:12:52: Dashboard launched.
+2024-05-05 17:12:53: Opening all connections.
+2024-05-05 17:12:53: Opening COM10 for "UV Light"
+2024-05-05 17:12:53: Opening COM9 for "Methane MFC"
+2024-05-05 17:12:53: Opening None for "Oxygen MFC"
+2024-05-05 17:12:53: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 17:12:53: Opening COM3 for "Argon MFC"
+2024-05-05 17:12:53: Opening COM2 for "Picarro"
+2024-05-05 17:12:53: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:12:53: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:12:53: Handshake successful for 'GC FID'.
+2024-05-05 17:12:53: Handshake successful for 'Picarro'.
+2024-05-05 17:12:53: Handshake successful for 'UV Light'.
+2024-05-05 17:12:53: Handshake successful for 'Methane MFC'.
+2024-05-05 17:12:54: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 17:12:54: Handshake successful for 'Argon MFC'.
+2024-05-05 17:12:54: Handshake successful for 'Oxygen MFC'.
+2024-05-05 17:12:55: Closing all connections.
+2024-05-05 17:12:55: Dashboard closed normally.
+
+2024-05-05 17:14:06: Dashboard launched.
+2024-05-05 17:14:08: Opening all connections.
+2024-05-05 17:14:08: Opening COM9 for "Methane MFC"
+2024-05-05 17:14:08: Opening COM3 for "Argon MFC"
+2024-05-05 17:14:08: Opening COM10 for "UV Light"
+2024-05-05 17:14:08: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 17:14:08: Opening None for "Oxygen MFC"
+2024-05-05 17:14:08: Opening COM2 for "Picarro"
+2024-05-05 17:14:08: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:14:08: Handshake successful for 'GC FID'.
+2024-05-05 17:14:08: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:14:08: Handshake successful for 'Picarro'.
+2024-05-05 17:14:08: Handshake successful for 'UV Light'.
+2024-05-05 17:14:08: Handshake successful for 'Methane MFC'.
+2024-05-05 17:14:08: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 17:14:08: Handshake successful for 'Argon MFC'.
+2024-05-05 17:14:08: Handshake successful for 'Oxygen MFC'.
+2024-05-05 17:14:09: Closing all connections.
+2024-05-05 17:14:09: Dashboard closed normally.
+
+2024-05-05 17:14:16: Dashboard launched.
+2024-05-05 17:14:17: Opening all connections.
+2024-05-05 17:14:17: Opening None for "Oxygen MFC"
+2024-05-05 17:14:17: Opening COM2 for "Picarro"
+2024-05-05 17:14:17: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:14:17: Opening COM9 for "Methane MFC"
+2024-05-05 17:14:17: Opening COM10 for "UV Light"
+2024-05-05 17:14:17: Opening COM3 for "Argon MFC"
+2024-05-05 17:14:17: Handshake successful for 'Picarro'.
+2024-05-05 17:14:17: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 17:14:17: Handshake successful for 'GC FID'.
+2024-05-05 17:14:17: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:14:17: Handshake successful for 'UV Light'.
+2024-05-05 17:14:17: Handshake successful for 'Methane MFC'.
+2024-05-05 17:14:18: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 17:14:18: Handshake successful for 'Oxygen MFC'.
+2024-05-05 17:14:18: Handshake successful for 'Argon MFC'.
+2024-05-05 17:14:19: Closing all connections.
+2024-05-05 17:14:20: Dashboard closed normally.
+
+2024-05-05 17:16:59: Dashboard launched.
+2024-05-05 17:17:00: Opening all connections.
+2024-05-05 17:17:00: Opening None for "Oxygen MFC"
+2024-05-05 17:17:00: Opening COM10 for "UV Light"
+2024-05-05 17:17:00: Opening COM3 for "Argon MFC"
+2024-05-05 17:17:00: Handshake successful for 'GC FID'.
+2024-05-05 17:17:00: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 17:17:00: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:17:00: Opening COM9 for "Methane MFC"
+2024-05-05 17:17:00: Opening COM2 for "Picarro"
+2024-05-05 17:17:00: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:17:00: Handshake successful for 'Picarro'.
+2024-05-05 17:17:00: Handshake successful for 'UV Light'.
+2024-05-05 17:17:00: Handshake successful for 'Methane MFC'.
+2024-05-05 17:17:00: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 17:17:00: Handshake successful for 'Oxygen MFC'.
+2024-05-05 17:17:00: Handshake successful for 'Argon MFC'.
+2024-05-05 17:17:03: Closing all connections.
+2024-05-05 17:17:03: Dashboard closed normally.
+
+2024-05-05 17:17:07: Dashboard launched.
+2024-05-05 17:17:09: Opening all connections.
+2024-05-05 17:17:09: Opening COM2 for "Picarro"
+2024-05-05 17:17:09: Opening COM10 for "UV Light"
+2024-05-05 17:17:09: Opening None for "Oxygen MFC"
+2024-05-05 17:17:09: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:17:09: Opening COM9 for "Methane MFC"
+2024-05-05 17:17:09: Handshake successful for 'Picarro'.
+2024-05-05 17:17:09: Handshake successful for 'GC FID'.
+2024-05-05 17:17:09: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 17:17:09: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:17:09: Opening COM3 for "Argon MFC"
+2024-05-05 17:17:10: Handshake successful for 'UV Light'.
+2024-05-05 17:17:10: Handshake successful for 'Methane MFC'.
+2024-05-05 17:17:10: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 17:17:10: Handshake successful for 'Oxygen MFC'.
+2024-05-05 17:17:10: Handshake successful for 'Argon MFC'.
+2024-05-05 17:17:11: Closing all connections.
+2024-05-05 17:17:11: Dashboard closed normally.
+
+2024-05-05 17:20:57: Dashboard launched.
+2024-05-05 17:21:00: Opening all connections.
+2024-05-05 17:21:00: Opening COM9 for "Methane MFC"
+2024-05-05 17:21:00: Handshake successful for 'GC FID'.
+2024-05-05 17:21:00: Opening COM3 for "Argon MFC"
+2024-05-05 17:21:00: Opening COM10 for "UV Light"
+2024-05-05 17:21:00: Opening COM2 for "Picarro"
+2024-05-05 17:21:00: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 17:21:00: Opening None for "Oxygen MFC"
+2024-05-05 17:21:00: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:21:00: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:21:00: Handshake successful for 'Picarro'.
+2024-05-05 17:21:00: Handshake successful for 'UV Light'.
+2024-05-05 17:21:00: Handshake successful for 'Methane MFC'.
+2024-05-05 17:21:01: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 17:21:01: Handshake successful for 'Argon MFC'.
+2024-05-05 17:21:01: Handshake successful for 'Oxygen MFC'.
+2024-05-05 17:21:02: Closing all connections.
+2024-05-05 17:21:02: Dashboard closed normally.
+
+2024-05-05 17:23:57: Dashboard launched.
+2024-05-05 17:23:59: Opening all connections.
+2024-05-05 17:23:59: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 17:23:59: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:23:59: Opening COM2 for "Picarro"
+2024-05-05 17:23:59: Opening COM9 for "Methane MFC"
+2024-05-05 17:23:59: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:23:59: Handshake successful for 'Picarro'.
+2024-05-05 17:23:59: Opening COM3 for "Argon MFC"
+2024-05-05 17:23:59: Opening COM10 for "UV Light"
+2024-05-05 17:23:59: Opening None for "Oxygen MFC"
+2024-05-05 17:23:59: Handshake successful for 'GC FID'.
+2024-05-05 17:23:59: Handshake successful for 'UV Light'.
+2024-05-05 17:23:59: Handshake successful for 'Methane MFC'.
+2024-05-05 17:23:59: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 17:23:59: Handshake successful for 'Oxygen MFC'.
+2024-05-05 17:23:59: Handshake successful for 'Argon MFC'.
+2024-05-05 17:24:00: Closing all connections.
+2024-05-05 17:24:00: Dashboard closed normally.
+
+2024-05-05 17:25:21: Dashboard launched.
+2024-05-05 17:25:23: Opening all connections.
+2024-05-05 17:25:23: Opening COM2 for "Picarro"
+2024-05-05 17:25:23: Opening COM10 for "UV Light"
+2024-05-05 17:25:23: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:25:23: Handshake successful for 'Picarro'.
+2024-05-05 17:25:23: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 17:25:23: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:25:23: Opening COM3 for "Argon MFC"
+2024-05-05 17:25:23: Opening None for "Oxygen MFC"
+2024-05-05 17:25:23: Opening COM9 for "Methane MFC"
+2024-05-05 17:25:23: Handshake successful for 'GC FID'.
+2024-05-05 17:25:23: Handshake successful for 'UV Light'.
+2024-05-05 17:25:23: Handshake successful for 'Methane MFC'.
+2024-05-05 17:25:23: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 17:25:23: Handshake successful for 'Argon MFC'.
+2024-05-05 17:25:23: Handshake successful for 'Oxygen MFC'.
+2024-05-05 17:25:24: Closing all connections.
+2024-05-05 17:25:24: Dashboard closed normally.
+
+2024-05-05 17:26:24: Dashboard launched.
+2024-05-05 17:26:25: Opening all connections.
+2024-05-05 17:26:25: Opening COM3 for "Argon MFC"
+2024-05-05 17:26:25: Opening COM9 for "Methane MFC"
+2024-05-05 17:26:25: Opening COM2 for "Picarro"
+2024-05-05 17:26:25: Handshake successful for 'GC FID'.
+2024-05-05 17:26:25: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:26:25: Handshake successful for 'Picarro'.
+2024-05-05 17:26:25: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 17:26:25: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:26:25: Opening COM10 for "UV Light"
+2024-05-05 17:26:25: Opening None for "Oxygen MFC"
+2024-05-05 17:26:25: Handshake successful for 'UV Light'.
+2024-05-05 17:26:25: Handshake successful for 'Methane MFC'.
+2024-05-05 17:26:26: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 17:26:26: Handshake successful for 'Argon MFC'.
+2024-05-05 17:26:26: Handshake successful for 'Oxygen MFC'.
+2024-05-05 17:26:26: Closing all connections.
+2024-05-05 17:26:26: Dashboard closed normally.
+
+2024-05-05 17:26:52: Dashboard launched.
+2024-05-05 17:26:53: Opening all connections.
+2024-05-05 17:26:53: Opening COM2 for "Picarro"
+2024-05-05 17:26:53: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:26:53: Handshake successful for 'GC FID'.
+2024-05-05 17:26:53: Handshake successful for 'Picarro'.
+2024-05-05 17:26:53: Opening COM9 for "Methane MFC"
+2024-05-05 17:26:53: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 17:26:53: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:26:53: Opening COM3 for "Argon MFC"
+2024-05-05 17:26:53: Opening None for "Oxygen MFC"
+2024-05-05 17:26:53: Opening COM10 for "UV Light"
+2024-05-05 17:26:53: Handshake successful for 'UV Light'.
+2024-05-05 17:26:54: Handshake successful for 'Methane MFC'.
+2024-05-05 17:26:54: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 17:26:54: Handshake successful for 'Oxygen MFC'.
+2024-05-05 17:26:54: Handshake successful for 'Argon MFC'.
+2024-05-05 17:26:54: Closing all connections.
+2024-05-05 17:26:56: Dashboard closed normally.
+
+2024-05-05 17:56:05: Dashboard launched.
+2024-05-05 17:56:07: Opening all connections.
+2024-05-05 17:56:07: Opening COM3 for "Argon MFC"
+2024-05-05 17:56:07: Opening COM2 for "Picarro"
+2024-05-05 17:56:07: Opening COM10 for "UV Light"
+2024-05-05 17:56:07: Opening None for "Oxygen MFC"
+2024-05-05 17:56:07: Opening COM9 for "Methane MFC"
+2024-05-05 17:56:07: Device 'Picarro' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:56:07: Opening COM14 for "Reactor Thermocouple"
+2024-05-05 17:56:07: Device 'Reactor Thermocouple' has no handshake defined; just using a standard update cycle. See on_update docs.
+2024-05-05 17:56:07: Handshake successful for 'GC FID'.
+2024-05-05 17:56:07: Handshake successful for 'Picarro'.
+2024-05-05 17:56:08: Handshake successful for 'UV Light'.
+2024-05-05 17:56:08: Handshake successful for 'Methane MFC'.
+2024-05-05 17:56:08: Handshake successful for 'Reactor Thermocouple'.
+2024-05-05 17:56:08: Handshake successful for 'Argon MFC'.
+2024-05-05 17:56:08: Handshake successful for 'Oxygen MFC'.
+2024-05-05 17:56:12: Closing all connections.
+2024-05-05 17:56:16: Dashboard closed normally.

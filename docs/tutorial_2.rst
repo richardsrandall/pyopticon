@@ -197,6 +197,9 @@ While it's all in the API reference, here are some of the options you can specif
     via the console.
 *   ``include_socket_widget`` and ``include_auto_widget``: It's possible to exclude either the socket widget or the 
     automation script widget from the dashboard if you expect not to need them and wish to free up some space.
+*   ``socket_ports``: A list of int port numbers on which to initialize sockets. Each socket gets its own thread. 
+    Defaults to [12345]. Allows you to initialize several sockets for several different programs to talk to a dashboard, 
+    if needed.
 
 If you're having trouble fitting all widgets on the screen, ``x_pad`` and ``y_pad`` are the easiest things to change. 
 Additionally, you can call ``dashboard.scale_all_text`` after initializing the dashboard but before launching it to 

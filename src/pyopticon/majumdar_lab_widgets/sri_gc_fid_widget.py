@@ -72,22 +72,23 @@ class SRIGasChromatographFIDWidget(generic_widget.GenericWidget):
 
 
     def on_serial_open(self,success):
-        """If the device initialized ubsuccessfully, set its readout to 'No Reading'
+        """If the device initialized unsuccessfully, set its readout to 'No Reading'
         """
         for l in self.gas_labels:
             self.set_field(l,'No Reading',hush_warning=True)
 
     def disable_button(self):
+        """Disable the file dialog button."""
         self.button["state"] = "disabled"#Don't want to open file dialog while serial is polling
 
     def on_handshake(self):
-        """"Disable the file chooser button and run an update."""
+        """"On handshake, disable the file chooser button and run an update."""
         self.do_threadsafe(self.disable_button)
         self.disable_field("Sensitivity")
         self.on_update()
 
     def on_update(self):
-        """Polls the GC logfile and updates the readout with the latest values.
+        """Poll the GC logfile and updates the readout with the latest values.
         """
         try:
             # Open the file and grab the last line
@@ -137,14 +138,6 @@ class SRIGasChromatographFIDWidget(generic_widget.GenericWidget):
         except Exception as e:
             pass #Probably user x'd out file dialog
         
-
-    def construct_serial_emulator(self):
-        """No serial emulator is needed for this device, since its normal operation doesn't assume any hardware is present. Returns None.
-        
-        :return: None
-        :rtype: NoneType
-        """
-        return None
 
 
     

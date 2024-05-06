@@ -29,7 +29,7 @@ class OmegaUSBUTCWidget(generic_widget.GenericWidget):
                        label='Temperature (C): ', default_value='No Reading', log=True)
 
     def on_failed_serial_open(self):
-        """If serial opened successfully, do nothing; if not, set readouts to 'No Reading'
+        """If serial opened unsuccessfully, set readouts to 'No Reading'
         """
         # If handshake failed, set readout to 'none'
         self.set_field('Temperature','No Reading',hush_warning=True)

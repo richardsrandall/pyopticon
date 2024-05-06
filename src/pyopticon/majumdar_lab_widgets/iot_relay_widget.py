@@ -47,7 +47,7 @@ class IotRelayWidget(generic_widget.GenericWidget):
         self.set_field('Actual Status','No Reading',hush_warning=True)
     
     def on_handshake(self):
-        """Send a query to the device asking whether it is currently on or off.
+        """Handshake with the Arduino.
         """
         if not self.parent_dashboard.offline_mode:
             self.serial_object.write(b'Q\n')
@@ -58,10 +58,7 @@ class IotRelayWidget(generic_widget.GenericWidget):
         # to be ignored... sending the command twice fixes it.
 
     def on_update(self):
-        """Parse the response from the previous serial query and update the display. Return True if valid and an error string if not.
-
-        :return: True if the response was of the expected format, an error message otherwise.
-        :rtype: bool or str
+        """Query the device and update the display based on the reply.
         """
         if not self.parent_dashboard.offline_mode:
             self.serial_object.write(b'Q\n')
@@ -77,14 +74,11 @@ class IotRelayWidget(generic_widget.GenericWidget):
         status = status.replace("\r","")
         if status=='1':
             self.set_field('Actual Status','On')
-            return True
         elif status=='0':
             self.set_field('Actual Status','Off')
-            return True
         else:
             self.set_field('Actual Status','Read Error')
             fail_message=("Unexpected response received from IoT relay arduino: "+str(status))
-            return fail_message # An invalid response was read
 
     def on_serial_close(self):
         """When serial is closed, set all readouts to 'None'."""

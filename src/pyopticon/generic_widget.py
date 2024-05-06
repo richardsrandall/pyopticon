@@ -112,6 +112,7 @@ class GenericWidget:
         else:
             self.queue = widget_to_share_thread_with.queue
         self.doing_update = False
+        self.shutdown_flag=False
 
 # Methods implementing serial functionality that will often be overridden by the user
 
@@ -143,7 +144,9 @@ class GenericWidget:
 
     def on_serial_close(self):
         """This function gets called whenever serial connections are closed. It should be overridden in a subclass implementation. 
-        Usually, this function sets readout fields to something like 'no reading' after serial communications are closed."""
+        Usually, this function sets readout fields to something like 'no reading' after serial communications are closed. 
+        Note that while the other user-defined methods run in the widget's thread, this method runs immediately in the main 
+        GUI thread, ensuring that the serial connection closure happens immediately."""
         pass
 
 # Methods to support autogenerating menus and readouts from a dict of Tkinter string objects and logging their values
@@ -306,20 +309,21 @@ class GenericWidget:
 # Methods to make a thread for this widget (!)
         
     def _run_thread(self):
-        """Launch a thread to process commands from the widget's queue."""
+        """Launch a thread to process commands from the widget's queue. The thread just keeps 
+        checking for new commands in its queue forever until the close flag is set. Valid commands 
+        are 'UPDATE', 'HANDSHAKE', and 'CONFIRM'."""
 
         if self.thread_shared: #We post events to a shared queue in a different widget's thread
             pass
         else: #This widget gets its own thread in which to process events
             while True:
+                if self.shutdown_flag: # Bail immediately
+                    return
                 try:
                     while not self.queue.empty():
                         (cmd,widget) = self.queue.get()
-
-                        if cmd == None: # Shut down the thread.
-                            return
                         
-                        elif cmd == 'UPDATE': # Update the widget however desired
+                        if cmd == 'UPDATE': # Update the widget however desired
                             self.doing_update = True
                             widget._update()
                             self.doing_update = False # Flag to let us warn if the polling interval is too short
@@ -337,12 +341,15 @@ class GenericWidget:
 
     def _shutdown_thread(self):
         """Shutdown the widget's thread once the GUI is closed."""
-        if not self.thread_shared:
-            self.queue.put((None,self))
+        self.shutdown_flag = True
 
 
-
-# Underlying methods to make the serial functionality work
+# Underlying methods to make the serial functionality work.
+# These are generally wrappers around the user-defined methods like on_update, on_handshake, and on_confirm.
+# They contain a bunch of functionality that the user likely doesn't want to implement themselves, e.g. 
+# building serial objects, complaining if you hit confirm without serial being open, knowing not to build a 
+# serial object if use_serial=False, and various other things. Apologies that it's a bit of a mess down here, 
+# but since this code has been working fairly reliably for me, I don't really want to mess with it at the moment.
     
     def _build_serial_object(self):
         """This function just calls get_serial_object and assigns its value to self.serial_object"""
@@ -403,7 +410,7 @@ class GenericWidget:
             self.do_threadsafe(lambda: self.serial_status.set("Connecting..."))
         try:
             serial_success = self._build_serial_object()
-        except exception as e:
+        except Exception as e:
             serial_success = False
             self.parent_dashboard.exc_handler(e,'serial build',self.name)
         if not serial_success:

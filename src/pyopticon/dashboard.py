@@ -33,6 +33,18 @@ class PyOpticonDashboard:
     :type window_resizeable: bool, optional
     :param persistent_console_logfile: Whether or not to log console events to a persistent file (same throughout multiple dashboard relaunches) in the same directory as the dashboard initialization script.
     :type persistent_console_logfile: bool, optional
+    :param print_stacktraces: If true, exception stack traces are printed to console; if false, only to the logfile. Exception names are printed regardless.
+    :type print_stacktraces: bool, optional
+    :param x_pad: The horizontal pad between widgets, in pixels.
+    :type x_pad: int, optional
+    :param y_pad: The vertical pad between widgets, in pixels.
+    :type y_pad: int, optional
+    :param socket_ports: A list of integer ports on which to open sockets for client connections. Defaults to [12345].
+    :type socket_ports: list, optional
+    :param include_auto_widget: Whether or not to display an automation widget on the dashboard.
+    :type include_auto_widget: bool, optional
+    :param include_socket_widget: Whether or not to display a socket widget on the dashboard.
+    :type include_socket_widget: bool, optional
 
     """
 
@@ -43,7 +55,7 @@ class PyOpticonDashboard:
         offline_mode = False if not 'offline_mode' in kwargs.keys() else kwargs['offline_mode']
         polling_interval_ms = 1000 if not 'polling_inverval_ms' in kwargs.keys() else kwargs['polling_interval_ms']
         window_resizeable = False if not 'window_resizeable' in kwargs.keys() else kwargs['window_resizeable']
-        persistent_console_logfile = 1000 if not 'persistent_console_logfile' in kwargs.keys() else kwargs['persistent_console_logfile']
+        persistent_console_logfile = True if not 'persistent_console_logfile' in kwargs.keys() else kwargs['persistent_console_logfile']
         x_pad = 50 if not 'x_pad' in kwargs.keys() else kwargs['x_pad']
         y_pad = 25 if not 'y_pad' in kwargs.keys() else kwargs['y_pad']
         self.print_stacktraces = True if not 'print_stacktraces' in kwargs.keys() else kwargs['print_stacktraces']
@@ -151,11 +163,13 @@ class PyOpticonDashboard:
             console_logfile = None
         self.console_logfile = console_logfile
 
-        # Override stdout to something threadsafe (ish)
+        # Digression while we define a class that's used to replace stdout with the desired logging behavior
+        # Start function resumes afterwards.
+        # Override stdout to something threadsafe (ish) that also includes logging to a .txt logfile, if desired, and timestamps in all printouts
         class threadsafe_print(object):
-            def __init__(self):
+            def __init__(self): #Initialize and save original stdout
                 self.stdout = sys.stdout
-            def write(self, s):
+            def write(self, s):# Default write
                 if s!="\n":
                     self.stdout.write(str(datetime.datetime.now().strftime("%H:%M:%S"))+": "+str(s)+"\n")
                     if console_logfile is not None:
@@ -163,13 +177,13 @@ class PyOpticonDashboard:
                             console_logfile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))+": "+str(s)+"\n")
                         except Exception as e:
                             pass #File got closed while we weren't looking.
-            def flush(self):
+            def flush(self):#Called on program close, so need to have
                 pass
                         
-            def write_console_only(self, s):
+            def write_console_only(self, s): # Used in my code's exception handler
                 self.stdout.write(str(datetime.datetime.now().strftime("%H:%M:%S"))+": "+str(s)+"\n")
                 
-            def write_logfile_only(self,s):
+            def write_logfile_only(self,s): # Used in my code's exception handler
                 try:
                     console_logfile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))+": "+str(s)+"\n")
                 except Exception as e:
@@ -207,6 +221,7 @@ class PyOpticonDashboard:
         self.get_tkinter_object().mainloop()
 
         # Shutdown the threads
+        self.serial_connected=False
         for widget in self.all_widgets:
             if hasattr(widget,'_shutdown_thread'):
                 widget._shutdown_thread()
@@ -216,7 +231,17 @@ class PyOpticonDashboard:
             console_logfile.close()
 
     def exc_handler(self,exc,source='system',widget=None):#Function used in various places to print helpful info about exceptions 
+        """Handle an exception according to the protocol configured when the dashboard was launched. Generate a 
+        message about what subprocess raised the exception.
+        
+        :param exc: The Exception being raised
+        :type exc: Exception
+        :param source: The source of the exception according to a scheme outlined in the if-statement in the function definition. Defaults to 'system'.
+        :type source: str, optional
+        :param widget: The nickname of the widget that raised the exception, if applicable
+        :type widget: str, optional
 
+        """
         if source=='system':
             source_str='internal PyOpticon code'
         elif source=='on_serial_open_failure':
@@ -248,15 +273,24 @@ class PyOpticonDashboard:
             print(msg+info)
         else:
             self.print_obj.write_console_only(msg)
-            self.print_obj.write_logfile_only(msg+info)
+            if self.persistent_console_logfile:
+                self.print_obj.write_logfile_only(msg+info)
             
-            
-        
 
     def check_offline_mode(self):
+        """Check whether dashboard is in offline mode.
+        
+        :return: Whether the dashboard is in offline mode.
+        :rtype: bool
         return self.offline_mode
+        """
 
     def check_serial_connected(self):
+        """Check whether serial is currently connected
+        
+        :return: Whether the dashboard's serial is connected.
+        :rtype: bool
+        """
         return self.serial_connected
 
     def get_field(self,target_widget_nickname, target_field):
@@ -268,6 +302,8 @@ class PyOpticonDashboard:
         :type target_widget_nickname: str
         :param target_field: The name of the field to read
         :type target_field: str
+        :return: The value of the field that you queried
+        :rtype: str
         """
         return self.widgets_by_nickname[target_widget_nickname].get_field(target_field)
     

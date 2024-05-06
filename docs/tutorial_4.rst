@@ -101,4 +101,6 @@ Here's what this window looks like when run with random temperatures from the de
 .. image:: img/live_plot_1.png
     :alt: A screenshot of a live plotter in operation
 
-Of course, you can make more complex live plotters with multiple lines, multiple subplots, etc.
+Of course, you can make more complex live plotters with multiple lines, multiple subplots, etc. You could also make 
+a live plotter using the socket connection function that doesn't require a logfile, but rather reads live values 
+directly from the dashboard.
