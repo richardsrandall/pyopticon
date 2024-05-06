@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyopticon.utilities.gmail_helper module &mdash; pyopticon 0.1.7 documentation</title>
+  <title>pyopticon.utilities.gmail_helper module &mdash; pyopticon 0.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -77,8 +77,42 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pyopticon-utilities-gmail-helper-module">
-<h1>pyopticon.utilities.gmail_helper module<a class="headerlink" href="#pyopticon-utilities-gmail-helper-module" title="Permalink to this heading"></a></h1>
+  <section id="module-pyopticon.utilities.gmail_helper">
+<span id="pyopticon-utilities-gmail-helper-module"></span><h1>pyopticon.utilities.gmail_helper module<a class="headerlink" href="#module-pyopticon.utilities.gmail_helper" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.utilities.gmail_helper.GmailHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.utilities.gmail_helper.</span></span><span class="sig-name descname"><span class="pre">GmailHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gmail_address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination_emails</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.utilities.gmail_helper.GmailHelper" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This widget allows your Python code to send emails and, by extension, texts. It’s mainly useful for sending notifications after an interlock is 
+tripped, e.g. if the dashboard detects that an instrument went offline partway through an automation script.</p>
+<p>You’ll need to follow an online tutorial to get an ‘app password’ for a gmail account to allow Python to send emails from that account. 
+You can test that it worked by constructing a GmailHelper object in a shell like IDLE and trying to send yourself emails from it. 
+If you’d like to send texts, send an email to the appropriate address at the cell carrier’s SMS gateway, e.g. <a class="reference external" href="mailto:xxx-xxx-xxxx&#37;&#52;&#48;vtext&#46;com">xxx-xxx-xxxx<span>&#64;</span>vtext<span>&#46;</span>com</a> for Verizon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gmail_address</strong> (<em>str</em>) – The gmail address from which you want the notification to be sent.</p></li>
+<li><p><strong>auth_string</strong> (<em>str</em>) – An app password (or equivalent) for the gmail account.</p></li>
+<li><p><strong>destination_emails</strong> (<em>str</em>) – A list of the email addresses to which you want to send the notifications.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.utilities.gmail_helper.GmailHelper.send_email">
+<span class="sig-name descname"><span class="pre">send_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_body</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.utilities.gmail_helper.GmailHelper.send_email" title="Permalink to this definition"></a></dt>
+<dd><p>Send an email with the specified subject and message to the email addresses specified when this GmailHelper was created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>subject</strong> (<em>str</em>) – The subject of the email. Note that if you’re using this to send texts through an SMS gateway, different carriers treat the subject in different ways.</p></li>
+<li><p><strong>message_body</strong> (<em>str</em>) – The body text of the email message to send.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

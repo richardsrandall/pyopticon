@@ -19,12 +19,6 @@ The ''GenericWidget'' class
     :members:
     :private-members:
 
-The ''GenericSerialEmulator'' class
------------------------------------
-.. autoclass:: pyopticon.generic_serial_emulator.GenericSerialEmulator
-    :members:
-    :private-members:
-
 The ''MinimalWidget'' class
 ---------------------------
 .. autoclass:: pyopticon.minimal_widget.MinimalWidget
@@ -41,6 +35,15 @@ The ''scan_serial_ports'' function
 The ''GmailHelper'' class
 -----------------------------------
 .. autoclass:: pyopticon.utilities.gmail_helper.GmailHelper
+    :members:
+    :private-members:
+
+The ''socket_client'' package
+************************************
+
+The ''PyOpticonSocketClient'' class
+-----------------------------------
+.. autoclass:: pyopticon.socket_client.PyOpticonSocketClient
     :members:
     :private-members:
 
@@ -70,6 +73,12 @@ The ''DataLoggingWidget'' class
 The ''AutomationWidget'' class
 -----------------------------
 .. autoclass:: pyopticon._system._automation_widget.AutomationWidget
+    :members:
+    :private-members:
+
+The ''SocketWidget'' class
+-----------------------------
+.. autoclass:: pyopticon._system._socket_widget.SocketWidget
     :members:
     :private-members:
 
@@ -137,13 +146,6 @@ The ''Valco2WayValveWidget'' class
     :private-members:
     :show-inheritance:
 
-The ''Valco8WayValveWidget'' class
-----------------------------------
-.. autoclass:: pyopticon.majumdar_lab_widgets.valco_8_way_valve_widget.Valco8WayValveWidget
-    :members:
-    :private-members:
-    :show-inheritance:
-
 The ''SRIGasChromatographFIDWidget'' class
 -----------------------------------------------
 .. autoclass:: pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget
@@ -151,9 +153,9 @@ The ''SRIGasChromatographFIDWidget'' class
     :private-members:
     :show-inheritance:
 
-The ''CellkraftHumidifierWidget'' class
+The ''ThorlabsLightMeterWidget'' class
 -----------------------------------------------
-.. autoclass:: pyopticon.majumdar_lab_widgets.cellkraft_humidifier_widget.CellkraftHumidifierWidget
+.. autoclass:: pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget
     :members:
     :private-members:
     :show-inheritance:

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial: Building Your Own Dashboards &mdash; pyopticon 0.1.7 documentation</title>
+  <title>Tutorial: Building Your Own Dashboards &mdash; pyopticon 0.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -276,6 +276,9 @@ error info is preserved; it’s just a matter of whether you’re actively debug
 via the console.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">include_socket_widget</span></code> and <code class="docutils literal notranslate"><span class="pre">include_auto_widget</span></code>: It’s possible to exclude either the socket widget or the
 automation script widget from the dashboard if you expect not to need them and wish to free up some space.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">socket_ports</span></code>: A list of int port numbers on which to initialize sockets. Each socket gets its own thread.
+Defaults to [12345]. Allows you to initialize several sockets for several different programs to talk to a dashboard,
+if needed.</p></li>
 </ul>
 <p>If you’re having trouble fitting all widgets on the screen, <code class="docutils literal notranslate"><span class="pre">x_pad</span></code> and <code class="docutils literal notranslate"><span class="pre">y_pad</span></code> are the easiest things to change.
 Additionally, you can call <code class="docutils literal notranslate"><span class="pre">dashboard.scale_all_text</span></code> after initializing the dashboard but before launching it to

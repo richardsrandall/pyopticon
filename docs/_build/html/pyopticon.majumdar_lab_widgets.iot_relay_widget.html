@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyopticon.majumdar_lab_widgets.iot_relay_widget module &mdash; pyopticon 0.1.7 documentation</title>
+  <title>pyopticon.majumdar_lab_widgets.iot_relay_widget module &mdash; pyopticon 0.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -77,8 +77,63 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pyopticon-majumdar-lab-widgets-iot-relay-widget-module">
-<h1>pyopticon.majumdar_lab_widgets.iot_relay_widget module<a class="headerlink" href="#pyopticon-majumdar-lab-widgets-iot-relay-widget-module" title="Permalink to this heading"></a></h1>
+  <section id="module-pyopticon.majumdar_lab_widgets.iot_relay_widget">
+<span id="pyopticon-majumdar-lab-widgets-iot-relay-widget-module"></span><h1>pyopticon.majumdar_lab_widgets.iot_relay_widget module<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets.iot_relay_widget" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.iot_relay_widget.</span></span><span class="sig-name descname"><span class="pre">IotRelayWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>Widget for using an Arduino to control a Digital Loggers Internet of Things (IoT) Relay, like this: <a class="reference external" href="https://www.digital-loggers.com/iot2.html">https://www.digital-loggers.com/iot2.html</a> .
+This can be used for on/off control of pretty much any AC-powered device like a light, fan, or pump.</p>
+<p>The arduino is expected to control the IoT relay with a digital output pin and to read serial commands using its built-in USB connection. 
+An arduino nano works well; these typically use mini-B USB connections. The arduino ground and digital output pin get connected to the green connector on the side of the IoT relay. 
+Commands to the arduino are broken up by carriage return and newline characters. The arduino should turn on the IoT relay when the command ‘1’ is received 
+and turn it off when the command ‘0’ is received. Additionally, when the command ‘Q’ for query is received, it should reply with its status (‘1’ or ‘0’) 
+followed by a newline or carriage return character.</p>
+<p>A suitable arduino sketch (program) to control the IoT relay can quickly be written by analogy to this Arduino forum post: <a class="reference external" href="https://forum.arduino.cc/t/serial-commands-to-activate-a-digital-output/49036/3">https://forum.arduino.cc/t/serial-commands-to-activate-a-digital-output/49036/3</a>
+A working .ino sketch is also available in the majumdar_lab_widgets source code file on this project’s Github.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>If serial failed, set readout to ‘No Reading’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_handshake">
+<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_handshake" title="Permalink to this definition"></a></dt>
+<dd><p>Handshake with the Arduino.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Query the device and update the display based on the reply.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘None’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_confirm">
+<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_confirm" title="Permalink to this definition"></a></dt>
+<dd><p>When ‘confirm’ is pressed, send the appropriate commands to the arduino.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

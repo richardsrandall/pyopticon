@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Documentation &mdash; pyopticon 0.1.7 documentation</title>
+  <title>Documentation &mdash; pyopticon 0.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -52,43 +52,126 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial_3.html">Tutorial: Writing Your Own Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_4.html">Tutorial: Miscellaneous Useful Features</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#the-pyopticondashboard-class">The ‘’PyOpticonDashboard’’ class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-pyopticondashboard-class">The ‘’PyOpticonDashboard’’ class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyopticon.dashboard.PyOpticonDashboard"><code class="docutils literal notranslate"><span class="pre">PyOpticonDashboard</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.dashboard.PyOpticonDashboard.add_widget"><code class="docutils literal notranslate"><span class="pre">PyOpticonDashboard.add_widget()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.dashboard.PyOpticonDashboard.add_interlock"><code class="docutils literal notranslate"><span class="pre">PyOpticonDashboard.add_interlock()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.dashboard.PyOpticonDashboard.start"><code class="docutils literal notranslate"><span class="pre">PyOpticonDashboard.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.dashboard.PyOpticonDashboard.exc_handler"><code class="docutils literal notranslate"><span class="pre">PyOpticonDashboard.exc_handler()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.dashboard.PyOpticonDashboard.check_offline_mode"><code class="docutils literal notranslate"><span class="pre">PyOpticonDashboard.check_offline_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.dashboard.PyOpticonDashboard.check_serial_connected"><code class="docutils literal notranslate"><span class="pre">PyOpticonDashboard.check_serial_connected()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.dashboard.PyOpticonDashboard.get_field"><code class="docutils literal notranslate"><span class="pre">PyOpticonDashboard.get_field()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.dashboard.PyOpticonDashboard.set_field"><code class="docutils literal notranslate"><span class="pre">PyOpticonDashboard.set_field()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.dashboard.PyOpticonDashboard.get_widget_by_nickname"><code class="docutils literal notranslate"><span class="pre">PyOpticonDashboard.get_widget_by_nickname()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.dashboard.PyOpticonDashboard.get_widgets_by_nickname"><code class="docutils literal notranslate"><span class="pre">PyOpticonDashboard.get_widgets_by_nickname()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.dashboard.PyOpticonDashboard.get_tkinter_object"><code class="docutils literal notranslate"><span class="pre">PyOpticonDashboard.get_tkinter_object()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.dashboard.PyOpticonDashboard.scale_all_text"><code class="docutils literal notranslate"><span class="pre">PyOpticonDashboard.scale_all_text()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#superclasses-for-creating-new-widgets">Superclasses for creating new widgets</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#the-genericwidget-class">The ‘’GenericWidget’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-genericserialemulator-class">The ‘’GenericSerialEmulator’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-minimalwidget-class">The ‘’MinimalWidget’’ class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-genericwidget-class">The ‘’GenericWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.generic_widget.GenericWidget"><code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-minimalwidget-class">The ‘’MinimalWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.minimal_widget.MinimalWidget"><code class="docutils literal notranslate"><span class="pre">MinimalWidget</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#the-utilities-package">The ‘’utilities’’ package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#the-scan-serial-ports-function">The ‘’scan_serial_ports’’ function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-gmailhelper-class">The ‘’GmailHelper’’ class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-scan-serial-ports-function">The ‘’scan_serial_ports’’ function</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.utilities.scan_serial_ports"><code class="docutils literal notranslate"><span class="pre">scan_serial_ports()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-gmailhelper-class">The ‘’GmailHelper’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.utilities.gmail_helper.GmailHelper"><code class="docutils literal notranslate"><span class="pre">GmailHelper</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-socket-client-package">The ‘’socket_client’’ package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-pyopticonsocketclient-class">The ‘’PyOpticonSocketClient’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.socket_client.PyOpticonSocketClient"><code class="docutils literal notranslate"><span class="pre">PyOpticonSocketClient</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#internal-pyopticon-widget-classes">Internal PyOpticon widget classes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#the-serialwidget-class">The ‘’SerialWidget’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-showhidewidget-class">The ‘’ShowHideWidget’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-dataloggingwidget-class">The ‘’DataLoggingWidget’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-automationwidget-class">The ‘’AutomationWidget’’ class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-serialwidget-class">The ‘’SerialWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon._system._serial_widget.SerialWidget"><code class="docutils literal notranslate"><span class="pre">SerialWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-showhidewidget-class">The ‘’ShowHideWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon._system._show_hide_widget.ShowHideWidget"><code class="docutils literal notranslate"><span class="pre">ShowHideWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-dataloggingwidget-class">The ‘’DataLoggingWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon._system._data_logging_widget.DataLoggingWidget"><code class="docutils literal notranslate"><span class="pre">DataLoggingWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-automationwidget-class">The ‘’AutomationWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon._system._automation_widget.AutomationWidget"><code class="docutils literal notranslate"><span class="pre">AutomationWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-socketwidget-class">The ‘’SocketWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon._system._socket_widget.SocketWidget"><code class="docutils literal notranslate"><span class="pre">SocketWidget</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#the-built-in-widgets-package">The ‘’built_in_widgets’’ package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#the-titlewidget-class">The ‘’TitleWidget’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-spicinesswidget-class">The ‘’SpicinessWidget’’ class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-titlewidget-class">The ‘’TitleWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.built_in_widgets.title_widget.TitleWidget"><code class="docutils literal notranslate"><span class="pre">TitleWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-spicinesswidget-class">The ‘’SpicinessWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.built_in_widgets.spiciness_widget.SpicinessWidget"><code class="docutils literal notranslate"><span class="pre">SpicinessWidget</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#the-majumdar-lab-widgets-package">The ‘’majumdar_lab_widgets’’ package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#the-aalborgdpcwidget-class">The ‘’AalborgDPCWidget’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-mksmfcwidget-class">The ‘’MksMFCWidget’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-iotrelaywidget-class">The ‘’IotRelayWidget’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-omegausbutcwidget-class">The ‘’OmegaUSBUTCWidget’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-picarrocrdwidget-class">The ‘’PicarroCRDWidget’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-valco2wayvalvewidget-class">The ‘’Valco2WayValveWidget’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-valco8wayvalvewidget-class">The ‘’Valco8WayValveWidget’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-srigaschromatographfidwidget-class">The ‘’SRIGasChromatographFIDWidget’’ class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-cellkrafthumidifierwidget-class">The ‘’CellkraftHumidifierWidget’’ class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-aalborgdpcwidget-class">The ‘’AalborgDPCWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget"><code class="docutils literal notranslate"><span class="pre">AalborgDPCWidget</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#the-run-demo-dashboard-function">The ‘’run_demo_dashboard’’ function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-mksmfcwidget-class">The ‘’MksMFCWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget"><code class="docutils literal notranslate"><span class="pre">MksMFCWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-iotrelaywidget-class">The ‘’IotRelayWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget"><code class="docutils literal notranslate"><span class="pre">IotRelayWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-omegausbutcwidget-class">The ‘’OmegaUSBUTCWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget"><code class="docutils literal notranslate"><span class="pre">OmegaUSBUTCWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-picarrocrdwidget-class">The ‘’PicarroCRDWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget"><code class="docutils literal notranslate"><span class="pre">PicarroCRDWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-valco2wayvalvewidget-class">The ‘’Valco2WayValveWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget"><code class="docutils literal notranslate"><span class="pre">Valco2WayValveWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-srigaschromatographfidwidget-class">The ‘’SRIGasChromatographFIDWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget"><code class="docutils literal notranslate"><span class="pre">SRIGasChromatographFIDWidget</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-thorlabslightmeterwidget-class">The ‘’ThorlabsLightMeterWidget’’ class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget"><code class="docutils literal notranslate"><span class="pre">ThorlabsLightMeterWidget</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-run-demo-dashboard-function">The ‘’run_demo_dashboard’’ function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyopticon.demo_dashboard.run_demo_dashboard"><code class="docutils literal notranslate"><span class="pre">run_demo_dashboard()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
@@ -122,27 +205,785 @@
 <h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading"></a></h1>
 <section id="the-pyopticondashboard-class">
 <h2>The ‘’PyOpticonDashboard’’ class<a class="headerlink" href="#the-pyopticondashboard-class" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.dashboard.</span></span><span class="sig-name descname"><span class="pre">PyOpticonDashboard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dashboard_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard" title="Permalink to this definition"></a></dt>
+<dd><p>A Dashboard is our term for a GUI window containing various ‘widgets’. A standalone program should initialize, configure, and run each dashboard. 
+One dashboard may contain many widgets, each representing a physical device or some other functionality.</p>
+<p>See the tutorials for examples of initializing and populating a dashboard. Generally, the workflow is to:</p>
+<ul class="simple">
+<li><p>Initialize a dashboard</p></li>
+<li><p>Initialize widgets and add them to the dashboard</p></li>
+<li><p>Define any desired interlocks and add them to the dashboard</p></li>
+<li><p>Launch the dashboard</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dashboard_name</strong> (<em>str</em>) – The name of the dashboard, which appears in any data logging files that the dashboard creates.</p></li>
+<li><p><strong>offline_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – Defaults to False. If True, doesn’t attempt to build any serial.Serial objects, and widgets may also check to behave differently.</p></li>
+<li><p><strong>polling_interval_ms</strong> (<em>int</em><em>, </em><em>optional</em>) – The interval for polling all connected devices, in milliseconds. Defaults to 1000. You may want to use a larger interval if certain devices are slow to poll, or polling them involves blocking code (not recommended).</p></li>
+<li><p><strong>window_resizeable</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not you can manually resize the dashboard by dragging and dropping the corner. Defaults to false. If True, the window is resizeable, but the widgets don’t scale or center themselves.</p></li>
+<li><p><strong>persistent_console_logfile</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to log console events to a persistent file (same throughout multiple dashboard relaunches) in the same directory as the dashboard initialization script.</p></li>
+<li><p><strong>print_stacktraces</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, exception stack traces are printed to console; if false, only to the logfile. Exception names are printed regardless.</p></li>
+<li><p><strong>x_pad</strong> (<em>int</em><em>, </em><em>optional</em>) – The horizontal pad between widgets, in pixels.</p></li>
+<li><p><strong>y_pad</strong> (<em>int</em><em>, </em><em>optional</em>) – The vertical pad between widgets, in pixels.</p></li>
+<li><p><strong>socket_ports</strong> (<em>list</em><em>, </em><em>optional</em>) – A list of integer ports on which to open sockets for client connections. Defaults to [12345].</p></li>
+<li><p><strong>include_auto_widget</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to display an automation widget on the dashboard.</p></li>
+<li><p><strong>include_socket_widget</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to display a socket widget on the dashboard.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.add_widget">
+<span class="sig-name descname"><span class="pre">add_widget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.add_widget" title="Permalink to this definition"></a></dt>
+<dd><p>Add a widget to the dashboard at the specified row and column, each indexed from 0. 
+Note that rows 0-3 in column 0 are reserved for the four dashboard control widgets. 
+If the specified grid coordinates are already occupied, add_widget hides the 
+widget that was there before. It warns to console if the widget added shares a name or nickname with an existing widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>widget</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><em>pyopticon.generic_widget.GenericWidget</em></a><em> or </em><a class="reference internal" href="#pyopticon.minimal_widget.MinimalWidget" title="pyopticon.minimal_widget.MinimalWidget"><em>pyopticon.minimal_widget.MinimalWidget</em></a>) – The widget to add to the dashboard</p></li>
+<li><p><strong>row</strong> (<em>int</em>) – The row in the dashboard’s Tkinter grid at which to place the widget, indexed from 0</p></li>
+<li><p><strong>column</strong> (<em>int</em>) – The column in the dashboard’s Tkinter grid at which to place the widget, indexed from 0</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.add_interlock">
+<span class="sig-name descname"><span class="pre">add_interlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.add_interlock" title="Permalink to this definition"></a></dt>
+<dd><p>Add an interlock function that will be called once every polling cycle.</p>
+<p>You’ll probably want to define such a function in the same file where the dashboard is constructed. 
+You can use the dashboard’s get_field and/or get_widgets_by_nickname methods to check whether 
+the system state violates a certain interlock condition (e.g., a certain temperature reading is too high), 
+and then respond accordingly (e.g., use the dashboard’s set_field method to shut off the flow of reactive gases, or 
+use the gmail_helper module to email or text the operator that something has gone wrong).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>function</em>) – The interlock function to add. Should take no arguments and return nothing.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.start" title="Permalink to this definition"></a></dt>
+<dd><p>Launch the dashboard, including all necessary threads.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.exc_handler">
+<span class="sig-name descname"><span class="pre">exc_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'system'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.exc_handler" title="Permalink to this definition"></a></dt>
+<dd><p>Handle an exception according to the protocol configured when the dashboard was launched. Generate a 
+message about what subprocess raised the exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exc</strong> (<em>Exception</em>) – The Exception being raised</p></li>
+<li><p><strong>source</strong> (<em>str</em><em>, </em><em>optional</em>) – The source of the exception according to a scheme outlined in the if-statement in the function definition. Defaults to ‘system’.</p></li>
+<li><p><strong>widget</strong> (<em>str</em><em>, </em><em>optional</em>) – The nickname of the widget that raised the exception, if applicable</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.check_offline_mode">
+<span class="sig-name descname"><span class="pre">check_offline_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.check_offline_mode" title="Permalink to this definition"></a></dt>
+<dd><p>Check whether dashboard is in offline mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether the dashboard is in offline mode.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+<p>return self.offline_mode</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.check_serial_connected">
+<span class="sig-name descname"><span class="pre">check_serial_connected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.check_serial_connected" title="Permalink to this definition"></a></dt>
+<dd><p>Check whether serial is currently connected</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether the dashboard’s serial is connected.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.get_field">
+<span class="sig-name descname"><span class="pre">get_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_widget_nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_field</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.get_field" title="Permalink to this definition"></a></dt>
+<dd><p>Get the current value of a certain field of a certain widget. The field must have been created with the 
+add_field method of the GenericWidget class. To access an instance variable of a widget, use get_widget_by_nickname instead. 
+To see a list of widgets’ nicknames and fields, run the dashboard and use the ‘automation help’ button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_widget_nickname</strong> (<em>str</em>) – The nickname of the widget</p></li>
+<li><p><strong>target_field</strong> (<em>str</em>) – The name of the field to read</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value of the field that you queried</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.set_field">
+<span class="sig-name descname"><span class="pre">set_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_widget_nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confirm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.set_field" title="Permalink to this definition"></a></dt>
+<dd><p>Set the value of a certain field of a certain widget and, optionally, execute the widget’s confirm function. 
+The field must have been created with the add_field method of the GenericWidget class. 
+To modify an instance variable of a widget, use get_widget_by_nickname instead. 
+To see a list of widgets’ nicknames and fields, run the dashboard and use the ‘automation help’ button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_widget_nickname</strong> (<em>str</em>) – The nickname of the widget</p></li>
+<li><p><strong>target_field</strong> (<em>str</em>) – The name of the field to modify</p></li>
+<li><p><strong>new_value</strong> (<em>str</em>) – The new value for the field. Fields’ values are always stored as strings, even if they represent numbers.</p></li>
+<li><p><strong>confirm</strong> (<em>bool</em>) – Whether or not to execute the widget’s confirm function, which usually sends a command to the physical device based on the newly updated field.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.get_widget_by_nickname">
+<span class="sig-name descname"><span class="pre">get_widget_by_nickname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.get_widget_by_nickname" title="Permalink to this definition"></a></dt>
+<dd><p>Get a certain widget based on its nickname. 
+To see a list of widgets’ nicknames and fields, run the dashboard and use the ‘automation help’ button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target_widget_nickname</strong> (<em>str</em>) – The nickname of the widget</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The corresponding widget</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget">pyopticon.generic_widget.GenericWidget</a> or <a class="reference internal" href="#pyopticon.minimal_widget.MinimalWidget" title="pyopticon.minimal_widget.MinimalWidget">pyopticon.minimal_widget.MinimalWidget</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.get_widgets_by_nickname">
+<span class="sig-name descname"><span class="pre">get_widgets_by_nickname</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.get_widgets_by_nickname" title="Permalink to this definition"></a></dt>
+<dd><p>Get a dict that maps widgets’ nicknames to the corresponding widget objects. Widgets that were added with no or None nicknames are excluded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dict mapping nicknames (str) to widgets (GenericWidget)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.get_tkinter_object">
+<span class="sig-name descname"><span class="pre">get_tkinter_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.get_tkinter_object" title="Permalink to this definition"></a></dt>
+<dd><p>Get the dashboard’s Tkinter frame object, through which Tkinter functions like after() can be accessed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The dashboard’s Tkinter frame object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tkinter.Tk</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.scale_all_text">
+<span class="sig-name descname"><span class="pre">scale_all_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.scale_all_text" title="Permalink to this definition"></a></dt>
+<dd><p>Go through all the widgets and scale the font on any tkinter Label, Text, OptionMenu, or Button objects. 
+Meant as a quick fix for using dashboards on smaller or larger screems.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scale_factor</strong> (<em>float</em>) – A factor by which to scale text, e.g. 1.2. Values are calculated in font units and are rounded to the nearest int.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="superclasses-for-creating-new-widgets">
 <h2>Superclasses for creating new widgets<a class="headerlink" href="#superclasses-for-creating-new-widgets" title="Permalink to this heading"></a></h2>
 <p>Most widgets should be created using the GenericWidget superclass, but we include the MinimalWidget class for the edge case of widgets that are purely cosmetic and don’t reflect physical instruments (e.g., the built-in ‘’TitleWidget’’ class).</p>
 <section id="the-genericwidget-class">
 <h3>The ‘’GenericWidget’’ class<a class="headerlink" href="#the-genericwidget-class" title="Permalink to this heading"></a></h3>
-</section>
-<section id="the-genericserialemulator-class">
-<h3>The ‘’GenericSerialEmulator’’ class<a class="headerlink" href="#the-genericserialemulator-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.generic_widget.</span></span><span class="sig-name descname"><span class="pre">GenericWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget" title="Permalink to this definition"></a></dt>
+<dd><p>This is the superclass for all widgets representing physical devices. It contains a lot of the machinery for 
+generating GUI elements, setting up a serial connection, and logging data, so that subclass implementation is mostly defining the 
+input/output fields and the serial communication protocol for a given instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.dashboard.PyOpticonDashboard" title="pyopticon.dashboard.PyOpticonDashboard"><em>pyopticon.dashboard.PyOpticonDashboard</em></a>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>color</strong> (<em>str</em>) – The color of the widget’s frame, as a RGB hex string, e.g. ‘#00FF00’</p></li>
+<li><p><strong>use_serial</strong> (<em>bool</em><em>, </em><em>optional</em>) – True if this widget needs to have a serial connection; False otherwise. Defaults to True.</p></li>
+<li><p><strong>default_serial_port</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
+<li><p><strong>default_serial_port</strong> – The name of the default selected serial port, e.g. ‘COM9’. Required unless no_serial is True.</p></li>
+<li><p><strong>baudrate</strong> (<em>int</em><em>, </em><em>optional</em>) – The baud rate of the serial connection, as an integer, e.g. 19200. Required unless no_serial is True or build_serial_object is overridden.</p></li>
+<li><p><strong>widget_to_share_thread_with</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><em>pyopticon.generic_widget.GenericWidget</em></a><em>, </em><em>optional</em>) – A widget whose thread this widget will share, rather than creating its own. If use_serial = True, it’s assumed the widget will share the serial.Serial object.</p></li>
+<li><p><strong>update_every_n_cycles</strong> – Set the widget to poll its serial connection for updates every n cycles. Useful for instruments that poll slowly for some reason, or whose state changes infrequently. Defaults to 1.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>This function is called when the Dashboard attempts to open a Serial port and it fails for some 
+reason. It can be used to set the readout fields to ‘None’ or something, if desired.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.on_handshake">
+<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.on_handshake" title="Permalink to this definition"></a></dt>
+<dd><p>This function gets called whenever the widget is initialized. If the widget uses a Serial connection, you can assume 
+that the serial connection was already initialized successfully. If not, you’ll need to initialize whatever objects are needed 
+to update the widget in this method (say, an OEM Python driver).</p>
+<p>By default, it just calls on_update(), assuming that the handshake was successful if (and only if) no exception was raised.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>This function gets called once every polling interval when the dashboard prompts each device to update itself. 
+It should be overridden in a subclass implementation; if not, it prints a warning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.on_confirm">
+<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.on_confirm" title="Permalink to this definition"></a></dt>
+<dd><p>This function gets called whenever a widget’s ‘confirm’ button is pressed, which should result in a command (reflecting the latest entries in user input fields) getting sent through the serial connection. 
+This method should be overridden in a subclass implementation, unless the widget has no user input fields. If it’s called without being implemented in the subclass, a warning is printed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>This function gets called whenever serial connections are closed. It should be overridden in a subclass implementation. 
+Usually, this function sets readout fields to something like ‘no reading’ after serial communications are closed. 
+Note that while the other user-defined methods run in the widget’s thread, this method runs immediately in the main 
+GUI thread, ensuring that the serial connection closure happens immediately.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.add_field">
+<span class="sig-name descname"><span class="pre">add_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.add_field" title="Permalink to this definition"></a></dt>
+<dd><p>Adds a field (i.e., a text entry box, a dropdown menu, or a text display) to the widget.</p>
+<p>Adding a field is like making an instance variable for the widget, 
+except 1) the GUI elements get autogenerated for you and 2) fields’ values are, by default, logged whenever the dashboard’s data logging is active. 
+This method is meant to streamline adding input and output fields, though you can of course define your own instance variables, configure data logging, 
+and add GUI elements by hand to the tkinter frame from widget.get_frame() if you want more granular control. Underlying each field is a tkinter StringVar bound to some tkinter GUI element.</p>
+<p>If you add the first input field to a widget, a ‘Confirm’ button will also automatically be generated and placed. Use the move_confirm_button method to change its location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_type</strong> (<em>str</em>) – Valid options are ‘text output’, ‘text input’, or ‘dropdown’</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the field, which will be used to identify it for automation and for data logging</p></li>
+<li><p><strong>label</strong> (<em>str</em>) – The text label that will appear to the left of the field. This may differ from the name if you want to include units or abbreviate the label; e.g., the name might be ‘Temperature’ and the label might be ‘Temp. (C)’. If this argument is ‘’ (an empty string), no label is added.</p></li>
+<li><p><strong>default_value</strong> (<em>str</em>) – The starting value that appears in the field</p></li>
+<li><p><strong>options</strong> (<em>list</em><em>, </em><em>optional</em>) – The options in the dropdown option menu. Required if field_type is ‘dropdown’, ignored otherwise.</p></li>
+<li><p><strong>log</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to log this field’s contents when the dashboard’s data logging is active. Defaults to True.</p></li>
+<li><p><strong>custom_stringvar</strong> (<em>tkinter.StringVar</em><em>, </em><em>optional</em>) – If you want to pass a pre-existing tkinter StringVar to be bound to the field’s GUI element, rather than letting this method initialize a new one.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.do_threadsafe">
+<span class="sig-name descname"><span class="pre">do_threadsafe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_do</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.do_threadsafe" title="Permalink to this definition"></a></dt>
+<dd><p>Feeds the specified function to tkinter’s after() method with a delay of 0, so that it will be executed in a thread-safe way.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>to_do</strong> (<em>function</em>) – The function to execute.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.get_field">
+<span class="sig-name descname"><span class="pre">get_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">which_field</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.get_field" title="Permalink to this definition"></a></dt>
+<dd><p>Get the current value of the specified field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>which_field</strong> (<em>str</em>) – The name of the field whose value to get.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The current value of the specified field</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.set_field">
+<span class="sig-name descname"><span class="pre">set_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">which_field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hush_warning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.set_field" title="Permalink to this definition"></a></dt>
+<dd><p>Set the value of the specified field to a specified value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>which_field</strong> (<em>str</em>) – The name of the field whose value to set.</p></li>
+<li><p><strong>new_value</strong> (<em>str</em>) – The value to which to set the specified field.</p></li>
+<li><p><strong>hush_warning</strong> (<em>True</em>) – Silence the warning when you set a field while a widget’s serial isn’t connected.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.log_data">
+<span class="sig-name descname"><span class="pre">log_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.log_data" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a dict of data that is sent to the dashboard’s data logging script. The dict contains the current values of 
+all fields that were created using add_field with the option log=True. This method may be overridden in a subclass if you 
+would like to do some kind of preprocessing on data before it’s logged, e.g. stripping out units or typecasting to int or float.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dict of the widget’s loggable fields and their current values</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.disable_field">
+<span class="sig-name descname"><span class="pre">disable_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">which_field</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.disable_field" title="Permalink to this definition"></a></dt>
+<dd><p>Grey out an input field so that it can’t be interacted with.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>which_field</strong> (<em>str</em>) – The name of the field that will be greyed out.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.enable_field">
+<span class="sig-name descname"><span class="pre">enable_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">which_field</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.enable_field" title="Permalink to this definition"></a></dt>
+<dd><p>Un-grey out an input field that had previously been greyed out, allowing it to be interacted with again.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>which_field</strong> (<em>Str</em>) – The name of the field to re-enable.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.move_confirm_button">
+<span class="sig-name descname"><span class="pre">move_confirm_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.move_confirm_button" title="Permalink to this definition"></a></dt>
+<dd><p>Move the confirm button, which is automatically placed when using the add_field method to add an input field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>int</em>) – The row at which to place the confirm button, indexed from 0</p></li>
+<li><p><strong>column</strong> (<em>int</em>) – The column at which to place the confirm button, indexed from 0</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.override_color">
+<span class="sig-name descname"><span class="pre">override_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_color</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.override_color" title="Permalink to this definition"></a></dt>
+<dd><p>Manually change the color of a widget’s frame to something besides its default defined in its constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_color</strong> (<em>str</em>) – The new color, in hex, e.g. ‘#FF00FF’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget._run_thread">
+<span class="sig-name descname"><span class="pre">_run_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget._run_thread" title="Permalink to this definition"></a></dt>
+<dd><p>Launch a thread to process commands from the widget’s queue. The thread just keeps 
+checking for new commands in its queue forever until the close flag is set. Valid commands 
+are ‘UPDATE’, ‘HANDSHAKE’, and ‘CONFIRM’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget._shutdown_thread">
+<span class="sig-name descname"><span class="pre">_shutdown_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget._shutdown_thread" title="Permalink to this definition"></a></dt>
+<dd><p>Shutdown the widget’s thread once the GUI is closed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget._build_serial_object">
+<span class="sig-name descname"><span class="pre">_build_serial_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget._build_serial_object" title="Permalink to this definition"></a></dt>
+<dd><p>This function just calls get_serial_object and assigns its value to self.serial_object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.confirm">
+<span class="sig-name descname"><span class="pre">confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.confirm" title="Permalink to this definition"></a></dt>
+<dd><p>Method executed when the Confirm button is pressed. Checks whether serial is connected and unfocuses any input field that’s focused, then 
+calls the on_confirm method that is hopefully defined in a subclass.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget._update">
+<span class="sig-name descname"><span class="pre">_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget._update" title="Permalink to this definition"></a></dt>
+<dd><p>Executes every time the widget is prompted to update. Checks whether to update this cycle, checks whether 
+serial is connected, and then calls the on_update method that is hopefully defined in a subclass implementation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget._handshake">
+<span class="sig-name descname"><span class="pre">_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget._handshake" title="Permalink to this definition"></a></dt>
+<dd><p>Builds the serial object, if needed, and prompts the widget to handshake with the device, handling errors as needed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.close_serial">
+<span class="sig-name descname"><span class="pre">close_serial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.close_serial" title="Permalink to this definition"></a></dt>
+<dd><p>Closes the serial object, if needed, and returns the GUI fields to their default non-connected states. Executes on_serial_close, which is hopefully implemented in a subclass.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.get_serial_object">
+<span class="sig-name descname"><span class="pre">get_serial_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.get_serial_object" title="Permalink to this definition"></a></dt>
+<dd><p>Get the serial object that this widget is using</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>This widget’s serial object, which is probably a Pyserial Serial object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>serial.Serial</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.show_serial">
+<span class="sig-name descname"><span class="pre">show_serial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.show_serial" title="Permalink to this definition"></a></dt>
+<dd><p>Show the serial port selector and status GUI elements, if they were hidden</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.hide_serial">
+<span class="sig-name descname"><span class="pre">hide_serial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.hide_serial" title="Permalink to this definition"></a></dt>
+<dd><p>Hide the serial port selector and status GUI elements</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.update_serial_ports">
+<span class="sig-name descname"><span class="pre">update_serial_ports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_serial_options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.update_serial_ports" title="Permalink to this definition"></a></dt>
+<dd><p>Update the dropdown list of available serial ports</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_serial_options</strong> (<em>list</em>) – The new list of available serial ports</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.generic_widget.GenericWidget.get_frame">
+<span class="sig-name descname"><span class="pre">get_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.generic_widget.GenericWidget.get_frame" title="Permalink to this definition"></a></dt>
+<dd><p>Get the tkinter frame on which this object is drawn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The widget’s tkinter frame</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tkinter.Frame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="the-minimalwidget-class">
 <h3>The ‘’MinimalWidget’’ class<a class="headerlink" href="#the-minimalwidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.minimal_widget.MinimalWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.minimal_widget.</span></span><span class="sig-name descname"><span class="pre">MinimalWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.minimal_widget.MinimalWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Superclass for creating widgets entirely from scratch, without any of the automation or data logging machinery in 
+the GenericWidget class. This is mostly useful for creating widgets that are entirely cosmetic, e.g. the TitleWidget class. 
+This superclass implements all functions required to interact with a Dashboard, but none of them do anything.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent_dashboard</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.dashboard.PyOpticonDashboard" title="pyopticon.dashboard.PyOpticonDashboard"><em>pyopticon.dashboard.PyOpticonDashboard</em></a>) – The dashboard object to which this device will be added</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.minimal_widget.MinimalWidget.on_handshake">
+<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.minimal_widget.MinimalWidget.on_handshake" title="Permalink to this definition"></a></dt>
+<dd><p>Runs when serial is connected. Does nothing unless overridden.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.minimal_widget.MinimalWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.minimal_widget.MinimalWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Runs every update cycle. Does nothing unless overridden.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.minimal_widget.MinimalWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.minimal_widget.MinimalWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>Runs on serial close. Does nothing unless overridden.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.minimal_widget.MinimalWidget.on_confirm">
+<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.minimal_widget.MinimalWidget.on_confirm" title="Permalink to this definition"></a></dt>
+<dd><p>Runs on ‘confirm’, though these widgets generally don’t have confirm buttons unless you add one. Does nothing unless overridden.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.minimal_widget.MinimalWidget._run_thread">
+<span class="sig-name descname"><span class="pre">_run_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.minimal_widget.MinimalWidget._run_thread" title="Permalink to this definition"></a></dt>
+<dd><p>Launch a thread to process commands from the widget’s queue.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.minimal_widget.MinimalWidget._shutdown_thread">
+<span class="sig-name descname"><span class="pre">_shutdown_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.minimal_widget.MinimalWidget._shutdown_thread" title="Permalink to this definition"></a></dt>
+<dd><p>Shutdown the widget’s thread once the GUI is closed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.minimal_widget.MinimalWidget.get_frame">
+<span class="sig-name descname"><span class="pre">get_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.minimal_widget.MinimalWidget.get_frame" title="Permalink to this definition"></a></dt>
+<dd><p>Get the widget’s Tkinter frame object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.minimal_widget.MinimalWidget.show_serial">
+<span class="sig-name descname"><span class="pre">show_serial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.minimal_widget.MinimalWidget.show_serial" title="Permalink to this definition"></a></dt>
+<dd><p>This method must be implemented in all widgets; in this case, it is empty.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.minimal_widget.MinimalWidget.hide_serial">
+<span class="sig-name descname"><span class="pre">hide_serial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.minimal_widget.MinimalWidget.hide_serial" title="Permalink to this definition"></a></dt>
+<dd><p>This method must be implemented in all widgets; in this case, it is empty.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.minimal_widget.MinimalWidget.update_serial_ports">
+<span class="sig-name descname"><span class="pre">update_serial_ports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_com_options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.minimal_widget.MinimalWidget.update_serial_ports" title="Permalink to this definition"></a></dt>
+<dd><p>This method must be implemented in all widgets; in this case, it is empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_com_options</strong> (<em>list</em>) – A list containing the names (strings) of the available serial ports.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 <section id="the-utilities-package">
 <h2>The ‘’utilities’’ package<a class="headerlink" href="#the-utilities-package" title="Permalink to this heading"></a></h2>
 <section id="the-scan-serial-ports-function">
 <h3>The ‘’scan_serial_ports’’ function<a class="headerlink" href="#the-scan-serial-ports-function" title="Permalink to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyopticon.utilities.scan_serial_ports">
+<span class="sig-prename descclassname"><span class="pre">pyopticon.utilities.</span></span><span class="sig-name descname"><span class="pre">scan_serial_ports</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.utilities.scan_serial_ports" title="Permalink to this definition"></a></dt>
+<dd><p>Enter an infinite loop in which anytime a serial port appears or disappears, its name is printed to the console. 
+This is useful for figuring out which physical devices are represented by which serial ports. 
+This function should be invoked from some kind of Python shell like IDLE so you can see its printed outputs.</p>
+</dd></dl>
+
 </section>
 <section id="the-gmailhelper-class">
 <h3>The ‘’GmailHelper’’ class<a class="headerlink" href="#the-gmailhelper-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.utilities.gmail_helper.GmailHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.utilities.gmail_helper.</span></span><span class="sig-name descname"><span class="pre">GmailHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gmail_address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination_emails</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.utilities.gmail_helper.GmailHelper" title="Permalink to this definition"></a></dt>
+<dd><p>This widget allows your Python code to send emails and, by extension, texts. It’s mainly useful for sending notifications after an interlock is 
+tripped, e.g. if the dashboard detects that an instrument went offline partway through an automation script.</p>
+<p>You’ll need to follow an online tutorial to get an ‘app password’ for a gmail account to allow Python to send emails from that account. 
+You can test that it worked by constructing a GmailHelper object in a shell like IDLE and trying to send yourself emails from it. 
+If you’d like to send texts, send an email to the appropriate address at the cell carrier’s SMS gateway, e.g. <a class="reference external" href="mailto:xxx-xxx-xxxx&#37;&#52;&#48;vtext&#46;com">xxx-xxx-xxxx<span>&#64;</span>vtext<span>&#46;</span>com</a> for Verizon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gmail_address</strong> (<em>str</em>) – The gmail address from which you want the notification to be sent.</p></li>
+<li><p><strong>auth_string</strong> (<em>str</em>) – An app password (or equivalent) for the gmail account.</p></li>
+<li><p><strong>destination_emails</strong> (<em>str</em>) – A list of the email addresses to which you want to send the notifications.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.utilities.gmail_helper.GmailHelper.send_email">
+<span class="sig-name descname"><span class="pre">send_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_body</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.utilities.gmail_helper.GmailHelper.send_email" title="Permalink to this definition"></a></dt>
+<dd><p>Send an email with the specified subject and message to the email addresses specified when this GmailHelper was created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>subject</strong> (<em>str</em>) – The subject of the email. Note that if you’re using this to send texts through an SMS gateway, different carriers treat the subject in different ways.</p></li>
+<li><p><strong>message_body</strong> (<em>str</em>) – The body text of the email message to send.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+<section id="the-socket-client-package">
+<h2>The ‘’socket_client’’ package<a class="headerlink" href="#the-socket-client-package" title="Permalink to this heading"></a></h2>
+<section id="the-pyopticonsocketclient-class">
+<h3>The ‘’PyOpticonSocketClient’’ class<a class="headerlink" href="#the-pyopticonsocketclient-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.socket_client.</span></span><span class="sig-name descname"><span class="pre">PyOpticonSocketClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient" title="Permalink to this definition"></a></dt>
+<dd><p>Class representing a client-side socket connection to a PyOpticon dashboard. Can be used to send various commands and 
+queries to the dashboard from a separate Python script.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>socket_number</strong> (<em>int</em><em>, </em><em>optional</em>) – The port on which to open the socket connection. Defaults to 12345.</p></li>
+<li><p><strong>handle_errors</strong> (<em>str</em><em>, </em><em>optional</em>) – How to handle errors reported by the dashboard when attempting to execute a socket command. ‘none’ does nothing, ‘print’ prints a warning to console but continues executing, ‘exception’ raises an exception. Defaults to ‘none’.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient._check_errors">
+<span class="sig-name descname"><span class="pre">_check_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient._check_errors" title="Permalink to this definition"></a></dt>
+<dd><p>Checks a string returned by the dashboard for whether it’s an error message (beginning with ‘Error: ‘) and, if so, processes it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<em>str</em>) – The command, e.g. ‘get’, that the dashboard was trying to execute.</p></li>
+<li><p><strong>result</strong> (<em>str</em>) – The string that the dashboard sent through the socket as its reply, which may or may not be an error message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient._query_socket">
+<span class="sig-name descname"><span class="pre">_query_socket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_send</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient._query_socket" title="Permalink to this definition"></a></dt>
+<dd><p>Converts a dict to a JSON string and sends it through the socket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>to_send</strong> (<em>dict</em>) – The dict to send to the dashboard.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient.get_field">
+<span class="sig-name descname"><span class="pre">get_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget_nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient.get_field" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the current value of a field from the dashboard via the socket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>widget_nickname</strong> (<em>str</em>) – The nickname of the widget to query</p></li>
+<li><p><strong>field_name</strong> (<em>str</em>) – The field to query</p></li>
+<li><p><strong>printout</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the dashboard should print to its own console a record that the socket command was received. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The current value of the specified field.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient.set_field">
+<span class="sig-name descname"><span class="pre">set_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget_nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient.set_field" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the value of a field to a specified value via the socket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>widget_nickname</strong> (<em>str</em>) – The nickname of the widget whose field to set</p></li>
+<li><p><strong>field_name</strong> (<em>str</em>) – The field to set</p></li>
+<li><p><strong>printout</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the dashboard should print to its own console a record that the socket command was received. Defaults to True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient.do_confirm">
+<span class="sig-name descname"><span class="pre">do_confirm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget_nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient.do_confirm" title="Permalink to this definition"></a></dt>
+<dd><p>Executes a widget’s ‘confirm’ method via the socket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>widget_nickname</strong> (<em>str</em>) – The nickname of the widget to confirm</p></li>
+<li><p><strong>printout</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the dashboard should print to its own console a record that the socket command was received. Defaults to True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient.do_eval">
+<span class="sig-name descname"><span class="pre">do_eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient.do_eval" title="Permalink to this definition"></a></dt>
+<dd><p>Tells the dashboard to evaluate an expression and return the result. Eval is run in a namespace containing the methods 
+get_dashboard(), which returns a dashboard object, and do_threadsafe(f), which executes a function f in the main GUI thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expression</strong> – The expression to evaluate</p></li>
+<li><p><strong>printout</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the dashboard should print to its own console a record that the socket command was received. Defaults to True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient.do_exec">
+<span class="sig-name descname"><span class="pre">do_exec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient.do_exec" title="Permalink to this definition"></a></dt>
+<dd><p>Tells the dashboard to execute a given function. Exec is run in a namespace containing the methods 
+get_dashboard(), which returns a dashboard object, and do_threadsafe(f), which executes a function f in the main GUI thread.</p>
+<p>The code to execute should be supplied as a function. The object uses the ‘inspect’ module to get the function’s source as a 
+string and pass it through the socket. This lets you benefit from normal syntax highlighting in writing your function, 
+rather than having to define it as a string with a bunch of escaped newline and tab characters in it. Due to the 
+‘inspect’ module’s limitations, the function must be defined separately and then passed to do_exec, rather than being 
+defined inline with the do_exec call using a lambda function. E.g., s.do_exec(lambda: print(“Hi”)) is invalid. See the tutorial.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expression</strong> – The code to run</p></li>
+<li><p><strong>printout</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the dashboard should print to its own console a record that the socket command was received. Defaults to True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient.close" title="Permalink to this definition"></a></dt>
+<dd><p>Send a message via the socket telling the Dashboard to close the socket on its end. Close the socket connection on the client end.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 <section id="internal-pyopticon-widget-classes">
@@ -150,24 +991,549 @@
 <p>These widgets are initialized once per dashboard by the dashboard’s constructor. They control and manage all of the dashboard’s high-level functions.</p>
 <section id="the-serialwidget-class">
 <h3>The ‘’SerialWidget’’ class<a class="headerlink" href="#the-serialwidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon._system._serial_widget.</span></span><span class="sig-name descname"><span class="pre">SerialWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polling_interval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget" title="Permalink to this definition"></a></dt>
+<dd><p>This widget is responsible for prompting all of the widgets to open serial connections, query them regularly, 
+check them for responses, and closing the connections when needed. It also has the button to update the list of serial ports.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>pyopticon.dashboard.Dashboard</em>) – The dashboard to which this widget will be added.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget.get_frame">
+<span class="sig-name descname"><span class="pre">get_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget.get_frame" title="Permalink to this definition"></a></dt>
+<dd><p>Get the tkinter frame on which this object is drawn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The widget’s tkinter frame</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tkinter.Frame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget._toggle_serial_connected">
+<span class="sig-name descname"><span class="pre">_toggle_serial_connected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget._toggle_serial_connected" title="Permalink to this definition"></a></dt>
+<dd><p>Toggle whether serial communications are active. Prompt all widgets to open or close serial connections. 
+Grey out and change text on the appropriate GUI buttons while serial communications are active.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget._update_widgets">
+<span class="sig-name descname"><span class="pre">_update_widgets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget._update_widgets" title="Permalink to this definition"></a></dt>
+<dd><p>So long as serial communications are active, poll all widgets. Also check interlocks</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget._read_serial_ports">
+<span class="sig-name descname"><span class="pre">_read_serial_ports</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget._read_serial_ports" title="Permalink to this definition"></a></dt>
+<dd><p>Prompt every widget to read the lastest responses from its serial port and update its display accordingly.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget._poll_interlocks">
+<span class="sig-name descname"><span class="pre">_poll_interlocks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget._poll_interlocks" title="Permalink to this definition"></a></dt>
+<dd><p>Execute every interlock function that has been added to the dashboard.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget._update_serial_ports">
+<span class="sig-name descname"><span class="pre">_update_serial_ports</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget._update_serial_ports" title="Permalink to this definition"></a></dt>
+<dd><p>Update the drop-down menu of available serial ports, accounting for any ports that have appeared/disappeared since this method was last called.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="the-showhidewidget-class">
 <h3>The ‘’ShowHideWidget’’ class<a class="headerlink" href="#the-showhidewidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon._system._show_hide_widget.ShowHideWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon._system._show_hide_widget.</span></span><span class="sig-name descname"><span class="pre">ShowHideWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._show_hide_widget.ShowHideWidget" title="Permalink to this definition"></a></dt>
+<dd><p>This widget contains buttons to show/hide the console (on PC’s), show/hide all the other widgets’ serial controls, 
+print automation help to the console, and open help/tutorials.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>pyopticon.dashboard.Dashboard</em>) – The dashboard to which this widget will be added.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._show_hide_widget.ShowHideWidget.get_frame">
+<span class="sig-name descname"><span class="pre">get_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._show_hide_widget.ShowHideWidget.get_frame" title="Permalink to this definition"></a></dt>
+<dd><p>Get the tkinter frame on which this object is drawn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The widget’s tkinter frame</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tkinter.Frame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._show_hide_widget.ShowHideWidget._toggle_console">
+<span class="sig-name descname"><span class="pre">_toggle_console</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._show_hide_widget.ShowHideWidget._toggle_console" title="Permalink to this definition"></a></dt>
+<dd><p>On a PC, toggles whether the console is visible; on a Mac, opens a message box with instructions to open a console manually.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._show_hide_widget.ShowHideWidget._toggle_serial_shown">
+<span class="sig-name descname"><span class="pre">_toggle_serial_shown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._show_hide_widget.ShowHideWidget._toggle_serial_shown" title="Permalink to this definition"></a></dt>
+<dd><p>Toggles whether the serial port dropdowns and serial statuses are visible on all widgets that have them.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._show_hide_widget.ShowHideWidget._documentation">
+<span class="sig-name descname"><span class="pre">_documentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._show_hide_widget.ShowHideWidget._documentation" title="Permalink to this definition"></a></dt>
+<dd><p>Open a more comprehensive document/site for support using this package.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._show_hide_widget.ShowHideWidget._print_automation_help">
+<span class="sig-name descname"><span class="pre">_print_automation_help</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._show_hide_widget.ShowHideWidget._print_automation_help" title="Permalink to this definition"></a></dt>
+<dd><p>Print a crash course in the syntax for automation scripts, as well as a list of widgets’ nicknames and automatable fields.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="the-dataloggingwidget-class">
 <h3>The ‘’DataLoggingWidget’’ class<a class="headerlink" href="#the-dataloggingwidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon._system._data_logging_widget.DataLoggingWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon._system._data_logging_widget.</span></span><span class="sig-name descname"><span class="pre">DataLoggingWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._data_logging_widget.DataLoggingWidget" title="Permalink to this definition"></a></dt>
+<dd><p>This widget allows a user to choose a data logging location and to start and stop data logging</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>pyopticon.dashboard.Dashboard</em>) – The dashboard to which this widget will be added.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._data_logging_widget.DataLoggingWidget.get_frame">
+<span class="sig-name descname"><span class="pre">get_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._data_logging_widget.DataLoggingWidget.get_frame" title="Permalink to this definition"></a></dt>
+<dd><p>Get the tkinter frame on which this object is drawn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The widget’s tkinter frame</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tkinter.Frame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._data_logging_widget.DataLoggingWidget._toggle_logging">
+<span class="sig-name descname"><span class="pre">_toggle_logging</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._data_logging_widget.DataLoggingWidget._toggle_logging" title="Permalink to this definition"></a></dt>
+<dd><p>Toggle whether data logging is active. Do the actual logging at regular intervals. Enable/disable buttons accordingly. 
+Some machinery to manage the corner case where you stop logging and then restart logging within a shorter timespan than the data logging interval.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._data_logging_widget.DataLoggingWidget._flip_interlock">
+<span class="sig-name descname"><span class="pre">_flip_interlock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._data_logging_widget.DataLoggingWidget._flip_interlock" title="Permalink to this definition"></a></dt>
+<dd><p>Necessary for toggle_logging to handle a corner case when logging is flipped on and off in quick succession.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._data_logging_widget.DataLoggingWidget._poll_loggable_data">
+<span class="sig-name descname"><span class="pre">_poll_loggable_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._data_logging_widget.DataLoggingWidget._poll_loggable_data" title="Permalink to this definition"></a></dt>
+<dd><p>Prompt every widget to return all of the data that it wants logged. Format that data into .csv append it to the log file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._data_logging_widget.DataLoggingWidget._choose_destination">
+<span class="sig-name descname"><span class="pre">_choose_destination</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._data_logging_widget.DataLoggingWidget._choose_destination" title="Permalink to this definition"></a></dt>
+<dd><p>Open a dialog window to let the user select where the logfile should be saved.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="the-automationwidget-class">
 <h3>The ‘’AutomationWidget’’ class<a class="headerlink" href="#the-automationwidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon._system._automation_widget.</span></span><span class="sig-name descname"><span class="pre">AutomationWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget" title="Permalink to this definition"></a></dt>
+<dd><p>This widget contains buttons to show/hide the console (on PC’s), show/hide all the other widgets’ serial controls, 
+print automation help to the console, and open help/tutorials.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>pyopticon.dashboard.Dashboard</em>) – The dashboard to which this widget will be added.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget.get_frame">
+<span class="sig-name descname"><span class="pre">get_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget.get_frame" title="Permalink to this definition"></a></dt>
+<dd><p>Get the tkinter frame on which this object is drawn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The widget’s tkinter frame</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tkinter.Frame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget.get_parent_dashboard">
+<span class="sig-name descname"><span class="pre">get_parent_dashboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget.get_parent_dashboard" title="Permalink to this definition"></a></dt>
+<dd><p>Get the automation widget’s parent Dashboard object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Dashboard to which this widget was added</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pyopticon.dashboard.Dashboard</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget.schedule_delay">
+<span class="sig-name descname"><span class="pre">schedule_delay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget.schedule_delay" title="Permalink to this definition"></a></dt>
+<dd><p>This function is meant to be called in automation scripts. It causes a delay before a subsequent call to schedule_function 
+or schedule_action is executed. It fills a role in an automation script similar to time.sleep() in a Python program.</p>
+<p>In the automation script, you can just say ‘schedule_delay(…)’; you don’t need to say ‘dashboard.automation_widget.schedule_delay(…)’ 
+or similar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>delay</strong> (<em>str</em>) – The delay in hh:mm:ss format</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget.schedule_function">
+<span class="sig-name descname"><span class="pre">schedule_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget.schedule_function" title="Permalink to this definition"></a></dt>
+<dd><p>This function is meant to be called in automation scripts. It executes whatever function is passed after any delay that 
+has been caused by preceding calls to schedule_delay. If you are trying to change a widget field and then confirm the change, 
+it’s better to use schedule_action – this method is meant to let you execute arbitrary functions at a scheduled time within 
+an automation script, e.g. printing a widget’s instance variable to the console.</p>
+<p>In the automation script, you can just say ‘schedule_function(…)’; you don’t need to say ‘dashboard.automation_widget.schedule_function(…)’ 
+or similar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>function</strong> (<em>function</em>) – The function to be executed at the scheduled time</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget.schedule_action">
+<span class="sig-name descname"><span class="pre">schedule_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_widget_nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_target_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confirm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget.schedule_action" title="Permalink to this definition"></a></dt>
+<dd><p>This function is meant to be called in automation scripts. It changes the target field in the target widget to a certain value, 
+then optionally executes that widget’s confirm function. It’s useful for scheduling most simple automation tasks, e.g., flipping a valve 
+at a certain time.</p>
+<p>If you want to change multiple fields on a widget, make several consecutive calls to schedule_action, with confirm=False on all 
+but the last and confirm=True on the last. That way, the widget’s confirm function is only executed once all its fields have been set properly.</p>
+<p>In the automation script, you can just say ‘schedule_action(…)’; you don’t need to say ‘dashboard.automation_widget.schedule_action(…)’ 
+or similar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_widget_nickname</strong> (<em>str</em>) – The nickname of the widget whose field you want to change.</p></li>
+<li><p><strong>target_field_name</strong> (<em>str</em>) – The name of the widget field that you want to change.</p></li>
+<li><p><strong>new_target_value</strong> (<em>str</em>) – The new value to which the target field should be set. Numbers should be typecast to str first.</p></li>
+<li><p><strong>confirm</strong> (<em>bool</em><em>, </em><em>optional</em>) – True if the target widget’s confirm method should be called after updating the field; False if not.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._schedule_helper">
+<span class="sig-name descname"><span class="pre">_schedule_helper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_target_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confirm_function</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._schedule_helper" title="Permalink to this definition"></a></dt>
+<dd><p>This is used to generate function objects that will be executed at a future time as a result of the schedule_action method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_widget</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><em>pyopticon.generic_widget.GenericWidget</em></a>) – The widget whose field you want to change.</p></li>
+<li><p><strong>field_name</strong> (<em>str</em>) – The name of the widget field that you want to change.</p></li>
+<li><p><strong>new_target_value</strong> (<em>str</em>) – The new value to which the target field should be set. Numbers should be typecast to str first.</p></li>
+<li><p><strong>confirm_function</strong> (<em>function</em>) – The widget’s confirm function, or None if no confirm function should be executed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget.schedule_await_condition">
+<span class="sig-name descname"><span class="pre">schedule_await_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">console_message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'(No</span> <span class="pre">summary</span> <span class="pre">provided)'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget.schedule_await_condition" title="Permalink to this definition"></a></dt>
+<dd><p>This function schedules the script to ‘await’ a certain condition, such as a thermocouple temperature dropping below a certain value, 
+before allowing the automation script to proceed. Data logging and GUI functions proceed in the meantime. While the script is awaiting 
+the condition, a ‘Skip’ button also becomes available in the automation control widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>condition</strong> – A function that takes a Dashboard object as its only argument and returns True if the condition to proceed is met and False if not. See tutorials for an example.</p></li>
+<li><p><strong>console_message</strong> – A message that’s printed to the console as user-legible shorthand for the condition being awaited, e.g. ‘Temperature &lt; 100C’</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._schedule_await_condition_helper">
+<span class="sig-name descname"><span class="pre">_schedule_await_condition_helper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">console_message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._schedule_await_condition_helper" title="Permalink to this definition"></a></dt>
+<dd><p>This is a function whose execution is scheduled by schedule_await_condition. 
+It checks whether the awaited condition is met. If so, it lets the automation script proceed. 
+If not, or if an error is raised, it causes the automation panel to check again during the next 
+automation update cycle (usually 1 second later). It does various cosmetic things to manage the 
+‘time to next step’ and ‘time remaining’ readouts, as well as showing and hiding the ‘skip’ button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>condition</strong> – A function that takes a Dashboard object as its only argument and returns True if the condition to proceed is met and False if not.</p></li>
+<li><p><strong>console_message</strong> – A message that’s printed to the console as user-legible shorthand for the condition being awaited, e.g. ‘Temperature &lt; 100C’</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._skip_await">
+<span class="sig-name descname"><span class="pre">_skip_await</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._skip_await" title="Permalink to this definition"></a></dt>
+<dd><p>This function gets called when the ‘skip await’ button gets pressed. It just sets a flag that _schedule_await_condition_helper reads.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._update_tasks">
+<span class="sig-name descname"><span class="pre">_update_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._update_tasks" title="Permalink to this definition"></a></dt>
+<dd><p>This function gets called every polling interval and checks whether it’s time to execute 
+the next task(s) in the automation queue. There’s some other machinery to handle pausing the script and 
+update GUI components like the ‘n out of m steps done’ and ‘xx:xx:xx to go’ readouts.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._start_automated_tasks">
+<span class="sig-name descname"><span class="pre">_start_automated_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._start_automated_tasks" title="Permalink to this definition"></a></dt>
+<dd><p>Start an automation script. Generates a list of absolute times at which each action in the 
+automation queue will be executed, and starts calling _update_tasks every second.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._load_automation_file">
+<span class="sig-name descname"><span class="pre">_load_automation_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._load_automation_file" title="Permalink to this definition"></a></dt>
+<dd><p>Load an automation script from a file. Generates a list of functions and a list of the delays before each one will be 
+executed after starting the script. Sets GUI elements like ‘0/n steps done’ and ‘xx:xx:xx remaining’.</p>
+<p>Note that this method loads the contents of the automation file and calls exec() on it. This is obviously not secure; only use 
+automation scripts whose authors you trues. exec() is called in a namespace with schedule_delay, schedule_action, schedule_function, and schedule_await_condition 
+already defined as local variables for you to use.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._pause_automated_tasks">
+<span class="sig-name descname"><span class="pre">_pause_automated_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._pause_automated_tasks" title="Permalink to this definition"></a></dt>
+<dd><p>Pause the automation script</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._stop_automated_tasks">
+<span class="sig-name descname"><span class="pre">_stop_automated_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._stop_automated_tasks" title="Permalink to this definition"></a></dt>
+<dd><p>Stop the automation script and go back to the beginning</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._buttons_running_mode">
+<span class="sig-name descname"><span class="pre">_buttons_running_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._buttons_running_mode" title="Permalink to this definition"></a></dt>
+<dd><p>Disable ‘start’ and ‘load’ buttons, turn frame green, add ‘running’ label.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._buttons_paused_mode">
+<span class="sig-name descname"><span class="pre">_buttons_paused_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._buttons_paused_mode" title="Permalink to this definition"></a></dt>
+<dd><p>Disable ‘pause’ and ‘load’ buttons, turn frame yellow, add ‘paused’ label.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._buttons_stopped_mode">
+<span class="sig-name descname"><span class="pre">_buttons_stopped_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._buttons_stopped_mode" title="Permalink to this definition"></a></dt>
+<dd><p>Disable ‘pause’ and ‘stop’ buttons, turn frame red, add ‘inactive’ label.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="the-socketwidget-class">
+<h3>The ‘’SocketWidget’’ class<a class="headerlink" href="#the-socketwidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon._system._socket_widget.</span></span><span class="sig-name descname"><span class="pre">SocketWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_numbers</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget" title="Permalink to this definition"></a></dt>
+<dd><p>This widget manages socket connections from external Python programs. It displays how many sockets are connected and has a few other useful functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.dashboard.PyOpticonDashboard" title="pyopticon.dashboard.PyOpticonDashboard"><em>pyopticon.dashboard.PyOpticonDashboard</em></a>) – The dashboard to which this widget will be added.</p></li>
+<li><p><strong>port_numbers</strong> (<em>list</em>) – A list of int ports on which to open socket server threads.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget._change_socket_counter">
+<span class="sig-name descname"><span class="pre">_change_socket_counter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget._change_socket_counter" title="Permalink to this definition"></a></dt>
+<dd><p>Changes the socket counter displayed on the screen and updates the display and frame color accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>change</strong> (<em>int</em>) – Value to add to the socket counter (+1 or -1)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget._increment_socket_counter">
+<span class="sig-name descname"><span class="pre">_increment_socket_counter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget._increment_socket_counter" title="Permalink to this definition"></a></dt>
+<dd><p>Increments the socket connection counter in a thread-safe way.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget._decrement_socket_counter">
+<span class="sig-name descname"><span class="pre">_decrement_socket_counter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget._decrement_socket_counter" title="Permalink to this definition"></a></dt>
+<dd><p>Decrements the socket connection counter in a thread-safe way.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget.get_frame">
+<span class="sig-name descname"><span class="pre">get_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget.get_frame" title="Permalink to this definition"></a></dt>
+<dd><p>Get the tkinter frame on which this object is drawn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The widget’s tkinter frame</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tkinter.Frame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget._shutdown_threads">
+<span class="sig-name descname"><span class="pre">_shutdown_threads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget._shutdown_threads" title="Permalink to this definition"></a></dt>
+<dd><p>Sets a flag that tells the socket processing threads to close themselves at program shutdown.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget._run_one_thread">
+<span class="sig-name descname"><span class="pre">_run_one_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">which_port</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget._run_one_thread" title="Permalink to this definition"></a></dt>
+<dd><p>Launch a thread that listens on a port for socket connections, handles the various types of commands that 
+may be received on that socket, and shuts down the socket and thread on program close. Also handles ports that are 
+‘left hanging’ when a client crashes or disconnects without sending a ‘Close’ method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>which_port</strong> (<em>int</em>) – The port on which this thread will listen.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget._force_disconnect">
+<span class="sig-name descname"><span class="pre">_force_disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget._force_disconnect" title="Permalink to this definition"></a></dt>
+<dd><p>Force any connected sockets to disconnect, resulting in broken pipe exceptions on the client side.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 <section id="the-built-in-widgets-package">
 <h2>The ‘’built_in_widgets’’ package<a class="headerlink" href="#the-built-in-widgets-package" title="Permalink to this heading"></a></h2>
 <section id="the-titlewidget-class">
 <h3>The ‘’TitleWidget’’ class<a class="headerlink" href="#the-titlewidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.built_in_widgets.title_widget.TitleWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.built_in_widgets.title_widget.</span></span><span class="sig-name descname"><span class="pre">TitleWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.built_in_widgets.title_widget.TitleWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyopticon.minimal_widget.MinimalWidget" title="pyopticon.minimal_widget.MinimalWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">MinimalWidget</span></code></a></p>
+<p>A simple widget containing only text, intended for making a big-text title for a dashboard. 
+Uses the MinimalWidget superclass, since all of the GenericWidget machinery is unnecessary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.dashboard.PyOpticonDashboard" title="pyopticon.dashboard.PyOpticonDashboard"><em>pyopticon.dashboard.PyOpticonDashboard</em></a>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – The text to be displayed within this widget, called ‘title’ because it’s likely to be the title of the entire dashboard.</p></li>
+<li><p><strong>font_size</strong> (<em>int</em>) – The size of font to be used in the text, as an integer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="the-spicinesswidget-class">
 <h3>The ‘’SpicinessWidget’’ class<a class="headerlink" href="#the-spicinesswidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.built_in_widgets.spiciness_widget.SpicinessWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.built_in_widgets.spiciness_widget.</span></span><span class="sig-name descname"><span class="pre">SpicinessWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.built_in_widgets.spiciness_widget.SpicinessWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>This is a silly demonstration of extending the GenericWidget class to make a widget that has no serial connection and only updates every few seconds. 
+The superclass constructor is called with no_serial=True and update_every_n_cycles=3. The widget simply reports how spicy it’s feeling with a value 
+randomly selected from a list.</p>
+<p>The use_serial=False option is intended to allow the creation of widgets that 
+do something besides poll a serial connection to update their information, but still have access to the data-logging and other machinery of the GenericWidget class. You might use this to:</p>
+<ul class="simple">
+<li><p>Make a widget that communicates with a physical device through some means other than a Pyserial serial connection, e.g. a Python package provided by the instrument vendor.</p></li>
+<li><p>Make a widget that reads the latest values from some instrument’s logfile on the computer. This can simplify post-experiment data fusion even if the entire instrument (e.g., a 
+gas chromatograph) is far too complex to configure and run with a PyOpticon interface alone.</p></li>
+<li><p>Make a standalone widget, e.g. a handy calculator, that has GUI elements but doesn’t interface with any physical devices.</p></li>
+</ul>
+<p>The update_every_n_cycles option is meant to help interface with instruments that update less than once per second or take a long time to query. For example, a gas chromatograph 
+will only log new concentration data every few minutes, while reading its logfile may be a slow operation, so polling it every 10 or 20 seconds is plenty and avoids gumming up the program with 
+unnecessary reads. Similarly, if a device for some reason required serial queries to be spaced 200ms apart, and one needed to make 6 queries to extract all the data one wanted from 
+it, beginning a sequence of 6 queries every second would overwhelm the instrument. Using update_every_n_cycles to start a sequence of 6 queries every other or every third second would 
+avoid that issue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.dashboard.PyOpticonDashboard" title="pyopticon.dashboard.PyOpticonDashboard"><em>pyopticon.dashboard.PyOpticonDashboard</em></a>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.built_in_widgets.spiciness_widget.SpicinessWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">success</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.built_in_widgets.spiciness_widget.SpicinessWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>Set readout to ‘no reading’ if initialization failed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.built_in_widgets.spiciness_widget.SpicinessWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.built_in_widgets.spiciness_widget.SpicinessWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the device by polling the serial connection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.built_in_widgets.spiciness_widget.SpicinessWidget.on_serial_query">
+<span class="sig-name descname"><span class="pre">on_serial_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.built_in_widgets.spiciness_widget.SpicinessWidget.on_serial_query" title="Permalink to this definition"></a></dt>
+<dd><p>“Nothing is done on a serial query for this device.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.built_in_widgets.spiciness_widget.SpicinessWidget.on_serial_read">
+<span class="sig-name descname"><span class="pre">on_serial_read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.built_in_widgets.spiciness_widget.SpicinessWidget.on_serial_read" title="Permalink to this definition"></a></dt>
+<dd><p>Updates the readout with a randomly selected level of spiciness. Returns True if this process was successful and False otherwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the device updated itself successfully, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.built_in_widgets.spiciness_widget.SpicinessWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.built_in_widgets.spiciness_widget.SpicinessWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘None’.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 <section id="the-majumdar-lab-widgets-package">
@@ -175,34 +1541,500 @@
 <p>These widgets were developed for the devices present in Prof. Arun Majumdar’s lab at Stanford University.</p>
 <section id="the-aalborgdpcwidget-class">
 <h3>The ‘’AalborgDPCWidget’’ class<a class="headerlink" href="#the-aalborgdpcwidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.</span></span><span class="sig-name descname"><span class="pre">AalborgDPCWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_gas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ar'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>Widget for an Aalborg DPC mass flow controller (MFC).
+This widget controls a single MFC via a serial port.</p>
+<p>By default, the gas selection dropdown includes a few gases that the author happened to use.
+Aalborg has many, many gas options in its user manual. You can configure the gas options in the constructor.</p>
+<p>In practice, the MFC’s sometimes bug out when serial commands are sent directly back-to-back, so we use a short delay between queries/commands that are sent.</p>
+<p>One can add a manual calibration curve, though these devices tend to be pretty accurate. This is done by tabulating the commanded flow (i.e., the value sent to 
+the MFC) and the actual flow (according to an external flow meter) at various flow conditions, then feeding the resulting tuples of 
+flows to the constructor for this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
+<li><p><strong>default_gas</strong> (<em>str</em><em>, </em><em>optional</em>) – The default gas that’s selected in the dropdown, defaults to ‘Ar’ for Argon</p></li>
+<li><p><strong>gas_options</strong> (<em>list</em><em>, </em><em>optional</em>) – The list of gas names (strings) that can be selected. Defaults to argon, hydrogen, and methane.</p></li>
+<li><p><strong>gas_numbers</strong> (<em>list</em><em>, </em><em>optional</em>) – The list of gas numbers (integers) corresponding to gas_options according to the Aalborg DPC handbook. Defaults to indices for Ar, H2, and CH4.</p></li>
+<li><p><strong>calibration</strong> (<em>tuple</em><em>, </em><em>optional</em>) – a tuple containing two tuples of ints or floats with the results of calibrating the MFC. The first should contain a range of flow commands sent to the MFC. The second should contain the result flows according to an external flow meter. (0,0) should be included, as should a value above the highest flow you expect to use. For example, ( (0,10,20,30), (0,11.5,20.7,33.4) ).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>If serial failed to open, set the readouts to ‘no reading’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_handshake">
+<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_handshake" title="Permalink to this definition"></a></dt>
+<dd><p>Conduct a handshake and populate the default values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Send four queries to the serial device asking for the gas selection, mode, setpoint, and actual flow rate.
+Mode refers to open, closed, or setpoint. Read and process the responses.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘None’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_confirm">
+<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_confirm" title="Permalink to this definition"></a></dt>
+<dd><p>When ‘confirm’ is pressed, send the appropriate commands to the MFC.
+Prints warnings to console if the entered parameters are invalid.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="the-mksmfcwidget-class">
 <h3>The ‘’MksMFCWidget’’ class<a class="headerlink" href="#the-mksmfcwidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.mks_mfc_widget.</span></span><span class="sig-name descname"><span class="pre">MksMFCWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>Widget to control MKS ‘mass flo controllers’ (MFCs), which are themselves controlled by an MKS ‘vacuum controller’.</p>
+<p>A control box like an MKS ‘946 Vacuum System Controller’ converts digital signals or manual inputs into the actual voltage and/or current 
+signals that control MKS mass flo controllers. One 946 control box can control up to 6 mass flo controllers at once, with some trickery required (described below) to let multiple widgets share a single serial connection.</p>
+<p>Each control box has a 3-digit ID number, e.g. 001, which can be configured on the box. Each MFC on the box has a channel, which is one of {A1, A2, B1, B2, C1, C2}. These are fixed when you initialize a widget and can’t be changed from the GUI.</p>
+<p>Each mass flo controller on the same vacuum controller gets its own widget, even though they all share the same control box and hence the same serial connection.
+The first MFC widget is initialized normally, and then for every subsequent widget representing an MFC on the same control box, the constructor is called with 
+the first widget passed as the keyword argument ‘widget_to_share_serial_with’. The later widgets then know to share the serial connection with the first widget, 
+rather than trying to initialize a new one, which would fail because that serial port is already in use by the first widget.</p>
+<p>One can also set a ‘scale factor,’ which adjusts for different gas types (e.g. air is usually a conversion factor of 1.0). Refer to the MKS MFC documentation 
+for what scale factor to use for a particular gas. One can optionally lock the scale factor for a certain widget.</p>
+<p>Finally, one can add a manual calibration curve independent of the scale factor. This is done by tabulating the commanded flow (i.e., the value sent to 
+the MFC) and the actual flow (according to an external flow meter) at various flow conditions, then feeding the resulting tuples of 
+flows to the constructor for this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>channel</strong> (<em>str</em>) – A string representing which channel on the control box the MFC is connected to. One of (A1,A2,B1,B2,C1,C2).</p></li>
+<li><p><strong>widget_to_share_serial_with</strong> (<em>richardview.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget</em><em>, </em><em>optional</em>) – If this is the 2nd-6th MFC sharing the same control box, pass the widget for the first MFC on that control box as this argument. If not, the arguments device_ID and default_serial_port are required.</p></li>
+<li><p><strong>device_ID</strong> (<em>str</em><em>, </em><em>optional</em>) – The ID of the MKS control box / vacuum system controller, which is a string of a 3-digit number, e.g. ‘001’. Can be set on the control box.</p></li>
+<li><p><strong>default_serial_port</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
+<li><p><strong>force_scale_factor</strong> (<em>float</em><em>, </em><em>optional</em>) – Optionally set a certain scale factor and disable adjusting the scale factor via the interface. See the MKS manual to select factors for different gases.</p></li>
+<li><p><strong>calibration</strong> (<em>tuple</em><em>, </em><em>optional</em>) – a tuple containing two tuples of ints or floats with the results of calibrating the MFC. The first should contain a range of flow commands sent to the MFC. The second should contain the result flows according to an external flow meter. (0,0) should be included, as should a value above the highest flow you expect to use. For example, ( (0,10,20,30), (0,11.5,20.7,33.4) ).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>If serial opened unsuccessfully, set readouts to ‘No Reading’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_handshake">
+<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_handshake" title="Permalink to this definition"></a></dt>
+<dd><p>This function gets called whenever the widget is initialized. If the widget uses a Serial connection, you can assume 
+that the serial connection was already initialized successfully. If not, you’ll need to initialize whatever objects are needed 
+to update the widget in this method (say, an OEM Python driver).</p>
+<p>By default, it just calls on_update(), assuming that the handshake was successful if (and only if) no exception was raised.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Send four queries to the serial device asking for the gas scale factor, mode, setpoint, and actual flow rate.
+Mode refers to open, closed, or setpoint. Process the results.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘None’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_confirm">
+<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_confirm" title="Permalink to this definition"></a></dt>
+<dd><p>When ‘confirm’ is pressed, send the appropriate commands to the MFC.
+Prints warnings to console if the entered parameters are invalid.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="the-iotrelaywidget-class">
 <h3>The ‘’IotRelayWidget’’ class<a class="headerlink" href="#the-iotrelaywidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.iot_relay_widget.</span></span><span class="sig-name descname"><span class="pre">IotRelayWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>Widget for using an Arduino to control a Digital Loggers Internet of Things (IoT) Relay, like this: <a class="reference external" href="https://www.digital-loggers.com/iot2.html">https://www.digital-loggers.com/iot2.html</a> .
+This can be used for on/off control of pretty much any AC-powered device like a light, fan, or pump.</p>
+<p>The arduino is expected to control the IoT relay with a digital output pin and to read serial commands using its built-in USB connection. 
+An arduino nano works well; these typically use mini-B USB connections. The arduino ground and digital output pin get connected to the green connector on the side of the IoT relay. 
+Commands to the arduino are broken up by carriage return and newline characters. The arduino should turn on the IoT relay when the command ‘1’ is received 
+and turn it off when the command ‘0’ is received. Additionally, when the command ‘Q’ for query is received, it should reply with its status (‘1’ or ‘0’) 
+followed by a newline or carriage return character.</p>
+<p>A suitable arduino sketch (program) to control the IoT relay can quickly be written by analogy to this Arduino forum post: <a class="reference external" href="https://forum.arduino.cc/t/serial-commands-to-activate-a-digital-output/49036/3">https://forum.arduino.cc/t/serial-commands-to-activate-a-digital-output/49036/3</a>
+A working .ino sketch is also available in the majumdar_lab_widgets source code file on this project’s Github.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>If serial failed, set readout to ‘No Reading’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_handshake">
+<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_handshake" title="Permalink to this definition"></a></dt>
+<dd><p>Handshake with the Arduino.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Query the device and update the display based on the reply.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘None’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_confirm">
+<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_confirm" title="Permalink to this definition"></a></dt>
+<dd><p>When ‘confirm’ is pressed, send the appropriate commands to the arduino.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="the-omegausbutcwidget-class">
 <h3>The ‘’OmegaUSBUTCWidget’’ class<a class="headerlink" href="#the-omegausbutcwidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.</span></span><span class="sig-name descname"><span class="pre">OmegaUSBUTCWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>Widget for an Omega USB-UTC thermocouple reader. 
+A USB-UTC converts a single thermocouple (using the usual 2-prong thermocouple connection) into a USB signal. The Omega thermocouple reader desktop app can be 
+used to set what type of thermocouple (K-type, etc.) is assumed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.dashboard.PyOpticonDashboard" title="pyopticon.dashboard.PyOpticonDashboard"><em>pyopticon.dashboard.PyOpticonDashboard</em></a>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>If serial opened unsuccessfully, set readouts to ‘No Reading’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the device by polling the serial connection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_query">
+<span class="sig-name descname"><span class="pre">on_serial_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_query" title="Permalink to this definition"></a></dt>
+<dd><p>Send a query to the serial device asking for the temperature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_read">
+<span class="sig-name descname"><span class="pre">on_serial_read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_read" title="Permalink to this definition"></a></dt>
+<dd><p>Parse the responses from the previous serial query and update the display. Return True if valid and and error string if not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the response was of the expected format, an error string otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool or str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘None’.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="the-picarrocrdwidget-class">
 <h3>The ‘’PicarroCRDWidget’’ class<a class="headerlink" href="#the-picarrocrdwidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.picarro_crd_widget.</span></span><span class="sig-name descname"><span class="pre">PicarroCRDWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>Widget for a Picarro GG201-i isotopic analyzer that measures 0-30 ppm CH4, 200-2000+ ppm CO2, and 0-100% relative humidity.</p>
+<p>Refer to the Picarro manual to configure one of its extra serial ports for data logging to an external device. Two modes are possible. 
+In one, the Picarro listens for a query and replies with its latest measurements. In the other, the Picarro sends its latest measurements every second. 
+We chose to use the ‘send measurements every second’ option. This means that the Picarro widget only listens for measurements, and doesn’t ever send 
+any queries via the serial line. There wasn’t a super strong reason for choosing one over the other, except for slightly more resilience to the 
+Picarro ‘lagging’ for a few seconds when it receives a methane concentration above its 30 ppm ‘limit’.</p>
+<p>The Picarro needs to be set to send (in this order) the CH4 concentration in ppm, the water concentration in volume percent, and the CO2 concentration in ppm. 
+This is done using the Picarro’s own monitor and interface, as described in its manual – contact the manufacturer if your manual doesn’t tell you how to do this.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>If serial opened unsuccessfully, set readouts to ‘No Reading’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Parse the latest message from the Picarro and update the display.</p>
+<p>Note that sometimes we get unlucky with the timing and a valid Picarro message gets chopped off halfway through and fails to parse. So occasionally we get a ‘read error’ 
+when the instrument is behaving just fine. This is easy to fix in data post-processing, but we might also consider fixing it by switching to a query-response setup.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘None’.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="the-valco2wayvalvewidget-class">
 <h3>The ‘’Valco2WayValveWidget’’ class<a class="headerlink" href="#the-valco2wayvalvewidget-class" title="Permalink to this heading"></a></h3>
-</section>
-<section id="the-valco8wayvalvewidget-class">
-<h3>The ‘’Valco8WayValveWidget’’ class<a class="headerlink" href="#the-valco8wayvalvewidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.</span></span><span class="sig-name descname"><span class="pre">Valco2WayValveWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valve_positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valve_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>Widget for a VICI Valco 2-position valve, like this: <a class="reference external" href="https://www.vici.com/vval/vval_2pos.php">https://www.vici.com/vval/vval_2pos.php</a> . 
+These valves have two positions that are internally referred to as ‘A’ and ‘B’. In the widget, the positions can be labeled whatever you want.</p>
+<p>Valco produces many other valves, e.g. 9-way selector valves. To control one of them, you could probably copy-paste the source code of this module and make pretty minor modifications 
+to on_serial_query, on_serial_read, on_confirm, and the serial emulator class. Refer to the valve’s documentation and/or mess around manually with a serial connection 
+(Pyserial in a shell like IDLE is probably easiest) to figure out the serial protocol for controlling a different type of Valco valve – e.g., valves with more than 2 positions may 
+label the positions with numbers rather than letters in the serial protocol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.dashboard.PyOpticonDashboard" title="pyopticon.dashboard.PyOpticonDashboard"><em>pyopticon.dashboard.PyOpticonDashboard</em></a>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
+<li><p><strong>valve_positions</strong> (<em>list</em>) – A list of strings with which to label the valve positions. For a 2-way valve, this should be a 2-element list with the labels for valve positions A and B respectively.</p></li>
+<li><p><strong>valve_id</strong> – A string representing the ID of the valve, which goes at the beginning of each command. This seems to always be ‘1’. However, if there are issues, going into a serial shell</p></li>
+</ul>
+</dd>
+</dl>
+<p>(e.g. Pyserial in IDLE) and sending the message b’<a href="#id1"><span class="problematic" id="id2">*</span></a>IDr’ to the valve should cause it to respond with its ID.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">success</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>Set fields to no reading if serial failed to open.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the widget by querying and reading the serial port.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_query">
+<span class="sig-name descname"><span class="pre">on_serial_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_query" title="Permalink to this definition"></a></dt>
+<dd><p>Send a query to the valve asking for its current position.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_read">
+<span class="sig-name descname"><span class="pre">on_serial_read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_read" title="Permalink to this definition"></a></dt>
+<dd><p>Parse the responses from the previous serial query and update the display. Return True if the response is valid and an error string if not.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘None’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_confirm">
+<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_confirm" title="Permalink to this definition"></a></dt>
+<dd><p>When ‘confirm’ is pressed, send the appropriate commands to the valve.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="the-srigaschromatographfidwidget-class">
 <h3>The ‘’SRIGasChromatographFIDWidget’’ class<a class="headerlink" href="#the-srigaschromatographfidwidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.</span></span><span class="sig-name descname"><span class="pre">SRIGasChromatographFIDWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gas_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gas_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration_functions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_logfile_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>A widget representing an SRI gas chromatograph’s flame ionization detector (FID). We use an SRI 8610c GC.</p>
+<p>This widget doesn’t communicate with the GC via serial. The GC should be controlled using SRI’s PeakSimple application. 
+PeakSimple can be programmed to log GC FID data to a ‘.res’ file, with a row appended to the file every time a new GC 
+scan is completed. This widget watches that file and displays the results. The benefit is that the GC data then ends up 
+in the same RichardView file as all the MFC and other data, simplifying postprocessing.</p>
+<p>One can make this widget extract several gases’ data from the logfile. The gases’ names are passed as one argument. 
+A .res files contains a bunch of columns of data, so you pass this constructor the indices of the columns that correspond to 
+the peak areas for those gases.</p>
+<p>The logfile just contains peak areas, but you can pass in calibration functions that map peak areas to concentrations according 
+to some calibration curve. Since the GC FID has different sensitivity settings (low, medium, and high), you can pass 
+a set of calibration functions for each, and select which to use with a dropdown. The calibration functions are passed using 
+a dict whose keys are the labels (probably a subset of ‘Low’,’Medium’,and ‘High’) and whose values are a tuple of calibration 
+functions for the respective gases. For example, {‘Low’:(ch4_cal_function_lo,co2_cal_function_lo), ‘Medium’:(ch4_cal_function_med,co2_cal_function_med)}. 
+It probably makes sense to define the calibration functions using Numpy’s interp function to interpolate between a range of 
+calibration points, e.g. ‘ch4_cal_function_lo = lambda x: np.interp(x,[0,514,1024,1430],[0,20,40,60])’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>gas_labels</strong> (<em>list</em>) – The labels of the different gases to be logged. You may want to include units, e.g. ‘CO2 (ppm)’</p></li>
+<li><p><strong>gas_columns</strong> (<em>list</em>) – The indices of the columns corresponding to the gases’ respective peak areas in the GC FID logfile format</p></li>
+<li><p><strong>calibration_functions</strong> (<em>dict</em>) – A dict specifying calibration functions for each gas at one or more sensitivity settings; see the description above.</p></li>
+<li><p><strong>default_logfile_path</strong> (<em>str</em><em>, </em><em>optional</em>) – The default path of the GC FID logfile. Can be used to avoid clicking through the file location choosing dialog every time.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_serial_open">
+<span class="sig-name descname"><span class="pre">on_serial_open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">success</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>If the device initialized unsuccessfully, set its readout to ‘No Reading’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.disable_button">
+<span class="sig-name descname"><span class="pre">disable_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.disable_button" title="Permalink to this definition"></a></dt>
+<dd><p>Disable the file dialog button.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_handshake">
+<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_handshake" title="Permalink to this definition"></a></dt>
+<dd><p>“On handshake, disable the file chooser button and run an update.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Poll the GC logfile and updates the readout with the latest values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘No Reading’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget._update_file_to_watch">
+<span class="sig-name descname"><span class="pre">_update_file_to_watch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget._update_file_to_watch" title="Permalink to this definition"></a></dt>
+<dd><p>Prompt the user to select a new file to watch.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="the-cellkrafthumidifierwidget-class">
-<h3>The ‘’CellkraftHumidifierWidget’’ class<a class="headerlink" href="#the-cellkrafthumidifierwidget-class" title="Permalink to this heading"></a></h3>
+<section id="the-thorlabslightmeterwidget-class">
+<h3>The ‘’ThorlabsLightMeterWidget’’ class<a class="headerlink" href="#the-thorlabslightmeterwidget-class" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.</span></span><span class="sig-name descname"><span class="pre">ThorlabsLightMeterWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelength</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>This widget represents a Thorlabs optical power meter, e.g. a PM100D. The Thorlabs driver library (one .py and two .dll’s) needs to be
+in a folder labeled ‘thorlabs’ next to the widget. You may have to go into TLPM.py and edit the .dll file paths (listed as strings) if it’s having trouble loading them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>wavelength</strong> (<em>int</em>) – The wavelength of light assumed, in nm. Relevant for photodiode sensors.</p></li>
+<li><p><strong>scale_factor</strong> (<em>float</em>) – A float constant by which to multiply the measured power to get an irradiance - usually 1/(collector area).</p></li>
+<li><p><strong>device_index</strong> (<em>int</em>) – The index of the Thorlabs device this widget represents, according to the Thorlabs driver’s list of compatible devices. Defaults to 0, but you may set to 1, 2, etc. if you have more than one Thorlabs power meter connected to your computer. With multiple devices, find the indices by trial and error.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>If serial open failed, set readouts to ‘No Reading’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_handshake">
+<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_handshake" title="Permalink to this definition"></a></dt>
+<dd><p>Connect to the power meter and conduct a handshake.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Query the device and update the fields with the responses.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘None’.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 <section id="the-run-demo-dashboard-function">
 <h2>The ‘’run_demo_dashboard’’ function<a class="headerlink" href="#the-run-demo-dashboard-function" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyopticon.demo_dashboard.run_demo_dashboard">
+<span class="sig-prename descclassname"><span class="pre">pyopticon.demo_dashboard.</span></span><span class="sig-name descname"><span class="pre">run_demo_dashboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.demo_dashboard.run_demo_dashboard" title="Permalink to this definition"></a></dt>
+<dd><p>Run a demo dashboard, configured for offline use via serial emulators, including 
+widgets for a thermocouple, two MKS MFC’s, an Aalborg MFC, an Picarro spectrometer, 
+and an ultraviolet light controlled via an IoT relay. Intended for early learning of 
+how to use a PyOpticon dashboard.</p>
+</dd></dl>
+
 </section>
 </section>
 

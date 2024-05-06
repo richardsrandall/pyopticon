@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyopticon._system._serial_widget module &mdash; pyopticon 0.1.7 documentation</title>
+  <title>pyopticon._system._serial_widget module &mdash; pyopticon 0.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -77,8 +77,66 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pyopticon-system-serial-widget-module">
-<h1>pyopticon._system._serial_widget module<a class="headerlink" href="#pyopticon-system-serial-widget-module" title="Permalink to this heading"></a></h1>
+  <section id="module-pyopticon._system._serial_widget">
+<span id="pyopticon-system-serial-widget-module"></span><h1>pyopticon._system._serial_widget module<a class="headerlink" href="#module-pyopticon._system._serial_widget" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon._system._serial_widget.</span></span><span class="sig-name descname"><span class="pre">SerialWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polling_interval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This widget is responsible for prompting all of the widgets to open serial connections, query them regularly, 
+check them for responses, and closing the connections when needed. It also has the button to update the list of serial ports.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>pyopticon.dashboard.Dashboard</em>) – The dashboard to which this widget will be added.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget.get_frame">
+<span class="sig-name descname"><span class="pre">get_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget.get_frame" title="Permalink to this definition"></a></dt>
+<dd><p>Get the tkinter frame on which this object is drawn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The widget’s tkinter frame</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tkinter.Frame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget._toggle_serial_connected">
+<span class="sig-name descname"><span class="pre">_toggle_serial_connected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget._toggle_serial_connected" title="Permalink to this definition"></a></dt>
+<dd><p>Toggle whether serial communications are active. Prompt all widgets to open or close serial connections. 
+Grey out and change text on the appropriate GUI buttons while serial communications are active.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget._update_widgets">
+<span class="sig-name descname"><span class="pre">_update_widgets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget._update_widgets" title="Permalink to this definition"></a></dt>
+<dd><p>So long as serial communications are active, poll all widgets. Also check interlocks</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget._read_serial_ports">
+<span class="sig-name descname"><span class="pre">_read_serial_ports</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget._read_serial_ports" title="Permalink to this definition"></a></dt>
+<dd><p>Prompt every widget to read the lastest responses from its serial port and update its display accordingly.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget._poll_interlocks">
+<span class="sig-name descname"><span class="pre">_poll_interlocks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget._poll_interlocks" title="Permalink to this definition"></a></dt>
+<dd><p>Execute every interlock function that has been added to the dashboard.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._serial_widget.SerialWidget._update_serial_ports">
+<span class="sig-name descname"><span class="pre">_update_serial_ports</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._serial_widget.SerialWidget._update_serial_ports" title="Permalink to this definition"></a></dt>
+<dd><p>Update the drop-down menu of available serial ports, accounting for any ports that have appeared/disappeared since this method was last called.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

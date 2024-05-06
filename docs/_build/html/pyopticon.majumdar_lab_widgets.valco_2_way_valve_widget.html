@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget module &mdash; pyopticon 0.1.7 documentation</title>
+  <title>pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget module &mdash; pyopticon 0.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -77,8 +77,69 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pyopticon-majumdar-lab-widgets-valco-2-way-valve-widget-module">
-<h1>pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget module<a class="headerlink" href="#pyopticon-majumdar-lab-widgets-valco-2-way-valve-widget-module" title="Permalink to this heading"></a></h1>
+  <section id="module-pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget">
+<span id="pyopticon-majumdar-lab-widgets-valco-2-way-valve-widget-module"></span><h1>pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget module<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.</span></span><span class="sig-name descname"><span class="pre">Valco2WayValveWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valve_positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valve_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>Widget for a VICI Valco 2-position valve, like this: <a class="reference external" href="https://www.vici.com/vval/vval_2pos.php">https://www.vici.com/vval/vval_2pos.php</a> . 
+These valves have two positions that are internally referred to as ‘A’ and ‘B’. In the widget, the positions can be labeled whatever you want.</p>
+<p>Valco produces many other valves, e.g. 9-way selector valves. To control one of them, you could probably copy-paste the source code of this module and make pretty minor modifications 
+to on_serial_query, on_serial_read, on_confirm, and the serial emulator class. Refer to the valve’s documentation and/or mess around manually with a serial connection 
+(Pyserial in a shell like IDLE is probably easiest) to figure out the serial protocol for controlling a different type of Valco valve – e.g., valves with more than 2 positions may 
+label the positions with numbers rather than letters in the serial protocol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.dashboard.PyOpticonDashboard" title="pyopticon.dashboard.PyOpticonDashboard"><em>pyopticon.dashboard.PyOpticonDashboard</em></a>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
+<li><p><strong>valve_positions</strong> (<em>list</em>) – A list of strings with which to label the valve positions. For a 2-way valve, this should be a 2-element list with the labels for valve positions A and B respectively.</p></li>
+<li><p><strong>valve_id</strong> – A string representing the ID of the valve, which goes at the beginning of each command. This seems to always be ‘1’. However, if there are issues, going into a serial shell</p></li>
+</ul>
+</dd>
+</dl>
+<p>(e.g. Pyserial in IDLE) and sending the message b’<a href="#id1"><span class="problematic" id="id2">*</span></a>IDr’ to the valve should cause it to respond with its ID.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">success</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>Set fields to no reading if serial failed to open.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the widget by querying and reading the serial port.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_query">
+<span class="sig-name descname"><span class="pre">on_serial_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_query" title="Permalink to this definition"></a></dt>
+<dd><p>Send a query to the valve asking for its current position.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_read">
+<span class="sig-name descname"><span class="pre">on_serial_read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_read" title="Permalink to this definition"></a></dt>
+<dd><p>Parse the responses from the previous serial query and update the display. Return True if the response is valid and an error string if not.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘None’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_confirm">
+<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_confirm" title="Permalink to this definition"></a></dt>
+<dd><p>When ‘confirm’ is pressed, send the appropriate commands to the valve.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

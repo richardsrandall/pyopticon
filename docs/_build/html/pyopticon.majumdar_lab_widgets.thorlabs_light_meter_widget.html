@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget module &mdash; pyopticon 0.1.7 documentation</title>
+  <title>pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget module &mdash; pyopticon 0.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -77,8 +77,52 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pyopticon-majumdar-lab-widgets-thorlabs-light-meter-widget-module">
-<h1>pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget module<a class="headerlink" href="#pyopticon-majumdar-lab-widgets-thorlabs-light-meter-widget-module" title="Permalink to this heading"></a></h1>
+  <section id="module-pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget">
+<span id="pyopticon-majumdar-lab-widgets-thorlabs-light-meter-widget-module"></span><h1>pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget module<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.</span></span><span class="sig-name descname"><span class="pre">ThorlabsLightMeterWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelength</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>This widget represents a Thorlabs optical power meter, e.g. a PM100D. The Thorlabs driver library (one .py and two .dll’s) needs to be
+in a folder labeled ‘thorlabs’ next to the widget. You may have to go into TLPM.py and edit the .dll file paths (listed as strings) if it’s having trouble loading them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>wavelength</strong> (<em>int</em>) – The wavelength of light assumed, in nm. Relevant for photodiode sensors.</p></li>
+<li><p><strong>scale_factor</strong> (<em>float</em>) – A float constant by which to multiply the measured power to get an irradiance - usually 1/(collector area).</p></li>
+<li><p><strong>device_index</strong> (<em>int</em>) – The index of the Thorlabs device this widget represents, according to the Thorlabs driver’s list of compatible devices. Defaults to 0, but you may set to 1, 2, etc. if you have more than one Thorlabs power meter connected to your computer. With multiple devices, find the indices by trial and error.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>If serial open failed, set readouts to ‘No Reading’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_handshake">
+<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_handshake" title="Permalink to this definition"></a></dt>
+<dd><p>Connect to the power meter and conduct a handshake.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Query the device and update the fields with the responses.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.thorlabs_light_meter_widget.ThorlabsLightMeterWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘None’.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

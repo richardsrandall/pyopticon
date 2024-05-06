@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial: Writing Your Own Widgets &mdash; pyopticon 0.1.7 documentation</title>
+  <title>Tutorial: Writing Your Own Widgets &mdash; pyopticon 0.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -384,7 +384,8 @@ calculator widget to help the operator, it may be easiest to just use a <code cl
 <code class="docutils literal notranslate"><span class="pre">use_serial=False</span></code> option, which can save some messing with tkinter GUI elements. However, we include the <code class="docutils literal notranslate"><span class="pre">MinimalWidget</span></code>
 class in case you really do want to build a widget from scratch.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">MinimalWidget</span></code> class implements only the few methods that are required for a widget to interface with its parent
-dashboard (e.g. <code class="docutils literal notranslate"><span class="pre">on_update</span></code> and <code class="docutils literal notranslate"><span class="pre">on_serial_close</span></code>); all of them default to doing nothing, though of course you can override them.</p>
+dashboard (<code class="docutils literal notranslate"><span class="pre">on_handshake</span></code>, <code class="docutils literal notranslate"><span class="pre">on_update</span></code>, <code class="docutils literal notranslate"><span class="pre">on_confirm</span></code>, and <code class="docutils literal notranslate"><span class="pre">on_serial_close</span></code>).
+All of them default to doing nothing, though of course you can override them.</p>
 <p>The most likely use of the <code class="docutils literal notranslate"><span class="pre">MinimalWidget</span></code> is writing a widget that is purely cosmetic. Such a widget needs none of the
 serial or logging machinery of a <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> subclass, nor would it want to be stuck with a <code class="docutils literal notranslate"><span class="pre">GenericWidget</span></code> subclass’
 colored frame and gridded layout. A MinimalWidget class just contains a tkinter frame object on which anything can be drawn,

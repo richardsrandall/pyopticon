@@ -331,7 +331,8 @@ calculator widget to help the operator, it may be easiest to just use a ``Generi
 class in case you really do want to build a widget from scratch.
 
 The ``MinimalWidget`` class implements only the few methods that are required for a widget to interface with its parent 
-dashboard (e.g. ``on_update`` and ``on_serial_close``); all of them default to doing nothing, though of course you can override them.
+dashboard (``on_handshake``, ``on_update``, ``on_confirm``, and ``on_serial_close``). 
+All of them default to doing nothing, though of course you can override them.
 
 The most likely use of the ``MinimalWidget`` is writing a widget that is purely cosmetic. Such a widget needs none of the 
 serial or logging machinery of a ``GenericWidget`` subclass, nor would it want to be stuck with a ``GenericWidget`` subclass' 

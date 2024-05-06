@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyopticon.majumdar_lab_widgets.aalborg_dpc_widget module &mdash; pyopticon 0.1.7 documentation</title>
+  <title>pyopticon.majumdar_lab_widgets.aalborg_dpc_widget module &mdash; pyopticon 0.2.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -77,8 +77,68 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pyopticon-majumdar-lab-widgets-aalborg-dpc-widget-module">
-<h1>pyopticon.majumdar_lab_widgets.aalborg_dpc_widget module<a class="headerlink" href="#pyopticon-majumdar-lab-widgets-aalborg-dpc-widget-module" title="Permalink to this heading"></a></h1>
+  <section id="module-pyopticon.majumdar_lab_widgets.aalborg_dpc_widget">
+<span id="pyopticon-majumdar-lab-widgets-aalborg-dpc-widget-module"></span><h1>pyopticon.majumdar_lab_widgets.aalborg_dpc_widget module<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets.aalborg_dpc_widget" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.</span></span><span class="sig-name descname"><span class="pre">AalborgDPCWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_gas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ar'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>Widget for an Aalborg DPC mass flow controller (MFC).
+This widget controls a single MFC via a serial port.</p>
+<p>By default, the gas selection dropdown includes a few gases that the author happened to use.
+Aalborg has many, many gas options in its user manual. You can configure the gas options in the constructor.</p>
+<p>In practice, the MFC’s sometimes bug out when serial commands are sent directly back-to-back, so we use a short delay between queries/commands that are sent.</p>
+<p>One can add a manual calibration curve, though these devices tend to be pretty accurate. This is done by tabulating the commanded flow (i.e., the value sent to 
+the MFC) and the actual flow (according to an external flow meter) at various flow conditions, then feeding the resulting tuples of 
+flows to the constructor for this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
+<li><p><strong>default_gas</strong> (<em>str</em><em>, </em><em>optional</em>) – The default gas that’s selected in the dropdown, defaults to ‘Ar’ for Argon</p></li>
+<li><p><strong>gas_options</strong> (<em>list</em><em>, </em><em>optional</em>) – The list of gas names (strings) that can be selected. Defaults to argon, hydrogen, and methane.</p></li>
+<li><p><strong>gas_numbers</strong> (<em>list</em><em>, </em><em>optional</em>) – The list of gas numbers (integers) corresponding to gas_options according to the Aalborg DPC handbook. Defaults to indices for Ar, H2, and CH4.</p></li>
+<li><p><strong>calibration</strong> (<em>tuple</em><em>, </em><em>optional</em>) – a tuple containing two tuples of ints or floats with the results of calibrating the MFC. The first should contain a range of flow commands sent to the MFC. The second should contain the result flows according to an external flow meter. (0,0) should be included, as should a value above the highest flow you expect to use. For example, ( (0,10,20,30), (0,11.5,20.7,33.4) ).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>If serial failed to open, set the readouts to ‘no reading’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_handshake">
+<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_handshake" title="Permalink to this definition"></a></dt>
+<dd><p>Conduct a handshake and populate the default values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Send four queries to the serial device asking for the gas selection, mode, setpoint, and actual flow rate.
+Mode refers to open, closed, or setpoint. Read and process the responses.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘None’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_confirm">
+<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_confirm" title="Permalink to this definition"></a></dt>
+<dd><p>When ‘confirm’ is pressed, send the appropriate commands to the MFC.
+Prints warnings to console if the entered parameters are invalid.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
