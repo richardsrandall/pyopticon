@@ -447,10 +447,6 @@ class GenericWidget:
         if not self.handshake_was_successful:
             self.on_failed_serial_open()
 
-        # Dump the queue to ignore any queries/confirms that were prompted while the handshake happened
-        with self.queue.mutex:
-            self.queue.queue.clear()
-
 
     def close_serial(self):
         """Closes the serial object, if needed, and returns the GUI fields to their default non-connected states. Executes on_serial_close, which is hopefully implemented in a subclass."""
