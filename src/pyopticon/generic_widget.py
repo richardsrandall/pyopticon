@@ -44,6 +44,7 @@ class GenericWidget:
         self.serial_object = None
 
         # Flag for whether initialization and handshake were successful
+        self.doing_handshake = False
         self.handshake_was_successful = False
 
         # Unpack kwargs
@@ -332,7 +333,9 @@ class GenericWidget:
                             widget._on_confirm()
 
                         elif cmd == 'HANDSHAKE': # Tell the thread to open serial and do the handshake
+                            self.doing_handshake = True
                             widget._handshake()
+                            self.doing_handshake = False
 
                 except Exception as e:
                     self.parent_dashboard.exc_handler(e,'system',self.name)
@@ -380,6 +383,11 @@ class GenericWidget:
         if self.serial_object == None and not (self.no_serial or self.parent_dashboard.offline_mode):
             print("\"Confirm\" pressed for "+str(self.name)+" with no serial connection.")
             return
+        
+        if self.doing_handshake:
+            print("\"Confirm\" pressed for "+str(self.name)+" while still handshaking.")
+            return
+        
         self.queue.put(('CONFIRM',self))
 
     def _on_confirm(self):
@@ -395,7 +403,7 @@ class GenericWidget:
         self._update_cycle_counter%=self.update_every_n_cycles
         if self._update_cycle_counter!=0:
             return
-        if not self.handshake_was_successful:
+        if not self.handshake_was_successful or self.doing_handshake:
             return
         try:
             self.on_update()
@@ -413,6 +421,7 @@ class GenericWidget:
         except Exception as e:
             serial_success = False
             self.parent_dashboard.exc_handler(e,'serial build',self.name)
+
         if not serial_success:
             if not self.no_serial:
                 self.do_threadsafe(lambda: self.serial_status.set("Connection Failed"))
@@ -437,10 +446,6 @@ class GenericWidget:
         self.handshake_was_successful = serial_success and handshake_success
         if not self.handshake_was_successful:
             self.on_failed_serial_open()
-
-        # Dump the queue to ignore any queries/confirms that were prompted while the handshake happened
-        with self.queue.mutex:
-            self.queue.queue.clear()
 
 
     def close_serial(self):
