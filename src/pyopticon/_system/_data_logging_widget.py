@@ -118,7 +118,7 @@ class DataLoggingWidget:
         if self.empty_file or self.widgets_in_order is None:
             self.widgets_in_order = []
             self.widget_attributes_in_order = dict()
-            new_header = "Date, Timestamp"
+            new_header = "Date,Timestamp"
             for widget in self.parent.all_widgets:
                 if not hasattr(widget,'log_data'):
                     continue
