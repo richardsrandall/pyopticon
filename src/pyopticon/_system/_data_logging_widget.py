@@ -5,7 +5,7 @@ import datetime
 import os
 
 # data logging widget
-class DataLoggingWidget:
+class DataLoggingWidget():
     """ This widget allows a user to choose a data logging location and to start and stop data logging
 
     :param parent: The dashboard to which this widget will be added.
