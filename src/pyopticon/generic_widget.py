@@ -152,7 +152,7 @@ class GenericWidget:
 
 # Methods to support autogenerating menus and readouts from a dict of Tkinter string objects and logging their values
 
-    def add_field(self, field_type, name, label, default_value, **kwargs):
+    def add_field(self, field_type, name, label, default_value=None, **kwargs):
         """Adds a field (i.e., a text entry box, a dropdown menu, or a text display) to the widget.\n
         
         Adding a field is like making an instance variable for the widget, 
@@ -162,7 +162,7 @@ class GenericWidget:
 
         If you add the first input field to a widget, a 'Confirm' button will also automatically be generated and placed. Use the move_confirm_button method to change its location.
 
-        :param field_type: Valid options are 'text output', 'text input', or 'dropdown'
+        :param field_type: Valid options are 'text output', 'text input', 'dropdown', or 'button'
         :type field_type: str
         :param name: The name of the field, which will be used to identify it for automation and for data logging
         :type name: str
@@ -196,8 +196,13 @@ class GenericWidget:
             if not ('options' in kwargs.keys()):
                 raise Exception("Missing required 'options' argument with dropdown items")
             item_to_add = OptionMenu(self.frame, stringvar_to_add, *kwargs['options'])
+        elif field_type=='button':
+            if not('action' in kwargs.keys()):
+                raise Exception("Missing required 'action' argument with button")
+            item_to_add = Button(self.frame, text=name, command=kwargs['action'])
         else:
-            raise Exception("Valid field types are 'text output','text input', or 'dropdown'")
+            raise Exception("Valid field types are 'text output','text input', 'dropdown', or 'button'")
+        
         # Grid them in the widget
         if ('row' in kwargs.keys()) and ('column' in kwargs.keys()):
             row = kwargs['row']
@@ -208,19 +213,23 @@ class GenericWidget:
         if label!='':
             label_to_add.grid(row=row,column=col,sticky='nesw')
         item_to_add.grid(row=row,column=col+1,sticky='nesw')
+        
         # Add the stringvars to the dicts
         if name in self.attributes.keys():
             print("Warning: duplicate attribute '"+str(name)+"' in "+str(self.name))
         self.attributes[name]=stringvar_to_add
         if not (('log' in kwargs.keys()) and (kwargs['log']==False)):#Default behavior is to log data
             self.values_to_log[name]=stringvar_to_add
+        
         # Add the GUI objects to the dict
         self.field_gui_objects[name]=(label_to_add,item_to_add)
+        
         # Add a confirm button if needed
         if (field_type=='text input' or field_type=='dropdown') and not self.confirm_button_added:
             self.confirm_button = Button(self.frame,text=" Confirm ",command=self.confirm)
             self.confirm_button_added=True
             self.confirm_button.grid(row=2,column=2,sticky='nesw')
+        
         # Return the stringvar
         return stringvar_to_add
 
