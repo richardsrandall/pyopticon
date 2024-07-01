@@ -102,6 +102,7 @@ class PyOpticonDashboard:
         if self.include_auto_widget:
             self._automation_control_widget.get_frame().grid(row=i,column=0,padx=self.x_pad,pady=self.y_pad)
             i+=1
+            self.all_widgets.append(self._automation_control_widget)
 
         # Create a widget for socket control. If not included, the object is created but never displayed.
         self._socket_widget = SocketWidget(self,socket_ports)
