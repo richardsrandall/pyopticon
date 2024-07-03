@@ -86,6 +86,9 @@ class PyOpticonDashboard:
         # Add a list of interlocks (functions)
         self.all_interlocks = []
 
+        # Initalize list of observers for Observable Pattern
+        self._observers = []
+
         # Create a serial control widget
         self.serial_connected = False
         self._serial_control_widget = SerialWidget(self, polling_interval_ms)
@@ -103,6 +106,7 @@ class PyOpticonDashboard:
             self._automation_control_widget.get_frame().grid(row=i,column=0,padx=self.x_pad,pady=self.y_pad)
             i+=1
             self.all_widgets.append(self._automation_control_widget)
+            self.register_observer(self._automation_control_widget)
 
         # Create a widget for socket control. If not included, the object is created but never displayed.
         self._socket_widget = SocketWidget(self,socket_ports)
@@ -114,6 +118,7 @@ class PyOpticonDashboard:
         self._logging_control_widget = DataLoggingWidget(self)
         self._logging_control_widget.get_frame().grid(row=i,column=0,padx=self.x_pad,pady=self.y_pad)
         i+=1
+        self.register_observer(self._logging_control_widget)
     
     def add_widget(self, widget, row, column):
         """Add a widget to the dashboard at the specified row and column, each indexed from 0. 
@@ -152,6 +157,39 @@ class PyOpticonDashboard:
         :type fn: function
         """
         self.all_interlocks.append(fn)
+
+    def notify(self, event, modifier =None):
+        """ Updates observers when there is an event logged. If an observer created the event, they are not updated.
+
+        :param modifier: the observer that created an event
+        :type modifier: any widget
+        """
+        print(event)
+        for observer in self._observers:
+            if modifier != observer:
+                print("Notified: " + str(observer))
+                observer.update(event)
+
+    def register_observer(self, observer):
+        """If an observer is not on the list, append it to the list.
+
+        :param observer: a widget that needs to receive updates from the publisher
+        :type observer: any widget
+        """
+        if observer not in self._observers:
+            self._observers.append(observer)
+
+    def detach_observer(self, observer):
+        """Remove the observer from the observer list.
+
+        :param observer: an observer that no longer needs to get updates from publisher
+        :type observer: any widget
+        """
+        
+        try:
+            self._observers.remove(observer)
+        except ValueError:
+            pass
     
     def start(self):
         """Launch the dashboard, including all necessary threads."""

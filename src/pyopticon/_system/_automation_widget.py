@@ -44,7 +44,7 @@ class AutomationWidget(minimal_widget.MinimalWidget):
         self.time_to_go_readout = StringVar()
         self.time_to_go_readout.set("0:00:00")
         Label(self.frame,textvariable=self.time_to_go_readout).grid(row=5,column=2,sticky='nesw')
-        self.script_load_button = Button(self.frame,text="    Load    ",command=self._load_automation_file)
+        self.script_load_button = Button(self.frame,text="    Load    ",command=self._file_from_dialog)
         self.script_load_button.grid(row=2,column=2,sticky='nesw')
         self.start_button_text = StringVar()
         self.script_start_button = Button(self.frame,textvariable=self.start_button_text,command=self._start_automated_tasks)
@@ -331,7 +331,12 @@ class AutomationWidget(minimal_widget.MinimalWidget):
         self.pause_tasks = False
         self._update_tasks()
 
-    def _load_automation_file(self): # Open a dialog and load a file for automation
+    def _file_from_dialog(self): # Open a dialog and load a file for automation
+        
+        filename = fd.askopenfilename()
+        self.load_file(filename)
+
+    def load_file(self, filename):
         """Load an automation script from a file. Generates a list of functions and a list of the delays before each one will be 
         executed after starting the script. Sets GUI elements like '0/n steps done' and 'xx:xx:xx remaining'.\n
         
@@ -339,6 +344,7 @@ class AutomationWidget(minimal_widget.MinimalWidget):
         automation scripts whose authors you trues. exec() is called in a namespace with schedule_delay, schedule_action, schedule_function, and schedule_await_condition 
         already defined as local variables for you to use.
         """
+
         # Reset everything
         self.delay_for_loading = 0
         self.delay_list = []
@@ -355,7 +361,7 @@ class AutomationWidget(minimal_widget.MinimalWidget):
         self.lines_loaded.set("")
         self.latest_await_index = -1
         # Hopefully these all get overwritten; above is just to cover our bases if there's an error.
-        filename = fd.askopenfilename()
+
         f = str.split(filename,'/')
         f = f[len(f)-1] # We just want the file name to display, not its whole path
         script = open(filename).read()
@@ -380,6 +386,17 @@ class AutomationWidget(minimal_widget.MinimalWidget):
             self.time_to_go_readout.set(str(timedelta(seconds=self.time_to_go)))
         print("Loaded "+filename)
 
+
+    def update(self, event):
+        """When a notification is sent by the publisher (dashboard) the event is checked. If the event has 'New automation file' 
+        in it the existence of an automation file in the Recipe database will be checked, and if it does exist it will be uploaded.
+        
+        :param event: The event that just occurred
+        :type event: String
+        """
+        if 'New automation file' in event:
+            file = event.split(' ')[-1]
+            self.load_file(file)
     # Helper functions to enable/disable buttons
 
     def _pause_automated_tasks(self):

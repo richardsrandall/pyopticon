@@ -69,6 +69,10 @@ class DataLoggingWidget():
             self.logging_interlock = True # This prevents one particular bug with slow polling rates
             self.root.after(self.delay*1000, self._flip_interlock) # Kludgy, sorry
             self.open_file.close()
+
+            # Notifies observers when logging is stopped - enables Baserow widget to respond to data logging
+            # Need to have the filename as the last 'word' in the event argument
+            self.parent.notify('Stopped logging to file ' + self.filename, modifier = self)
         else:
             # Check that the time interval and filename are valid
             if self.destination.get()=="None selected.":
@@ -161,3 +165,7 @@ class DataLoggingWidget():
             self.empty_file = False
         else:
             self.empty_file = True
+
+    def update(self, event):
+        """Has an update function because this is listed as an observer of the dashboard."""
+        pass
