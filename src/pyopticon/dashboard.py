@@ -53,7 +53,7 @@ class PyOpticonDashboard:
 
         # Unpack kwargs
         offline_mode = False if not 'offline_mode' in kwargs.keys() else kwargs['offline_mode']
-        polling_interval_ms = 1000 if not 'polling_inverval_ms' in kwargs.keys() else kwargs['polling_interval_ms']
+        polling_interval_ms = 1000 if not 'polling_interval_ms' in kwargs.keys() else kwargs['polling_interval_ms']
         window_resizeable = False if not 'window_resizeable' in kwargs.keys() else kwargs['window_resizeable']
         persistent_console_logfile = True if not 'persistent_console_logfile' in kwargs.keys() else kwargs['persistent_console_logfile']
         x_pad = 50 if not 'x_pad' in kwargs.keys() else kwargs['x_pad']
