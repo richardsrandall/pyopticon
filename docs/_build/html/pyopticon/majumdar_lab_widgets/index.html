@@ -49,6 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial_2.html">Tutorial: Building Your Own Dashboards</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial_3.html">Tutorial: Writing Your Own Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial_4.html">Tutorial: Miscellaneous Useful Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../available_widgets.html">Widgets Made by PyOpticon Users</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
 </ul>
@@ -82,369 +83,23 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
-<section id="module-pyopticon.majumdar_lab_widgets.aalborg_dpc_widget">
-<span id="pyopticon-majumdar-lab-widgets-aalborg-dpc-widget-module"></span><h2>pyopticon.majumdar_lab_widgets.aalborg_dpc_widget module<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets.aalborg_dpc_widget" title="Permalink to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.</span></span><span class="sig-name descname"><span class="pre">AalborgDPCWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_gas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Ar'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="../index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
-<p>Widget for an Aalborg DPC mass flow controller (MFC).
-This widget controls a single MFC via a serial port.</p>
-<p>By default, the gas selection dropdown includes a few gases that the author happened to use.
-Aalborg has many, many gas options in its user manual. You can configure the gas options in the constructor.</p>
-<p>In practice, the MFC’s sometimes bug out when serial commands are sent directly back-to-back, so we use a short delay between queries/commands that are sent.</p>
-<p>One can add a manual calibration curve, though these devices tend to be pretty accurate. This is done by tabulating the commanded flow (i.e., the value sent to 
-the MFC) and the actual flow (according to an external flow meter) at various flow conditions, then feeding the resulting tuples of 
-flows to the constructor for this class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
-<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
-<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
-<li><p><strong>default_gas</strong> (<em>str</em><em>, </em><em>optional</em>) – The default gas that’s selected in the dropdown, defaults to ‘Ar’ for Argon</p></li>
-<li><p><strong>gas_options</strong> (<em>list</em><em>, </em><em>optional</em>) – The list of gas names (strings) that can be selected. Defaults to argon, hydrogen, and methane.</p></li>
-<li><p><strong>gas_numbers</strong> (<em>list</em><em>, </em><em>optional</em>) – The list of gas numbers (integers) corresponding to gas_options according to the Aalborg DPC handbook. Defaults to indices for Ar, H2, and CH4.</p></li>
-<li><p><strong>calibration</strong> (<em>tuple</em><em>, </em><em>optional</em>) – a tuple containing two tuples of ints or floats with the results of calibrating the MFC. The first should contain a range of flow commands sent to the MFC. The second should contain the result flows according to an external flow meter. (0,0) should be included, as should a value above the highest flow you expect to use. For example, ( (0,10,20,30), (0,11.5,20.7,33.4) ).</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_failed_serial_open">
-<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
-<dd><p>If serial failed to open, set the readouts to ‘no reading’.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_handshake">
-<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_handshake" title="Permalink to this definition"></a></dt>
-<dd><p>Conduct a handshake and populate the default values.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_update">
-<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_update" title="Permalink to this definition"></a></dt>
-<dd><p>Send four queries to the serial device asking for the gas selection, mode, setpoint, and actual flow rate.
-Mode refers to open, closed, or setpoint. Read and process the responses.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_serial_close">
-<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_serial_close" title="Permalink to this definition"></a></dt>
-<dd><p>When serial is closed, set all readouts to ‘None’.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_confirm">
-<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.aalborg_dpc_widget.AalborgDPCWidget.on_confirm" title="Permalink to this definition"></a></dt>
-<dd><p>When ‘confirm’ is pressed, send the appropriate commands to the MFC.
-Prints warnings to console if the entered parameters are invalid.</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="pyopticon-majumdar-lab-widgets-aalborg-dpc-widget-module">
+<h2>pyopticon.majumdar_lab_widgets.aalborg_dpc_widget module<a class="headerlink" href="#pyopticon-majumdar-lab-widgets-aalborg-dpc-widget-module" title="Permalink to this heading"></a></h2>
 </section>
-<section id="module-pyopticon.majumdar_lab_widgets.iot_relay_widget">
-<span id="pyopticon-majumdar-lab-widgets-iot-relay-widget-module"></span><h2>pyopticon.majumdar_lab_widgets.iot_relay_widget module<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets.iot_relay_widget" title="Permalink to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.iot_relay_widget.</span></span><span class="sig-name descname"><span class="pre">IotRelayWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="../index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
-<p>Widget for using an Arduino to control a Digital Loggers Internet of Things (IoT) Relay, like this: <a class="reference external" href="https://www.digital-loggers.com/iot2.html">https://www.digital-loggers.com/iot2.html</a> .
-This can be used for on/off control of pretty much any AC-powered device like a light, fan, or pump.</p>
-<p>The arduino is expected to control the IoT relay with a digital output pin and to read serial commands using its built-in USB connection. 
-An arduino nano works well; these typically use mini-B USB connections. The arduino ground and digital output pin get connected to the green connector on the side of the IoT relay. 
-Commands to the arduino are broken up by carriage return and newline characters. The arduino should turn on the IoT relay when the command ‘1’ is received 
-and turn it off when the command ‘0’ is received. Additionally, when the command ‘Q’ for query is received, it should reply with its status (‘1’ or ‘0’) 
-followed by a newline or carriage return character.</p>
-<p>A suitable arduino sketch (program) to control the IoT relay can quickly be written by analogy to this Arduino forum post: <a class="reference external" href="https://forum.arduino.cc/t/serial-commands-to-activate-a-digital-output/49036/3">https://forum.arduino.cc/t/serial-commands-to-activate-a-digital-output/49036/3</a>
-A working .ino sketch is also available in the majumdar_lab_widgets source code file on this project’s Github.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
-<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
-<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_failed_serial_open">
-<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
-<dd><p>If serial failed, set readout to ‘No Reading’</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_handshake">
-<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_handshake" title="Permalink to this definition"></a></dt>
-<dd><p>Handshake with the Arduino.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_update">
-<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_update" title="Permalink to this definition"></a></dt>
-<dd><p>Query the device and update the display based on the reply.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_serial_close">
-<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_serial_close" title="Permalink to this definition"></a></dt>
-<dd><p>When serial is closed, set all readouts to ‘None’.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_confirm">
-<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget.on_confirm" title="Permalink to this definition"></a></dt>
-<dd><p>When ‘confirm’ is pressed, send the appropriate commands to the arduino.</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="pyopticon-majumdar-lab-widgets-iot-relay-widget-module">
+<h2>pyopticon.majumdar_lab_widgets.iot_relay_widget module<a class="headerlink" href="#pyopticon-majumdar-lab-widgets-iot-relay-widget-module" title="Permalink to this heading"></a></h2>
 </section>
-<section id="module-pyopticon.majumdar_lab_widgets.mks_mfc_widget">
-<span id="pyopticon-majumdar-lab-widgets-mks-mfc-widget-module"></span><h2>pyopticon.majumdar_lab_widgets.mks_mfc_widget module<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets.mks_mfc_widget" title="Permalink to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.mks_mfc_widget.</span></span><span class="sig-name descname"><span class="pre">MksMFCWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="../index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
-<p>Widget to control MKS ‘mass flo controllers’ (MFCs), which are themselves controlled by an MKS ‘vacuum controller’.</p>
-<p>A control box like an MKS ‘946 Vacuum System Controller’ converts digital signals or manual inputs into the actual voltage and/or current 
-signals that control MKS mass flo controllers. One 946 control box can control up to 6 mass flo controllers at once, with some trickery required (described below) to let multiple widgets share a single serial connection.</p>
-<p>Each control box has a 3-digit ID number, e.g. 001, which can be configured on the box. Each MFC on the box has a channel, which is one of {A1, A2, B1, B2, C1, C2}. These are fixed when you initialize a widget and can’t be changed from the GUI.</p>
-<p>Each mass flo controller on the same vacuum controller gets its own widget, even though they all share the same control box and hence the same serial connection.
-The first MFC widget is initialized normally, and then for every subsequent widget representing an MFC on the same control box, the constructor is called with 
-the first widget passed as the keyword argument ‘widget_to_share_serial_with’. The later widgets then know to share the serial connection with the first widget, 
-rather than trying to initialize a new one, which would fail because that serial port is already in use by the first widget.</p>
-<p>One can also set a ‘scale factor,’ which adjusts for different gas types (e.g. air is usually a conversion factor of 1.0). Refer to the MKS MFC documentation 
-for what scale factor to use for a particular gas. One can optionally lock the scale factor for a certain widget.</p>
-<p>Finally, one can add a manual calibration curve independent of the scale factor. This is done by tabulating the commanded flow (i.e., the value sent to 
-the MFC) and the actual flow (according to an external flow meter) at various flow conditions, then feeding the resulting tuples of 
-flows to the constructor for this class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
-<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
-<li><p><strong>channel</strong> (<em>str</em>) – A string representing which channel on the control box the MFC is connected to. One of (A1,A2,B1,B2,C1,C2).</p></li>
-<li><p><strong>widget_to_share_serial_with</strong> (<em>richardview.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget</em><em>, </em><em>optional</em>) – If this is the 2nd-6th MFC sharing the same control box, pass the widget for the first MFC on that control box as this argument. If not, the arguments device_ID and default_serial_port are required.</p></li>
-<li><p><strong>device_ID</strong> (<em>str</em><em>, </em><em>optional</em>) – The ID of the MKS control box / vacuum system controller, which is a string of a 3-digit number, e.g. ‘001’. Can be set on the control box.</p></li>
-<li><p><strong>default_serial_port</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
-<li><p><strong>force_scale_factor</strong> (<em>float</em><em>, </em><em>optional</em>) – Optionally set a certain scale factor and disable adjusting the scale factor via the interface. See the MKS manual to select factors for different gases.</p></li>
-<li><p><strong>calibration</strong> (<em>tuple</em><em>, </em><em>optional</em>) – a tuple containing two tuples of ints or floats with the results of calibrating the MFC. The first should contain a range of flow commands sent to the MFC. The second should contain the result flows according to an external flow meter. (0,0) should be included, as should a value above the highest flow you expect to use. For example, ( (0,10,20,30), (0,11.5,20.7,33.4) ).</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_failed_serial_open">
-<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
-<dd><p>If serial opened unsuccessfully, set readouts to ‘No Reading’</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_handshake">
-<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_handshake" title="Permalink to this definition"></a></dt>
-<dd><p>This function gets called whenever the widget is initialized. If the widget uses a Serial connection, you can assume 
-that the serial connection was already initialized successfully. If not, you’ll need to initialize whatever objects are needed 
-to update the widget in this method (say, an OEM Python driver).</p>
-<p>By default, it just calls on_update(), assuming that the handshake was successful if (and only if) no exception was raised.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_update">
-<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_update" title="Permalink to this definition"></a></dt>
-<dd><p>Send four queries to the serial device asking for the gas scale factor, mode, setpoint, and actual flow rate.
-Mode refers to open, closed, or setpoint. Process the results.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_serial_close">
-<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_serial_close" title="Permalink to this definition"></a></dt>
-<dd><p>When serial is closed, set all readouts to ‘None’.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_confirm">
-<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_confirm" title="Permalink to this definition"></a></dt>
-<dd><p>When ‘confirm’ is pressed, send the appropriate commands to the MFC.
-Prints warnings to console if the entered parameters are invalid.</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="pyopticon-majumdar-lab-widgets-mks-mfc-widget-module">
+<h2>pyopticon.majumdar_lab_widgets.mks_mfc_widget module<a class="headerlink" href="#pyopticon-majumdar-lab-widgets-mks-mfc-widget-module" title="Permalink to this heading"></a></h2>
 </section>
-<section id="module-pyopticon.majumdar_lab_widgets.omega_usb_utc_widget">
-<span id="pyopticon-majumdar-lab-widgets-omega-usb-utc-widget-module"></span><h2>pyopticon.majumdar_lab_widgets.omega_usb_utc_widget module<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets.omega_usb_utc_widget" title="Permalink to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.</span></span><span class="sig-name descname"><span class="pre">OmegaUSBUTCWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="../index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
-<p>Widget for an Omega USB-UTC thermocouple reader. 
-A USB-UTC converts a single thermocouple (using the usual 2-prong thermocouple connection) into a USB signal. The Omega thermocouple reader desktop app can be 
-used to set what type of thermocouple (K-type, etc.) is assumed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parent_dashboard</strong> (<a class="reference internal" href="../index.html#pyopticon.dashboard.PyOpticonDashboard" title="pyopticon.dashboard.PyOpticonDashboard"><em>pyopticon.dashboard.PyOpticonDashboard</em></a>) – The dashboard object to which this device will be added</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
-<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
-<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_failed_serial_open">
-<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
-<dd><p>If serial opened unsuccessfully, set readouts to ‘No Reading’</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_update">
-<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_update" title="Permalink to this definition"></a></dt>
-<dd><p>Update the device by polling the serial connection.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_query">
-<span class="sig-name descname"><span class="pre">on_serial_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_query" title="Permalink to this definition"></a></dt>
-<dd><p>Send a query to the serial device asking for the temperature.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_read">
-<span class="sig-name descname"><span class="pre">on_serial_read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_read" title="Permalink to this definition"></a></dt>
-<dd><p>Parse the responses from the previous serial query and update the display. Return True if valid and and error string if not.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>True if the response was of the expected format, an error string otherwise.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool or str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_close">
-<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_close" title="Permalink to this definition"></a></dt>
-<dd><p>When serial is closed, set all readouts to ‘None’.</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="pyopticon-majumdar-lab-widgets-omega-usb-utc-widget-module">
+<h2>pyopticon.majumdar_lab_widgets.omega_usb_utc_widget module<a class="headerlink" href="#pyopticon-majumdar-lab-widgets-omega-usb-utc-widget-module" title="Permalink to this heading"></a></h2>
 </section>
-<section id="module-pyopticon.majumdar_lab_widgets.picarro_crd_widget">
-<span id="pyopticon-majumdar-lab-widgets-picarro-crd-widget-module"></span><h2>pyopticon.majumdar_lab_widgets.picarro_crd_widget module<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets.picarro_crd_widget" title="Permalink to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.picarro_crd_widget.</span></span><span class="sig-name descname"><span class="pre">PicarroCRDWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="../index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
-<p>Widget for a Picarro GG201-i isotopic analyzer that measures 0-30 ppm CH4, 200-2000+ ppm CO2, and 0-100% relative humidity.</p>
-<p>Refer to the Picarro manual to configure one of its extra serial ports for data logging to an external device. Two modes are possible. 
-In one, the Picarro listens for a query and replies with its latest measurements. In the other, the Picarro sends its latest measurements every second. 
-We chose to use the ‘send measurements every second’ option. This means that the Picarro widget only listens for measurements, and doesn’t ever send 
-any queries via the serial line. There wasn’t a super strong reason for choosing one over the other, except for slightly more resilience to the 
-Picarro ‘lagging’ for a few seconds when it receives a methane concentration above its 30 ppm ‘limit’.</p>
-<p>The Picarro needs to be set to send (in this order) the CH4 concentration in ppm, the water concentration in volume percent, and the CO2 concentration in ppm. 
-This is done using the Picarro’s own monitor and interface, as described in its manual – contact the manufacturer if your manual doesn’t tell you how to do this.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
-<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
-<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget.on_failed_serial_open">
-<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
-<dd><p>If serial opened unsuccessfully, set readouts to ‘No Reading’</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget.on_update">
-<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget.on_update" title="Permalink to this definition"></a></dt>
-<dd><p>Parse the latest message from the Picarro and update the display.</p>
-<p>Note that sometimes we get unlucky with the timing and a valid Picarro message gets chopped off halfway through and fails to parse. So occasionally we get a ‘read error’ 
-when the instrument is behaving just fine. This is easy to fix in data post-processing, but we might also consider fixing it by switching to a query-response setup.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget.on_serial_close">
-<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.picarro_crd_widget.PicarroCRDWidget.on_serial_close" title="Permalink to this definition"></a></dt>
-<dd><p>When serial is closed, set all readouts to ‘None’.</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="pyopticon-majumdar-lab-widgets-picarro-crd-widget-module">
+<h2>pyopticon.majumdar_lab_widgets.picarro_crd_widget module<a class="headerlink" href="#pyopticon-majumdar-lab-widgets-picarro-crd-widget-module" title="Permalink to this heading"></a></h2>
 </section>
-<section id="module-pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget">
-<span id="pyopticon-majumdar-lab-widgets-valco-2-way-valve-widget-module"></span><h2>pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget module<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget" title="Permalink to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.</span></span><span class="sig-name descname"><span class="pre">Valco2WayValveWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valve_positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valve_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="../index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
-<p>Widget for a VICI Valco 2-position valve, like this: <a class="reference external" href="https://www.vici.com/vval/vval_2pos.php">https://www.vici.com/vval/vval_2pos.php</a> . 
-These valves have two positions that are internally referred to as ‘A’ and ‘B’. In the widget, the positions can be labeled whatever you want.</p>
-<p>Valco produces many other valves, e.g. 9-way selector valves. To control one of them, you could probably copy-paste the source code of this module and make pretty minor modifications 
-to on_serial_query, on_serial_read, on_confirm, and the serial emulator class. Refer to the valve’s documentation and/or mess around manually with a serial connection 
-(Pyserial in a shell like IDLE is probably easiest) to figure out the serial protocol for controlling a different type of Valco valve – e.g., valves with more than 2 positions may 
-label the positions with numbers rather than letters in the serial protocol.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parent_dashboard</strong> (<a class="reference internal" href="../index.html#pyopticon.dashboard.PyOpticonDashboard" title="pyopticon.dashboard.PyOpticonDashboard"><em>pyopticon.dashboard.PyOpticonDashboard</em></a>) – The dashboard object to which this device will be added</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
-<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
-<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
-<li><p><strong>valve_positions</strong> (<em>list</em>) – A list of strings with which to label the valve positions. For a 2-way valve, this should be a 2-element list with the labels for valve positions A and B respectively.</p></li>
-<li><p><strong>valve_id</strong> – A string representing the ID of the valve, which goes at the beginning of each command. This seems to always be ‘1’. However, if there are issues, going into a serial shell</p></li>
-</ul>
-</dd>
-</dl>
-<p>(e.g. Pyserial in IDLE) and sending the message b’<a href="#id1"><span class="problematic" id="id2">*</span></a>IDr’ to the valve should cause it to respond with its ID.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_failed_serial_open">
-<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">success</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
-<dd><p>Set fields to no reading if serial failed to open.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_update">
-<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_update" title="Permalink to this definition"></a></dt>
-<dd><p>Update the widget by querying and reading the serial port.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_query">
-<span class="sig-name descname"><span class="pre">on_serial_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_query" title="Permalink to this definition"></a></dt>
-<dd><p>Send a query to the valve asking for its current position.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_read">
-<span class="sig-name descname"><span class="pre">on_serial_read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_read" title="Permalink to this definition"></a></dt>
-<dd><p>Parse the responses from the previous serial query and update the display. Return True if the response is valid and an error string if not.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_close">
-<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_serial_close" title="Permalink to this definition"></a></dt>
-<dd><p>When serial is closed, set all readouts to ‘None’.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_confirm">
-<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget.Valco2WayValveWidget.on_confirm" title="Permalink to this definition"></a></dt>
-<dd><p>When ‘confirm’ is pressed, send the appropriate commands to the valve.</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="pyopticon-majumdar-lab-widgets-valco-2-way-valve-widget-module">
+<h2>pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget module<a class="headerlink" href="#pyopticon-majumdar-lab-widgets-valco-2-way-valve-widget-module" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-pyopticon.majumdar_lab_widgets">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets" title="Permalink to this heading"></a></h2>
@@ -459,7 +114,7 @@ label the positions with numbers rather than letters in the serial protocol.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Richard Randall.</p>
+    <p>&#169; Copyright 2025, Richard Randall.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -49,6 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial_2.html">Tutorial: Building Your Own Dashboards</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_3.html">Tutorial: Writing Your Own Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_4.html">Tutorial: Miscellaneous Useful Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="available_widgets.html">Widgets Made by PyOpticon Users</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
@@ -77,59 +78,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pyopticon._system._data_logging_widget">
-<span id="pyopticon-system-data-logging-widget-module"></span><h1>pyopticon._system._data_logging_widget module<a class="headerlink" href="#module-pyopticon._system._data_logging_widget" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyopticon._system._data_logging_widget.DataLoggingWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon._system._data_logging_widget.</span></span><span class="sig-name descname"><span class="pre">DataLoggingWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._data_logging_widget.DataLoggingWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This widget allows a user to choose a data logging location and to start and stop data logging</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>pyopticon.dashboard.Dashboard</em>) – The dashboard to which this widget will be added.</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon._system._data_logging_widget.DataLoggingWidget.get_frame">
-<span class="sig-name descname"><span class="pre">get_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._data_logging_widget.DataLoggingWidget.get_frame" title="Permalink to this definition"></a></dt>
-<dd><p>Get the tkinter frame on which this object is drawn.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The widget’s tkinter frame</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>tkinter.Frame</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon._system._data_logging_widget.DataLoggingWidget._toggle_logging">
-<span class="sig-name descname"><span class="pre">_toggle_logging</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._data_logging_widget.DataLoggingWidget._toggle_logging" title="Permalink to this definition"></a></dt>
-<dd><p>Toggle whether data logging is active. Do the actual logging at regular intervals. Enable/disable buttons accordingly. 
-Some machinery to manage the corner case where you stop logging and then restart logging within a shorter timespan than the data logging interval.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon._system._data_logging_widget.DataLoggingWidget._flip_interlock">
-<span class="sig-name descname"><span class="pre">_flip_interlock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._data_logging_widget.DataLoggingWidget._flip_interlock" title="Permalink to this definition"></a></dt>
-<dd><p>Necessary for toggle_logging to handle a corner case when logging is flipped on and off in quick succession.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon._system._data_logging_widget.DataLoggingWidget._poll_loggable_data">
-<span class="sig-name descname"><span class="pre">_poll_loggable_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._data_logging_widget.DataLoggingWidget._poll_loggable_data" title="Permalink to this definition"></a></dt>
-<dd><p>Prompt every widget to return all of the data that it wants logged. Format that data into .csv append it to the log file.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon._system._data_logging_widget.DataLoggingWidget._choose_destination">
-<span class="sig-name descname"><span class="pre">_choose_destination</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._data_logging_widget.DataLoggingWidget._choose_destination" title="Permalink to this definition"></a></dt>
-<dd><p>Open a dialog window to let the user select where the logfile should be saved.</p>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="pyopticon-system-data-logging-widget-module">
+<h1>pyopticon._system._data_logging_widget module<a class="headerlink" href="#pyopticon-system-data-logging-widget-module" title="Permalink to this heading"></a></h1>
 </section>
 
 
@@ -140,7 +90,7 @@ Some machinery to manage the corner case where you stop logging and then restart
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Richard Randall.</p>
+    <p>&#169; Copyright 2025, Richard Randall.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -1,9 +1,9 @@
 License
 =========
 
-Written by Richard Randall <rrandall@stanford.edu> in 2021-2023.
+Written by Richard Randall <rrandall@stanford.edu> in 2021-2025.
 
-Copyright (c) 2021-2023 Stanford University. All Rights Reserved.
+Copyright (c) 2021-2025 Stanford University. All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:

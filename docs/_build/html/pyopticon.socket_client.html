@@ -49,6 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial_2.html">Tutorial: Building Your Own Dashboards</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_3.html">Tutorial: Writing Your Own Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_4.html">Tutorial: Miscellaneous Useful Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="available_widgets.html">Widgets Made by PyOpticon Users</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
@@ -77,140 +78,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pyopticon.socket_client">
-<span id="pyopticon-socket-client-module"></span><h1>pyopticon.socket_client module<a class="headerlink" href="#module-pyopticon.socket_client" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.socket_client.</span></span><span class="sig-name descname"><span class="pre">PyOpticonSocketClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class representing a client-side socket connection to a PyOpticon dashboard. Can be used to send various commands and 
-queries to the dashboard from a separate Python script.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>socket_number</strong> (<em>int</em><em>, </em><em>optional</em>) – The port on which to open the socket connection. Defaults to 12345.</p></li>
-<li><p><strong>handle_errors</strong> (<em>str</em><em>, </em><em>optional</em>) – How to handle errors reported by the dashboard when attempting to execute a socket command. ‘none’ does nothing, ‘print’ prints a warning to console but continues executing, ‘exception’ raises an exception. Defaults to ‘none’.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient._check_errors">
-<span class="sig-name descname"><span class="pre">_check_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient._check_errors" title="Permalink to this definition"></a></dt>
-<dd><p>Checks a string returned by the dashboard for whether it’s an error message (beginning with ‘Error: ‘) and, if so, processes it.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>source</strong> (<em>str</em>) – The command, e.g. ‘get’, that the dashboard was trying to execute.</p></li>
-<li><p><strong>result</strong> (<em>str</em>) – The string that the dashboard sent through the socket as its reply, which may or may not be an error message.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient._query_socket">
-<span class="sig-name descname"><span class="pre">_query_socket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_send</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient._query_socket" title="Permalink to this definition"></a></dt>
-<dd><p>Converts a dict to a JSON string and sends it through the socket.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>to_send</strong> (<em>dict</em>) – The dict to send to the dashboard.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient.get_field">
-<span class="sig-name descname"><span class="pre">get_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget_nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient.get_field" title="Permalink to this definition"></a></dt>
-<dd><p>Gets the current value of a field from the dashboard via the socket.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>widget_nickname</strong> (<em>str</em>) – The nickname of the widget to query</p></li>
-<li><p><strong>field_name</strong> (<em>str</em>) – The field to query</p></li>
-<li><p><strong>printout</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the dashboard should print to its own console a record that the socket command was received. Defaults to True.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The current value of the specified field.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient.set_field">
-<span class="sig-name descname"><span class="pre">set_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget_nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient.set_field" title="Permalink to this definition"></a></dt>
-<dd><p>Sets the value of a field to a specified value via the socket.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>widget_nickname</strong> (<em>str</em>) – The nickname of the widget whose field to set</p></li>
-<li><p><strong>field_name</strong> (<em>str</em>) – The field to set</p></li>
-<li><p><strong>printout</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the dashboard should print to its own console a record that the socket command was received. Defaults to True.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient.do_confirm">
-<span class="sig-name descname"><span class="pre">do_confirm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget_nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient.do_confirm" title="Permalink to this definition"></a></dt>
-<dd><p>Executes a widget’s ‘confirm’ method via the socket.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>widget_nickname</strong> (<em>str</em>) – The nickname of the widget to confirm</p></li>
-<li><p><strong>printout</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the dashboard should print to its own console a record that the socket command was received. Defaults to True.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient.do_eval">
-<span class="sig-name descname"><span class="pre">do_eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient.do_eval" title="Permalink to this definition"></a></dt>
-<dd><p>Tells the dashboard to evaluate an expression and return the result. Eval is run in a namespace containing the methods 
-get_dashboard(), which returns a dashboard object, and do_threadsafe(f), which executes a function f in the main GUI thread.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>expression</strong> – The expression to evaluate</p></li>
-<li><p><strong>printout</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the dashboard should print to its own console a record that the socket command was received. Defaults to True.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient.do_exec">
-<span class="sig-name descname"><span class="pre">do_exec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient.do_exec" title="Permalink to this definition"></a></dt>
-<dd><p>Tells the dashboard to execute a given function. Exec is run in a namespace containing the methods 
-get_dashboard(), which returns a dashboard object, and do_threadsafe(f), which executes a function f in the main GUI thread.</p>
-<p>The code to execute should be supplied as a function. The object uses the ‘inspect’ module to get the function’s source as a 
-string and pass it through the socket. This lets you benefit from normal syntax highlighting in writing your function, 
-rather than having to define it as a string with a bunch of escaped newline and tab characters in it. Due to the 
-‘inspect’ module’s limitations, the function must be defined separately and then passed to do_exec, rather than being 
-defined inline with the do_exec call using a lambda function. E.g., s.do_exec(lambda: print(“Hi”)) is invalid. See the tutorial.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>expression</strong> – The code to run</p></li>
-<li><p><strong>printout</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the dashboard should print to its own console a record that the socket command was received. Defaults to True.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.socket_client.PyOpticonSocketClient.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.socket_client.PyOpticonSocketClient.close" title="Permalink to this definition"></a></dt>
-<dd><p>Send a message via the socket telling the Dashboard to close the socket on its end. Close the socket connection on the client end.</p>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="pyopticon-socket-client-module">
+<h1>pyopticon.socket_client module<a class="headerlink" href="#pyopticon-socket-client-module" title="Permalink to this heading"></a></h1>
 </section>
 
 
@@ -221,7 +90,7 @@ defined inline with the do_exec call using a lambda function. E.g., s.do_exec(la
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Richard Randall.</p>
+    <p>&#169; Copyright 2025, Richard Randall.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

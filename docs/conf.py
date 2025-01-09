@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'pyopticon'
-copyright = '2023, Richard Randall'
+copyright = '2025, Richard Randall'
 author = 'Richard Randall'
 release = '0.2.0'
 

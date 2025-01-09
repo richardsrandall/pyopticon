@@ -49,6 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial_2.html">Tutorial: Building Your Own Dashboards</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_3.html">Tutorial: Writing Your Own Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_4.html">Tutorial: Miscellaneous Useful Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="available_widgets.html">Widgets Made by PyOpticon Users</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
@@ -77,85 +78,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pyopticon._system._socket_widget">
-<span id="pyopticon-system-socket-widget-module"></span><h1>pyopticon._system._socket_widget module<a class="headerlink" href="#module-pyopticon._system._socket_widget" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon._system._socket_widget.</span></span><span class="sig-name descname"><span class="pre">SocketWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_numbers</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This widget manages socket connections from external Python programs. It displays how many sockets are connected and has a few other useful functions.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parent</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.dashboard.PyOpticonDashboard" title="pyopticon.dashboard.PyOpticonDashboard"><em>pyopticon.dashboard.PyOpticonDashboard</em></a>) – The dashboard to which this widget will be added.</p></li>
-<li><p><strong>port_numbers</strong> (<em>list</em>) – A list of int ports on which to open socket server threads.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget._change_socket_counter">
-<span class="sig-name descname"><span class="pre">_change_socket_counter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget._change_socket_counter" title="Permalink to this definition"></a></dt>
-<dd><p>Changes the socket counter displayed on the screen and updates the display and frame color accordingly.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>change</strong> (<em>int</em>) – Value to add to the socket counter (+1 or -1)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget._increment_socket_counter">
-<span class="sig-name descname"><span class="pre">_increment_socket_counter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget._increment_socket_counter" title="Permalink to this definition"></a></dt>
-<dd><p>Increments the socket connection counter in a thread-safe way.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget._decrement_socket_counter">
-<span class="sig-name descname"><span class="pre">_decrement_socket_counter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget._decrement_socket_counter" title="Permalink to this definition"></a></dt>
-<dd><p>Decrements the socket connection counter in a thread-safe way.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget.get_frame">
-<span class="sig-name descname"><span class="pre">get_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget.get_frame" title="Permalink to this definition"></a></dt>
-<dd><p>Get the tkinter frame on which this object is drawn.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The widget’s tkinter frame</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>tkinter.Frame</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget._shutdown_threads">
-<span class="sig-name descname"><span class="pre">_shutdown_threads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget._shutdown_threads" title="Permalink to this definition"></a></dt>
-<dd><p>Sets a flag that tells the socket processing threads to close themselves at program shutdown.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget._run_one_thread">
-<span class="sig-name descname"><span class="pre">_run_one_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">which_port</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget._run_one_thread" title="Permalink to this definition"></a></dt>
-<dd><p>Launch a thread that listens on a port for socket connections, handles the various types of commands that 
-may be received on that socket, and shuts down the socket and thread on program close. Also handles ports that are 
-‘left hanging’ when a client crashes or disconnects without sending a ‘Close’ method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>which_port</strong> (<em>int</em>) – The port on which this thread will listen.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon._system._socket_widget.SocketWidget._force_disconnect">
-<span class="sig-name descname"><span class="pre">_force_disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._socket_widget.SocketWidget._force_disconnect" title="Permalink to this definition"></a></dt>
-<dd><p>Force any connected sockets to disconnect, resulting in broken pipe exceptions on the client side.</p>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="pyopticon-system-socket-widget-module">
+<h1>pyopticon._system._socket_widget module<a class="headerlink" href="#pyopticon-system-socket-widget-module" title="Permalink to this heading"></a></h1>
 </section>
 
 
@@ -166,7 +90,7 @@ may be received on that socket, and shuts down the socket and thread on program 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Richard Randall.</p>
+    <p>&#169; Copyright 2025, Richard Randall.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

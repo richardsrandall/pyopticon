@@ -49,6 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial_2.html">Tutorial: Building Your Own Dashboards</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial_3.html">Tutorial: Writing Your Own Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial_4.html">Tutorial: Miscellaneous Useful Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../available_widgets.html">Widgets Made by PyOpticon Users</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
 </ul>
@@ -77,65 +78,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pyopticon.majumdar_lab_widgets.omega_usb_utc_widget">
-<span id="pyopticon-majumdar-lab-widgets-omega-usb-utc-widget-module"></span><h1>pyopticon.majumdar_lab_widgets.omega_usb_utc_widget module<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets.omega_usb_utc_widget" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.</span></span><span class="sig-name descname"><span class="pre">OmegaUSBUTCWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_serial_port</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="../index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
-<p>Widget for an Omega USB-UTC thermocouple reader. 
-A USB-UTC converts a single thermocouple (using the usual 2-prong thermocouple connection) into a USB signal. The Omega thermocouple reader desktop app can be 
-used to set what type of thermocouple (K-type, etc.) is assumed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parent_dashboard</strong> (<a class="reference internal" href="../index.html#pyopticon.dashboard.PyOpticonDashboard" title="pyopticon.dashboard.PyOpticonDashboard"><em>pyopticon.dashboard.PyOpticonDashboard</em></a>) – The dashboard object to which this device will be added</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
-<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
-<li><p><strong>default_serial_port</strong> (<em>str</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_failed_serial_open">
-<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
-<dd><p>If serial opened unsuccessfully, set readouts to ‘No Reading’</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_update">
-<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_update" title="Permalink to this definition"></a></dt>
-<dd><p>Update the device by polling the serial connection.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_query">
-<span class="sig-name descname"><span class="pre">on_serial_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_query" title="Permalink to this definition"></a></dt>
-<dd><p>Send a query to the serial device asking for the temperature.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_read">
-<span class="sig-name descname"><span class="pre">on_serial_read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_read" title="Permalink to this definition"></a></dt>
-<dd><p>Parse the responses from the previous serial query and update the display. Return True if valid and and error string if not.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>True if the response was of the expected format, an error string otherwise.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool or str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_close">
-<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.omega_usb_utc_widget.OmegaUSBUTCWidget.on_serial_close" title="Permalink to this definition"></a></dt>
-<dd><p>When serial is closed, set all readouts to ‘None’.</p>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="pyopticon-majumdar-lab-widgets-omega-usb-utc-widget-module">
+<h1>pyopticon.majumdar_lab_widgets.omega_usb_utc_widget module<a class="headerlink" href="#pyopticon-majumdar-lab-widgets-omega-usb-utc-widget-module" title="Permalink to this heading"></a></h1>
 </section>
 
 
@@ -146,7 +90,7 @@ used to set what type of thermocouple (K-type, etc.) is assumed.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Richard Randall.</p>
+    <p>&#169; Copyright 2025, Richard Randall.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
