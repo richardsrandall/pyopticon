@@ -5,7 +5,7 @@ import datetime
 import os
 
 # data logging widget
-class DataLoggingWidget:
+class DataLoggingWidget():
     """ This widget allows a user to choose a data logging location and to start and stop data logging
 
     :param parent: The dashboard to which this widget will be added.
@@ -118,7 +118,7 @@ class DataLoggingWidget:
         if self.empty_file or self.widgets_in_order is None:
             self.widgets_in_order = []
             self.widget_attributes_in_order = dict()
-            new_header = "Date, Timestamp"
+            new_header = "Date,Timestamp"
             for widget in self.parent.all_widgets:
                 if not hasattr(widget,'log_data'):
                     continue
