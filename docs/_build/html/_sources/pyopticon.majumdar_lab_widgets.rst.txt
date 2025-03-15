@@ -13,6 +13,7 @@ Submodules
    pyopticon.majumdar_lab_widgets.omega_usb_utc_widget
    pyopticon.majumdar_lab_widgets.picarro_crd_widget
    pyopticon.majumdar_lab_widgets.valco_2_way_valve_widget
+   pyopticon.majumdar_lab_widgets.mks_ftir_widget
 
 Module contents
 ---------------
