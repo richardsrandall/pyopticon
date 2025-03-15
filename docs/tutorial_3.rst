@@ -315,7 +315,12 @@ class. They're buried in the documentation, so we will quickly highlight some he
     The ``SpicinessWidget`` class is initalized 
     with ``update_every_n_cycles=3`` to demonstrate this option.
 *   Widgets sharing a thread: sometimes it may be necessary for multiple widgets to share one serial connection. This happened for us 
-    when we have several mass flow controllers that are all controlled by one control box with a single serial connection. You can 
+    when we have several mass flow controllers that are all controlled by one control box with a single serial connection. We added this 
+    feature in a release and haven't tested it quite as thoroughly, so it's currently available in Github on the branch 'thread_sharing_enabled'.
+    The main branch and the PyPI-hosted package currently don't support thread-sharing. We will merge the branch and update PyPI once 
+    we've tested the new version some more.
+    
+    You can 
     initialize a GenericWidget with the parameter ``widget_to_share_thread_with`` and it will create a single thread for multiple widgets. 
     The thread maintains a queue of tasks, so you can be sure that the widgets' ``on_handshake``, ``on_update``, and ``on_serial_close`` methods will always
     be called in the same order (the order in which the widgets were added to the dashboard).
