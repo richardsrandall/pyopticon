@@ -8,3 +8,4 @@ from .iot_relay_widget import *
 from .sri_gc_fid_widget import *
 from .picarro_crd_widget import *
 from .mks_mfc_widget import *
+from .mks_ftir_widget import *
