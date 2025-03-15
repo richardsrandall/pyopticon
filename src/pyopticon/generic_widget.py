@@ -44,7 +44,6 @@ class GenericWidget:
         self.serial_object = None
 
         # Flag for whether initialization and handshake were successful
-        self.doing_handshake = False
         self.handshake_was_successful = False
 
         # Unpack kwargs
@@ -107,13 +106,14 @@ class GenericWidget:
         self.field_gui_objects = dict()
         self.confirm_button_added = False
 
-        # Create a queue for the thread, if needed
+        # Create a queue for the thread
+        #self.thread_shared = False # THIS LINE DEACTIVATES THREAD SHARING IF UNCOMMENTED
+        #widget_to_share_thread_with = None #Need to populate these later; merge with sharing serial
         if not self.thread_shared:
             self.queue = queue.Queue()
         else:
             self.queue = widget_to_share_thread_with.queue
         self.doing_update = False
-        self.shutdown_flag=False
 
 # Methods implementing serial functionality that will often be overridden by the user
 
@@ -145,14 +145,12 @@ class GenericWidget:
 
     def on_serial_close(self):
         """This function gets called whenever serial connections are closed. It should be overridden in a subclass implementation. 
-        Usually, this function sets readout fields to something like 'no reading' after serial communications are closed. 
-        Note that while the other user-defined methods run in the widget's thread, this method runs immediately in the main 
-        GUI thread, ensuring that the serial connection closure happens immediately."""
+        Usually, this function sets readout fields to something like 'no reading' after serial communications are closed."""
         pass
 
 # Methods to support autogenerating menus and readouts from a dict of Tkinter string objects and logging their values
 
-    def add_field(self, field_type, name, label, default_value=None, **kwargs):
+    def add_field(self, field_type, name, label, default_value, **kwargs):
         """Adds a field (i.e., a text entry box, a dropdown menu, or a text display) to the widget.\n
         
         Adding a field is like making an instance variable for the widget, 
@@ -162,7 +160,7 @@ class GenericWidget:
 
         If you add the first input field to a widget, a 'Confirm' button will also automatically be generated and placed. Use the move_confirm_button method to change its location.
 
-        :param field_type: Valid options are 'text output', 'text input', 'dropdown', or 'button'
+        :param field_type: Valid options are 'text output', 'text input', or 'dropdown'
         :type field_type: str
         :param name: The name of the field, which will be used to identify it for automation and for data logging
         :type name: str
@@ -196,13 +194,8 @@ class GenericWidget:
             if not ('options' in kwargs.keys()):
                 raise Exception("Missing required 'options' argument with dropdown items")
             item_to_add = OptionMenu(self.frame, stringvar_to_add, *kwargs['options'])
-        elif field_type=='button':
-            if not('action' in kwargs.keys()):
-                raise Exception("Missing required 'action' argument with button")
-            item_to_add = Button(self.frame, text=name, command=kwargs['action'])
         else:
-            raise Exception("Valid field types are 'text output','text input', 'dropdown', or 'button'")
-        
+            raise Exception("Valid field types are 'text output','text input', or 'dropdown'")
         # Grid them in the widget
         if ('row' in kwargs.keys()) and ('column' in kwargs.keys()):
             row = kwargs['row']
@@ -213,23 +206,19 @@ class GenericWidget:
         if label!='':
             label_to_add.grid(row=row,column=col,sticky='nesw')
         item_to_add.grid(row=row,column=col+1,sticky='nesw')
-        
         # Add the stringvars to the dicts
         if name in self.attributes.keys():
             print("Warning: duplicate attribute '"+str(name)+"' in "+str(self.name))
         self.attributes[name]=stringvar_to_add
         if not (('log' in kwargs.keys()) and (kwargs['log']==False)):#Default behavior is to log data
             self.values_to_log[name]=stringvar_to_add
-        
         # Add the GUI objects to the dict
         self.field_gui_objects[name]=(label_to_add,item_to_add)
-        
         # Add a confirm button if needed
         if (field_type=='text input' or field_type=='dropdown') and not self.confirm_button_added:
             self.confirm_button = Button(self.frame,text=" Confirm ",command=self.confirm)
             self.confirm_button_added=True
             self.confirm_button.grid(row=2,column=2,sticky='nesw')
-        
         # Return the stringvar
         return stringvar_to_add
 
@@ -319,21 +308,20 @@ class GenericWidget:
 # Methods to make a thread for this widget (!)
         
     def _run_thread(self):
-        """Launch a thread to process commands from the widget's queue. The thread just keeps 
-        checking for new commands in its queue forever until the close flag is set. Valid commands 
-        are 'UPDATE', 'HANDSHAKE', and 'CONFIRM'."""
+        """Launch a thread to process commands from the widget's queue."""
 
         if self.thread_shared: #We post events to a shared queue in a different widget's thread
             pass
         else: #This widget gets its own thread in which to process events
             while True:
-                if self.shutdown_flag: # Bail immediately
-                    return
                 try:
                     while not self.queue.empty():
                         (cmd,widget) = self.queue.get()
+
+                        if cmd == None: # Shut down the thread.
+                            return
                         
-                        if cmd == 'UPDATE': # Update the widget however desired
+                        elif (cmd == 'UPDATE') and self.parent_dashboard.serial_connected: # Update the widget however desired
                             self.doing_update = True
                             widget._update()
                             self.doing_update = False # Flag to let us warn if the polling interval is too short
@@ -342,9 +330,12 @@ class GenericWidget:
                             widget._on_confirm()
 
                         elif cmd == 'HANDSHAKE': # Tell the thread to open serial and do the handshake
-                            self.doing_handshake = True
                             widget._handshake()
-                            self.doing_handshake = False
+                            self.queue.put(('DUMP',widget))
+
+                        elif cmd == 'DUMP': # Dump the queue; implemented this way because of how thread-sharing needs to work
+                            with self.queue.mutex: # if you dump after every handshake, widgets 2-n in a thread don't get their hands shaken.
+                                self.queue.queue.clear()
 
                 except Exception as e:
                     self.parent_dashboard.exc_handler(e,'system',self.name)
@@ -353,21 +344,18 @@ class GenericWidget:
 
     def _shutdown_thread(self):
         """Shutdown the widget's thread once the GUI is closed."""
-        self.shutdown_flag = True
+        if not self.thread_shared:
+            self.queue.put((None,self))
 
 
-# Underlying methods to make the serial functionality work.
-# These are generally wrappers around the user-defined methods like on_update, on_handshake, and on_confirm.
-# They contain a bunch of functionality that the user likely doesn't want to implement themselves, e.g. 
-# building serial objects, complaining if you hit confirm without serial being open, knowing not to build a 
-# serial object if use_serial=False, and various other things. Apologies that it's a bit of a mess down here, 
-# but since this code has been working fairly reliably for me, I don't really want to mess with it at the moment.
+
+# Underlying methods to make the serial functionality work
     
     def _build_serial_object(self):
         """This function just calls get_serial_object and assigns its value to self.serial_object"""
         self.serial_object = None
         # Make cosmetic changes before any return's get invoked:
-        if not self.no_serial:
+        if not self.no_serial and not self.thread_shared:
             print("Opening "+self.serial_selected.get()+" for \""+self.name+"\"")
             self.serial_menu.configure(state='disabled')
         try:
@@ -389,14 +377,9 @@ class GenericWidget:
         """Method executed when the Confirm button is pressed. Checks whether serial is connected and unfocuses any input field that's focused, then 
         calls the on_confirm method that is hopefully defined in a subclass."""
         self.parent_dashboard.get_tkinter_object().focus()
-        if self.serial_object == None and not (self.no_serial or self.parent_dashboard.offline_mode):
+        if self.serial_object == None and not self.no_serial:
             print("\"Confirm\" pressed for "+str(self.name)+" with no serial connection.")
             return
-        
-        if self.doing_handshake:
-            print("\"Confirm\" pressed for "+str(self.name)+" while still handshaking.")
-            return
-        
         self.queue.put(('CONFIRM',self))
 
     def _on_confirm(self):
@@ -412,9 +395,10 @@ class GenericWidget:
         self._update_cycle_counter%=self.update_every_n_cycles
         if self._update_cycle_counter!=0:
             return
-        if not self.handshake_was_successful or self.doing_handshake:
+        if not self.handshake_was_successful:
             return
         try:
+            
             self.on_update()
         except Exception as e:
             self.parent_dashboard.exc_handler(e,'on_update',self.name)
@@ -430,7 +414,6 @@ class GenericWidget:
         except Exception as e:
             serial_success = False
             self.parent_dashboard.exc_handler(e,'serial build',self.name)
-
         if not serial_success:
             if not self.no_serial:
                 self.do_threadsafe(lambda: self.serial_status.set("Connection Failed"))
@@ -455,6 +438,11 @@ class GenericWidget:
         self.handshake_was_successful = serial_success and handshake_success
         if not self.handshake_was_successful:
             self.on_failed_serial_open()
+
+        # Dump the queue to ignore any queries/confirms that were prompted while the handshake happened
+        #
+        #with self.queue.mutex:
+        #    self.queue.queue.clear()
 
 
     def close_serial(self):

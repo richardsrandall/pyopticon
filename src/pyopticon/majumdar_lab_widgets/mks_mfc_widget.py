@@ -69,7 +69,7 @@ class MksMFCWidget(generic_widget.GenericWidget):
             self.use_calibrator=False
 
         # Initialize the superclass with most of the widget functionality
-        super().__init__(parent_dashboard,name,nickname,'#90ee90',default_serial_port=default_serial_port,baudrate=9600,widget_to_share_thread_with=widget_to_share_serial_with)
+        super().__init__(parent_dashboard,name,nickname,'#90ee90',default_serial_port=default_serial_port,baudrate=9600,widget_to_share_serial_with=widget_to_share_serial_with,update_every_n_cycles=2)
         # Store key info about the device
         channel_options = ["A1","A2","B1","B2","C1","C2"]
         self.which_channel = str(channel_options.index(channel)+1)

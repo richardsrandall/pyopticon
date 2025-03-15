@@ -50,14 +50,13 @@ def run_demo_dashboard():
                         nickname='Argon MFC',
                         channel='A1',
                         device_id='001',
-                        default_serial_port='COM3')
+                        default_serial_port='COM3',)
     dashboard.add_widget(mfc_2,row=1,column=2)
 
     # Add another MKS MFC
     mfc_3=mlw.MksMFCWidget(parent_dashboard=dashboard,
                         name='Oxygen MFC',
                         nickname='Oxygen MFC',
-                        device_id='001',
                         channel='A2',
                         widget_to_share_serial_with=mfc_2)
     dashboard.add_widget(mfc_3,row=2,column=2)
