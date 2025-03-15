@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyopticon.majumdar_lab_widgets.mks_mfc_widget module &mdash; pyopticon 0.2.0 documentation</title>
+  <title>pyopticon.majumdar_lab_widgets.mks_mfc_widget module &mdash; pyopticon 0.2.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -78,8 +78,77 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pyopticon-majumdar-lab-widgets-mks-mfc-widget-module">
-<h1>pyopticon.majumdar_lab_widgets.mks_mfc_widget module<a class="headerlink" href="#pyopticon-majumdar-lab-widgets-mks-mfc-widget-module" title="Permalink to this heading"></a></h1>
+  <section id="module-pyopticon.majumdar_lab_widgets.mks_mfc_widget">
+<span id="pyopticon-majumdar-lab-widgets-mks-mfc-widget-module"></span><h1>pyopticon.majumdar_lab_widgets.mks_mfc_widget module<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets.mks_mfc_widget" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.mks_mfc_widget.</span></span><span class="sig-name descname"><span class="pre">MksMFCWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>Widget to control MKS ‘mass flo controllers’ (MFCs), which are themselves controlled by an MKS ‘vacuum controller’.</p>
+<p>A control box like an MKS ‘946 Vacuum System Controller’ converts digital signals or manual inputs into the actual voltage and/or current 
+signals that control MKS mass flo controllers. One 946 control box can control up to 6 mass flo controllers at once, with some trickery required (described below) to let multiple widgets share a single serial connection.</p>
+<p>Each control box has a 3-digit ID number, e.g. 001, which can be configured on the box. Each MFC on the box has a channel, which is one of {A1, A2, B1, B2, C1, C2}. These are fixed when you initialize a widget and can’t be changed from the GUI.</p>
+<p>Each mass flo controller on the same vacuum controller gets its own widget, even though they all share the same control box and hence the same serial connection.
+The first MFC widget is initialized normally, and then for every subsequent widget representing an MFC on the same control box, the constructor is called with 
+the first widget passed as the keyword argument ‘widget_to_share_serial_with’. The later widgets then know to share the serial connection with the first widget, 
+rather than trying to initialize a new one, which would fail because that serial port is already in use by the first widget.</p>
+<p>One can also set a ‘scale factor,’ which adjusts for different gas types (e.g. air is usually a conversion factor of 1.0). Refer to the MKS MFC documentation 
+for what scale factor to use for a particular gas. One can optionally lock the scale factor for a certain widget.</p>
+<p>Finally, one can add a manual calibration curve independent of the scale factor. This is done by tabulating the commanded flow (i.e., the value sent to 
+the MFC) and the actual flow (according to an external flow meter) at various flow conditions, then feeding the resulting tuples of 
+flows to the constructor for this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>channel</strong> (<em>str</em>) – A string representing which channel on the control box the MFC is connected to. One of (A1,A2,B1,B2,C1,C2).</p></li>
+<li><p><strong>widget_to_share_serial_with</strong> (<em>richardview.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget</em><em>, </em><em>optional</em>) – If this is the 2nd-6th MFC sharing the same control box, pass the widget for the first MFC on that control box as this argument. If not, the arguments device_ID and default_serial_port are required.</p></li>
+<li><p><strong>device_ID</strong> (<em>str</em><em>, </em><em>optional</em>) – The ID of the MKS control box / vacuum system controller, which is a string of a 3-digit number, e.g. ‘001’. Can be set on the control box.</p></li>
+<li><p><strong>default_serial_port</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of the default selected serial port, e.g. ‘COM9’</p></li>
+<li><p><strong>force_scale_factor</strong> (<em>float</em><em>, </em><em>optional</em>) – Optionally set a certain scale factor and disable adjusting the scale factor via the interface. See the MKS manual to select factors for different gases.</p></li>
+<li><p><strong>calibration</strong> (<em>tuple</em><em>, </em><em>optional</em>) – a tuple containing two tuples of ints or floats with the results of calibrating the MFC. The first should contain a range of flow commands sent to the MFC. The second should contain the result flows according to an external flow meter. (0,0) should be included, as should a value above the highest flow you expect to use. For example, ( (0,10,20,30), (0,11.5,20.7,33.4) ).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_failed_serial_open">
+<span class="sig-name descname"><span class="pre">on_failed_serial_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_failed_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>If serial opened unsuccessfully, set readouts to ‘No Reading’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_handshake">
+<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_handshake" title="Permalink to this definition"></a></dt>
+<dd><p>This function gets called whenever the widget is initialized. If the widget uses a Serial connection, you can assume 
+that the serial connection was already initialized successfully. If not, you’ll need to initialize whatever objects are needed 
+to update the widget in this method (say, an OEM Python driver).</p>
+<p>By default, it just calls on_update(), assuming that the handshake was successful if (and only if) no exception was raised.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Send four queries to the serial device asking for the gas scale factor, mode, setpoint, and actual flow rate.
+Mode refers to open, closed, or setpoint. Process the results.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘None’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_confirm">
+<span class="sig-name descname"><span class="pre">on_confirm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.mks_mfc_widget.MksMFCWidget.on_confirm" title="Permalink to this definition"></a></dt>
+<dd><p>When ‘confirm’ is pressed, send the appropriate commands to the MFC.
+Prints warnings to console if the entered parameters are invalid.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

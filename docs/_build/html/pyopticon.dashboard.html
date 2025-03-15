@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyopticon.dashboard module &mdash; pyopticon 0.2.0 documentation</title>
+  <title>pyopticon.dashboard module &mdash; pyopticon 0.2.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -78,8 +78,224 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pyopticon-dashboard-module">
-<h1>pyopticon.dashboard module<a class="headerlink" href="#pyopticon-dashboard-module" title="Permalink to this heading"></a></h1>
+  <section id="module-pyopticon.dashboard">
+<span id="pyopticon-dashboard-module"></span><h1>pyopticon.dashboard module<a class="headerlink" href="#module-pyopticon.dashboard" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.dashboard.</span></span><span class="sig-name descname"><span class="pre">PyOpticonDashboard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dashboard_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A Dashboard is our term for a GUI window containing various ‘widgets’. A standalone program should initialize, configure, and run each dashboard. 
+One dashboard may contain many widgets, each representing a physical device or some other functionality.</p>
+<p>See the tutorials for examples of initializing and populating a dashboard. Generally, the workflow is to:</p>
+<ul class="simple">
+<li><p>Initialize a dashboard</p></li>
+<li><p>Initialize widgets and add them to the dashboard</p></li>
+<li><p>Define any desired interlocks and add them to the dashboard</p></li>
+<li><p>Launch the dashboard</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dashboard_name</strong> (<em>str</em>) – The name of the dashboard, which appears in any data logging files that the dashboard creates.</p></li>
+<li><p><strong>offline_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – Defaults to False. If True, doesn’t attempt to build any serial.Serial objects, and widgets may also check to behave differently.</p></li>
+<li><p><strong>polling_interval_ms</strong> (<em>int</em><em>, </em><em>optional</em>) – The interval for polling all connected devices, in milliseconds. Defaults to 1000. You may want to use a larger interval if certain devices are slow to poll, or polling them involves blocking code (not recommended).</p></li>
+<li><p><strong>window_resizeable</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not you can manually resize the dashboard by dragging and dropping the corner. Defaults to false. If True, the window is resizeable, but the widgets don’t scale or center themselves.</p></li>
+<li><p><strong>persistent_console_logfile</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to log console events to a persistent file (same throughout multiple dashboard relaunches) in the same directory as the dashboard initialization script.</p></li>
+<li><p><strong>print_stacktraces</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, exception stack traces are printed to console; if false, only to the logfile. Exception names are printed regardless.</p></li>
+<li><p><strong>x_pad</strong> (<em>int</em><em>, </em><em>optional</em>) – The horizontal pad between widgets, in pixels.</p></li>
+<li><p><strong>y_pad</strong> (<em>int</em><em>, </em><em>optional</em>) – The vertical pad between widgets, in pixels.</p></li>
+<li><p><strong>socket_ports</strong> (<em>list</em><em>, </em><em>optional</em>) – A list of integer ports on which to open sockets for client connections. Defaults to [12345].</p></li>
+<li><p><strong>include_auto_widget</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to display an automation widget on the dashboard.</p></li>
+<li><p><strong>include_socket_widget</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to display a socket widget on the dashboard.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.add_widget">
+<span class="sig-name descname"><span class="pre">add_widget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.add_widget" title="Permalink to this definition"></a></dt>
+<dd><p>Add a widget to the dashboard at the specified row and column, each indexed from 0. 
+Note that rows 0-3 in column 0 are reserved for the four dashboard control widgets. 
+If the specified grid coordinates are already occupied, add_widget hides the 
+widget that was there before. It warns to console if the widget added shares a name or nickname with an existing widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>widget</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><em>pyopticon.generic_widget.GenericWidget</em></a><em> or </em><a class="reference internal" href="pyopticon.minimal_widget.html#pyopticon.minimal_widget.MinimalWidget" title="pyopticon.minimal_widget.MinimalWidget"><em>pyopticon.minimal_widget.MinimalWidget</em></a>) – The widget to add to the dashboard</p></li>
+<li><p><strong>row</strong> (<em>int</em>) – The row in the dashboard’s Tkinter grid at which to place the widget, indexed from 0</p></li>
+<li><p><strong>column</strong> (<em>int</em>) – The column in the dashboard’s Tkinter grid at which to place the widget, indexed from 0</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.add_interlock">
+<span class="sig-name descname"><span class="pre">add_interlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.add_interlock" title="Permalink to this definition"></a></dt>
+<dd><p>Add an interlock function that will be called once every polling cycle.</p>
+<p>You’ll probably want to define such a function in the same file where the dashboard is constructed. 
+You can use the dashboard’s get_field and/or get_widgets_by_nickname methods to check whether 
+the system state violates a certain interlock condition (e.g., a certain temperature reading is too high), 
+and then respond accordingly (e.g., use the dashboard’s set_field method to shut off the flow of reactive gases, or 
+use the gmail_helper module to email or text the operator that something has gone wrong).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> (<em>function</em>) – The interlock function to add. Should take no arguments and return nothing.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.start" title="Permalink to this definition"></a></dt>
+<dd><p>Launch the dashboard, including all necessary threads.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.exc_handler">
+<span class="sig-name descname"><span class="pre">exc_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'system'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.exc_handler" title="Permalink to this definition"></a></dt>
+<dd><p>Handle an exception according to the protocol configured when the dashboard was launched. Generate a 
+message about what subprocess raised the exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exc</strong> (<em>Exception</em>) – The Exception being raised</p></li>
+<li><p><strong>source</strong> (<em>str</em><em>, </em><em>optional</em>) – The source of the exception according to a scheme outlined in the if-statement in the function definition. Defaults to ‘system’.</p></li>
+<li><p><strong>widget</strong> (<em>str</em><em>, </em><em>optional</em>) – The nickname of the widget that raised the exception, if applicable</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.check_offline_mode">
+<span class="sig-name descname"><span class="pre">check_offline_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.check_offline_mode" title="Permalink to this definition"></a></dt>
+<dd><p>Check whether dashboard is in offline mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether the dashboard is in offline mode.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+<p>return self.offline_mode</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.check_serial_connected">
+<span class="sig-name descname"><span class="pre">check_serial_connected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.check_serial_connected" title="Permalink to this definition"></a></dt>
+<dd><p>Check whether serial is currently connected</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether the dashboard’s serial is connected.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.get_field">
+<span class="sig-name descname"><span class="pre">get_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_widget_nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_field</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.get_field" title="Permalink to this definition"></a></dt>
+<dd><p>Get the current value of a certain field of a certain widget. The field must have been created with the 
+add_field method of the GenericWidget class. To access an instance variable of a widget, use get_widget_by_nickname instead. 
+To see a list of widgets’ nicknames and fields, run the dashboard and use the ‘automation help’ button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_widget_nickname</strong> (<em>str</em>) – The nickname of the widget</p></li>
+<li><p><strong>target_field</strong> (<em>str</em>) – The name of the field to read</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value of the field that you queried</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.set_field">
+<span class="sig-name descname"><span class="pre">set_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_widget_nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confirm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.set_field" title="Permalink to this definition"></a></dt>
+<dd><p>Set the value of a certain field of a certain widget and, optionally, execute the widget’s confirm function. 
+The field must have been created with the add_field method of the GenericWidget class. 
+To modify an instance variable of a widget, use get_widget_by_nickname instead. 
+To see a list of widgets’ nicknames and fields, run the dashboard and use the ‘automation help’ button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_widget_nickname</strong> (<em>str</em>) – The nickname of the widget</p></li>
+<li><p><strong>target_field</strong> (<em>str</em>) – The name of the field to modify</p></li>
+<li><p><strong>new_value</strong> (<em>str</em>) – The new value for the field. Fields’ values are always stored as strings, even if they represent numbers.</p></li>
+<li><p><strong>confirm</strong> (<em>bool</em>) – Whether or not to execute the widget’s confirm function, which usually sends a command to the physical device based on the newly updated field.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.get_widget_by_nickname">
+<span class="sig-name descname"><span class="pre">get_widget_by_nickname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.get_widget_by_nickname" title="Permalink to this definition"></a></dt>
+<dd><p>Get a certain widget based on its nickname. 
+To see a list of widgets’ nicknames and fields, run the dashboard and use the ‘automation help’ button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target_widget_nickname</strong> (<em>str</em>) – The nickname of the widget</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The corresponding widget</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget">pyopticon.generic_widget.GenericWidget</a> or <a class="reference internal" href="pyopticon.minimal_widget.html#pyopticon.minimal_widget.MinimalWidget" title="pyopticon.minimal_widget.MinimalWidget">pyopticon.minimal_widget.MinimalWidget</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.get_widgets_by_nickname">
+<span class="sig-name descname"><span class="pre">get_widgets_by_nickname</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.get_widgets_by_nickname" title="Permalink to this definition"></a></dt>
+<dd><p>Get a dict that maps widgets’ nicknames to the corresponding widget objects. Widgets that were added with no or None nicknames are excluded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dict mapping nicknames (str) to widgets (GenericWidget)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.get_tkinter_object">
+<span class="sig-name descname"><span class="pre">get_tkinter_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.get_tkinter_object" title="Permalink to this definition"></a></dt>
+<dd><p>Get the dashboard’s Tkinter frame object, through which Tkinter functions like after() can be accessed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The dashboard’s Tkinter frame object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tkinter.Tk</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.dashboard.PyOpticonDashboard.scale_all_text">
+<span class="sig-name descname"><span class="pre">scale_all_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.dashboard.PyOpticonDashboard.scale_all_text" title="Permalink to this definition"></a></dt>
+<dd><p>Go through all the widgets and scale the font on any tkinter Label, Text, OptionMenu, or Button objects. 
+Meant as a quick fix for using dashboards on smaller or larger screems.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scale_factor</strong> (<em>float</em>) – A factor by which to scale text, e.g. 1.2. Values are calculated in font units and are rounded to the nearest int.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

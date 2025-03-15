@@ -1,4 +1,4 @@
-pyopticon.majumdar\_lab\_widgets.valco\_8\_way\_valve\_widget module
+pyopticon.majumdar\_lab\_widgets.mks\_ftir\_widget
 ======================================================================
 
 .. automodule:: pyopticon.majumdar_lab_widgets.mks_ftir_widget

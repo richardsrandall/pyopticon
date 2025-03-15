@@ -118,6 +118,13 @@ The ''MksMFCWidget'' class
     :private-members:
     :show-inheritance:
 
+The ''MKSFTIRWidget'' class
+--------------------------------
+.. autoclass:: pyopticon.majumdar_lab_widgets.mks_ftir_widget.MKSFTIRWidget
+    :members:
+    :private-members:
+    :show-inheritance:
+
 The ''IotRelayWidget'' class
 --------------------------------
 .. autoclass:: pyopticon.majumdar_lab_widgets.iot_relay_widget.IotRelayWidget

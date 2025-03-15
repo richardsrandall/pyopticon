@@ -17,10 +17,7 @@ class MKSFTIRWidget(generic_widget.GenericWidget):
     calibration points, e.g. 'ch4_cal_function_lo = lambda x: np.interp(x,[0,514,1024,1430],[0,20,40,60])'.
     
     An example initialization is as follows:
-    ftir1 = mlw.MKSFTIRWidget(parent_dashboard=dashboard,name='MKS FTIR',nickname='FTIR',
-                            gas_labels=('CH4 (ppm)','CO2 (ppm)','H2O (%)','CO (ppm)'),
-                            gas_columns=(3,15,30,12))
-    dashboard.add_widget(ftir1,row=2,column=1)
+    ftir1 = mlw.MKSFTIRWidget(parent_dashboard=dashboard,name='MKS FTIR',nickname='FTIR',gas_labels=('CH4 (ppm)','CO2 (ppm)','H2O (%)','CO (ppm)'),gas_columns=(3,15,30,12))
 
     :param parent_dashboard: The dashboard object to which this device will be added
     :type parent_dashboard: richardview.dashboard.RichardViewDashboard

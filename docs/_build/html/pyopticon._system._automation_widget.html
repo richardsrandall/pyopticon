@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyopticon._system._automation_widget module &mdash; pyopticon 0.2.0 documentation</title>
+  <title>pyopticon._system._automation_widget module &mdash; pyopticon 0.2.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -78,8 +78,232 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pyopticon-system-automation-widget-module">
-<h1>pyopticon._system._automation_widget module<a class="headerlink" href="#pyopticon-system-automation-widget-module" title="Permalink to this heading"></a></h1>
+  <section id="module-pyopticon._system._automation_widget">
+<span id="pyopticon-system-automation-widget-module"></span><h1>pyopticon._system._automation_widget module<a class="headerlink" href="#module-pyopticon._system._automation_widget" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon._system._automation_widget.</span></span><span class="sig-name descname"><span class="pre">AutomationWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon.minimal_widget.html#pyopticon.minimal_widget.MinimalWidget" title="pyopticon.minimal_widget.MinimalWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">MinimalWidget</span></code></a></p>
+<p>This widget contains buttons to show/hide the console (on PC’s), show/hide all the other widgets’ serial controls, 
+print automation help to the console, and open help/tutorials.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>pyopticon.dashboard.Dashboard</em>) – The dashboard to which this widget will be added.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._on_log_toggle">
+<span class="sig-name descname"><span class="pre">_on_log_toggle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._on_log_toggle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget.get_frame">
+<span class="sig-name descname"><span class="pre">get_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget.get_frame" title="Permalink to this definition"></a></dt>
+<dd><p>Get the tkinter frame on which this object is drawn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The widget’s tkinter frame</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tkinter.Frame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget.get_parent_dashboard">
+<span class="sig-name descname"><span class="pre">get_parent_dashboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget.get_parent_dashboard" title="Permalink to this definition"></a></dt>
+<dd><p>Get the automation widget’s parent Dashboard object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Dashboard to which this widget was added</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pyopticon.dashboard.Dashboard</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget.log_data">
+<span class="sig-name descname"><span class="pre">log_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget.log_data" title="Permalink to this definition"></a></dt>
+<dd><p>The automation widget will optionally log whatever step of the automation it’s currently on, in order to make 
+splitting up time series data easier in post-experiment analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dict of the widget’s loggable fields and their current values</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget.schedule_delay">
+<span class="sig-name descname"><span class="pre">schedule_delay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget.schedule_delay" title="Permalink to this definition"></a></dt>
+<dd><p>This function is meant to be called in automation scripts. It causes a delay before a subsequent call to schedule_function 
+or schedule_action is executed. It fills a role in an automation script similar to time.sleep() in a Python program.</p>
+<p>In the automation script, you can just say ‘schedule_delay(…)’; you don’t need to say ‘dashboard.automation_widget.schedule_delay(…)’ 
+or similar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>delay</strong> (<em>str</em>) – The delay in hh:mm:ss format</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget.schedule_function">
+<span class="sig-name descname"><span class="pre">schedule_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget.schedule_function" title="Permalink to this definition"></a></dt>
+<dd><p>This function is meant to be called in automation scripts. It executes whatever function is passed after any delay that 
+has been caused by preceding calls to schedule_delay. If you are trying to change a widget field and then confirm the change, 
+it’s better to use schedule_action – this method is meant to let you execute arbitrary functions at a scheduled time within 
+an automation script, e.g. printing a widget’s instance variable to the console.</p>
+<p>In the automation script, you can just say ‘schedule_function(…)’; you don’t need to say ‘dashboard.automation_widget.schedule_function(…)’ 
+or similar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>function</strong> (<em>function</em>) – The function to be executed at the scheduled time</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget.schedule_action">
+<span class="sig-name descname"><span class="pre">schedule_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_widget_nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_target_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confirm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget.schedule_action" title="Permalink to this definition"></a></dt>
+<dd><p>This function is meant to be called in automation scripts. It changes the target field in the target widget to a certain value, 
+then optionally executes that widget’s confirm function. It’s useful for scheduling most simple automation tasks, e.g., flipping a valve 
+at a certain time.</p>
+<p>If you want to change multiple fields on a widget, make several consecutive calls to schedule_action, with confirm=False on all 
+but the last and confirm=True on the last. That way, the widget’s confirm function is only executed once all its fields have been set properly.</p>
+<p>In the automation script, you can just say ‘schedule_action(…)’; you don’t need to say ‘dashboard.automation_widget.schedule_action(…)’ 
+or similar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_widget_nickname</strong> (<em>str</em>) – The nickname of the widget whose field you want to change.</p></li>
+<li><p><strong>target_field_name</strong> (<em>str</em>) – The name of the widget field that you want to change.</p></li>
+<li><p><strong>new_target_value</strong> (<em>str</em>) – The new value to which the target field should be set. Numbers should be typecast to str first.</p></li>
+<li><p><strong>confirm</strong> (<em>bool</em><em>, </em><em>optional</em>) – True if the target widget’s confirm method should be called after updating the field; False if not.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._schedule_helper">
+<span class="sig-name descname"><span class="pre">_schedule_helper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_target_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confirm_function</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._schedule_helper" title="Permalink to this definition"></a></dt>
+<dd><p>This is used to generate function objects that will be executed at a future time as a result of the schedule_action method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_widget</strong> (<a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><em>pyopticon.generic_widget.GenericWidget</em></a>) – The widget whose field you want to change.</p></li>
+<li><p><strong>field_name</strong> (<em>str</em>) – The name of the widget field that you want to change.</p></li>
+<li><p><strong>new_target_value</strong> (<em>str</em>) – The new value to which the target field should be set. Numbers should be typecast to str first.</p></li>
+<li><p><strong>confirm_function</strong> (<em>function</em>) – The widget’s confirm function, or None if no confirm function should be executed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget.schedule_await_condition">
+<span class="sig-name descname"><span class="pre">schedule_await_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">console_message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'(No</span> <span class="pre">summary</span> <span class="pre">provided)'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget.schedule_await_condition" title="Permalink to this definition"></a></dt>
+<dd><p>This function schedules the script to ‘await’ a certain condition, such as a thermocouple temperature dropping below a certain value, 
+before allowing the automation script to proceed. Data logging and GUI functions proceed in the meantime. While the script is awaiting 
+the condition, a ‘Skip’ button also becomes available in the automation control widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>condition</strong> – A function that takes a Dashboard object as its only argument and returns True if the condition to proceed is met and False if not. See tutorials for an example.</p></li>
+<li><p><strong>console_message</strong> – A message that’s printed to the console as user-legible shorthand for the condition being awaited, e.g. ‘Temperature &lt; 100C’</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._schedule_await_condition_helper">
+<span class="sig-name descname"><span class="pre">_schedule_await_condition_helper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">console_message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._schedule_await_condition_helper" title="Permalink to this definition"></a></dt>
+<dd><p>This is a function whose execution is scheduled by schedule_await_condition. 
+It checks whether the awaited condition is met. If so, it lets the automation script proceed. 
+If not, or if an error is raised, it causes the automation panel to check again during the next 
+automation update cycle (usually 1 second later). It does various cosmetic things to manage the 
+‘time to next step’ and ‘time remaining’ readouts, as well as showing and hiding the ‘skip’ button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>condition</strong> – A function that takes a Dashboard object as its only argument and returns True if the condition to proceed is met and False if not.</p></li>
+<li><p><strong>console_message</strong> – A message that’s printed to the console as user-legible shorthand for the condition being awaited, e.g. ‘Temperature &lt; 100C’</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._skip_await">
+<span class="sig-name descname"><span class="pre">_skip_await</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._skip_await" title="Permalink to this definition"></a></dt>
+<dd><p>This function gets called when the ‘skip await’ button gets pressed. It just sets a flag that _schedule_await_condition_helper reads.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._update_tasks">
+<span class="sig-name descname"><span class="pre">_update_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._update_tasks" title="Permalink to this definition"></a></dt>
+<dd><p>This function gets called every polling interval and checks whether it’s time to execute 
+the next task(s) in the automation queue. There’s some other machinery to handle pausing the script and 
+update GUI components like the ‘n out of m steps done’ and ‘xx:xx:xx to go’ readouts.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._start_automated_tasks">
+<span class="sig-name descname"><span class="pre">_start_automated_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._start_automated_tasks" title="Permalink to this definition"></a></dt>
+<dd><p>Start an automation script. Generates a list of absolute times at which each action in the 
+automation queue will be executed, and starts calling _update_tasks every second.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._load_automation_file">
+<span class="sig-name descname"><span class="pre">_load_automation_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._load_automation_file" title="Permalink to this definition"></a></dt>
+<dd><p>Load an automation script from a file. Generates a list of functions and a list of the delays before each one will be 
+executed after starting the script. Sets GUI elements like ‘0/n steps done’ and ‘xx:xx:xx remaining’.</p>
+<p>Note that this method loads the contents of the automation file and calls exec() on it. This is obviously not secure; only use 
+automation scripts whose authors you trues. exec() is called in a namespace with schedule_delay, schedule_action, schedule_function, and schedule_await_condition 
+already defined as local variables for you to use.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._pause_automated_tasks">
+<span class="sig-name descname"><span class="pre">_pause_automated_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._pause_automated_tasks" title="Permalink to this definition"></a></dt>
+<dd><p>Pause the automation script</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._stop_automated_tasks">
+<span class="sig-name descname"><span class="pre">_stop_automated_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._stop_automated_tasks" title="Permalink to this definition"></a></dt>
+<dd><p>Stop the automation script and go back to the beginning</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._buttons_running_mode">
+<span class="sig-name descname"><span class="pre">_buttons_running_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._buttons_running_mode" title="Permalink to this definition"></a></dt>
+<dd><p>Disable ‘start’ and ‘load’ buttons, turn frame green, add ‘running’ label.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._buttons_paused_mode">
+<span class="sig-name descname"><span class="pre">_buttons_paused_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._buttons_paused_mode" title="Permalink to this definition"></a></dt>
+<dd><p>Disable ‘pause’ and ‘load’ buttons, turn frame yellow, add ‘paused’ label.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon._system._automation_widget.AutomationWidget._buttons_stopped_mode">
+<span class="sig-name descname"><span class="pre">_buttons_stopped_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon._system._automation_widget.AutomationWidget._buttons_stopped_mode" title="Permalink to this definition"></a></dt>
+<dd><p>Disable ‘pause’ and ‘stop’ buttons, turn frame red, add ‘inactive’ label.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

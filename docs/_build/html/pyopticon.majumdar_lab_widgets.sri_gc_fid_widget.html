@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyopticon.majumdar_lab_widgets.sri_gc_fid_widget module &mdash; pyopticon 0.2.0 documentation</title>
+  <title>pyopticon.majumdar_lab_widgets.sri_gc_fid_widget module &mdash; pyopticon 0.2.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -78,8 +78,78 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pyopticon-majumdar-lab-widgets-sri-gc-fid-widget-module">
-<h1>pyopticon.majumdar_lab_widgets.sri_gc_fid_widget module<a class="headerlink" href="#pyopticon-majumdar-lab-widgets-sri-gc-fid-widget-module" title="Permalink to this heading"></a></h1>
+  <section id="module-pyopticon.majumdar_lab_widgets.sri_gc_fid_widget">
+<span id="pyopticon-majumdar-lab-widgets-sri-gc-fid-widget-module"></span><h1>pyopticon.majumdar_lab_widgets.sri_gc_fid_widget module<a class="headerlink" href="#module-pyopticon.majumdar_lab_widgets.sri_gc_fid_widget" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.</span></span><span class="sig-name descname"><span class="pre">SRIGasChromatographFIDWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gas_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gas_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration_functions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_logfile_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyopticon/index.html#pyopticon.generic_widget.GenericWidget" title="pyopticon.generic_widget.GenericWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericWidget</span></code></a></p>
+<p>A widget representing an SRI gas chromatograph’s flame ionization detector (FID). We use an SRI 8610c GC.</p>
+<p>This widget doesn’t communicate with the GC via serial. The GC should be controlled using SRI’s PeakSimple application. 
+PeakSimple can be programmed to log GC FID data to a ‘.res’ file, with a row appended to the file every time a new GC 
+scan is completed. This widget watches that file and displays the results. The benefit is that the GC data then ends up 
+in the same RichardView file as all the MFC and other data, simplifying postprocessing.</p>
+<p>One can make this widget extract several gases’ data from the logfile. The gases’ names are passed as one argument. 
+A .res files contains a bunch of columns of data, so you pass this constructor the indices of the columns that correspond to 
+the peak areas for those gases.</p>
+<p>The logfile just contains peak areas, but you can pass in calibration functions that map peak areas to concentrations according 
+to some calibration curve. Since the GC FID has different sensitivity settings (low, medium, and high), you can pass 
+a set of calibration functions for each, and select which to use with a dropdown. The calibration functions are passed using 
+a dict whose keys are the labels (probably a subset of ‘Low’,’Medium’,and ‘High’) and whose values are a tuple of calibration 
+functions for the respective gases. For example, {‘Low’:(ch4_cal_function_lo,co2_cal_function_lo), ‘Medium’:(ch4_cal_function_med,co2_cal_function_med)}. 
+It probably makes sense to define the calibration functions using Numpy’s interp function to interpolate between a range of 
+calibration points, e.g. ‘ch4_cal_function_lo = lambda x: np.interp(x,[0,514,1024,1430],[0,20,40,60])’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_dashboard</strong> (<em>richardview.dashboard.RichardViewDashboard</em>) – The dashboard object to which this device will be added</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name that the widget will be labeled with, and under which its data will be logged, e.g. “Methane Mass Flow Controller”</p></li>
+<li><p><strong>nickname</strong> (<em>str</em>) – A shortened nickname that can be used to identify the widget in automation scripts, e.g. “CH4 MFC”</p></li>
+<li><p><strong>gas_labels</strong> (<em>list</em>) – The labels of the different gases to be logged. You may want to include units, e.g. ‘CO2 (ppm)’</p></li>
+<li><p><strong>gas_columns</strong> (<em>list</em>) – The indices of the columns corresponding to the gases’ respective peak areas in the GC FID logfile format</p></li>
+<li><p><strong>calibration_functions</strong> (<em>dict</em>) – A dict specifying calibration functions for each gas at one or more sensitivity settings; see the description above.</p></li>
+<li><p><strong>default_logfile_path</strong> (<em>str</em><em>, </em><em>optional</em>) – The default path of the GC FID logfile. Can be used to avoid clicking through the file location choosing dialog every time.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_serial_open">
+<span class="sig-name descname"><span class="pre">on_serial_open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">success</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_serial_open" title="Permalink to this definition"></a></dt>
+<dd><p>If the device initialized unsuccessfully, set its readout to ‘No Reading’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.disable_button">
+<span class="sig-name descname"><span class="pre">disable_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.disable_button" title="Permalink to this definition"></a></dt>
+<dd><p>Disable the file dialog button.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_handshake">
+<span class="sig-name descname"><span class="pre">on_handshake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_handshake" title="Permalink to this definition"></a></dt>
+<dd><p>“On handshake, disable the file chooser button and run an update.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_update">
+<span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_update" title="Permalink to this definition"></a></dt>
+<dd><p>Poll the GC logfile and updates the readout with the latest values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_serial_close">
+<span class="sig-name descname"><span class="pre">on_serial_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget.on_serial_close" title="Permalink to this definition"></a></dt>
+<dd><p>When serial is closed, set all readouts to ‘No Reading’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget._update_file_to_watch">
+<span class="sig-name descname"><span class="pre">_update_file_to_watch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyopticon.majumdar_lab_widgets.sri_gc_fid_widget.SRIGasChromatographFIDWidget._update_file_to_watch" title="Permalink to this definition"></a></dt>
+<dd><p>Prompt the user to select a new file to watch.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
